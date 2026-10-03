@@ -1,0 +1,415 @@
+---
+title: "Lab Practical 1: Learning How to Work with the Genomics Pipeline"
+author: "Yuewei Xu"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+self-contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 0. Practical guide for TAs and students
+
+BIO214 will have 6 marked programming practicals that will together account for 40% of the final mark. The Rstudio Server is the required platform for completing these practicals, and students can log in using the account and URL provided on LMO (Same as the BIO215 accounts from last semester).
+
+Each practical will have a sample HTML file that contains the correct programming output. To complete the programming assignment, students need to fill in the gaps labeled with `___` in the RMD file and obtain the expected result.
+
+Students will receive full scores for their programming questions if their code runs through and yields the standard output. Short answer questions are also included in the programming questions, and students need to type their answers at `___` and submit them together with the knitted report.
+
+Once students have completed all the questions, they need to click the "Knit" button to generate an HTML report. If the report is generated successfully, they should download the HTML file by selecting the file and clicking "More" \> "Export". The submission of the practicals is done by uploading the HTML report to the assignment box on Learning Mall. The deadlines for submissions are set for two weeks after the corresponding lab schedule.
+
+## 1. Linux bash basics (Not Marked)
+
+The first lab practical aims to achieve raw read download, read QC, read trimming, read alignment, and read quantification. However, before implementing the entire pipeline, it is necessary to become familiar with several basic bash commands.
+
+To view the output for each command, you can click the rightmost button in the code chunk labeled "Run Current Chunk." Alternatively, students can enter the bash commands in the Terminal next to the Console. The Terminal is the more standard way of working on Linux/Unix systems.
+
+For this practical, you are required to type the bash command in the code chunk. It is essential to try to understand the code comments (after \#) below because knowing bash commands is a fundamental skill for a bioinformatician.
+
+```{bash}
+## pwd can retrieve your current working directory
+pwd 
+```
+
+```{bash}
+## ls can list all the files/folders in your current working directory
+ls 
+```
+
+```{bash}
+## Adding argument after ls can return more file information (file size, date of change, & file access)
+ls -lh 
+```
+
+```{bash}
+## Create a directory called testfolder with mkdir
+mkdir ~/BIO214/LabPractical1/testfolder 
+
+## Check the current directory to see the newly created folder
+ls 
+```
+
+"`~`" at here is used to represent the home directory (`/Users/YOUR_USER_NAME/`).
+
+One can also use "`.`" to represent the current directory, by doing so the mkdir command is changed to `mkdir ./testfolder`. However, it is always safe to type the "full directory" rather than use "`.`", because it can avoid potential mistakes after changing the directory of the script.
+
+```{bash}
+## Create a text message with content 'This is my first file' and store it in a file named by 'HelloWorld.txt'
+echo This is my first file > HelloWorld.txt
+```
+
+```{bash}
+## Check the content of HelloWorld.txt
+cat HelloWorld.txt 
+```
+
+```{bash}
+## Move the file toward the folder with mv
+mv  HelloWorld.txt ~/BIO214/LabPractical1/testfolder
+
+## Change the current working directory toward the folder with cd
+cd ~/BIO214/LabPractical1/testfolder
+
+## Re-check the existing files in current working directory
+ls
+```
+
+```{bash}
+## Set the directory to ~/BIO214/LabPractical1
+cd ~/BIO214/LabPractical1
+
+## Remove the entire test folder with rm
+rm -r ~/BIO214/LabPractical1/testfolder
+
+## Re-check the content of the LabPractical1 directory, see that the testfolder has been removed
+ls
+```
+
+Please be careful when running `rm`, because everything deleted by `rm` is NOT recoverable.
+
+To get more knowledge on linux bash usage, go visit this [link](https://linuxconfig.org/bash-scripting-tutorial-for-beginners).
+
+## 2. Download and analyze RNA-Seq raw reads (10%)
+
+Here we will download the RNA-Seq sample SRR1039508 from GEO.
+
+```{bash, eval = FALSE}
+fastq-dump --split-3 SRR1039508
+```
+
+<mark>Adding argument `--split-3` will ensure the paired-end library being split into 2 fastq files.</mark>
+
+The download is time consuming, so we will skip it in this practice. If you accidentally type the download command in terminal, it will likely to take hours to finish. Please then use 'Ctrl + C' to cancel the running process in the terminal.
+
+We can use `nohup fastq-dump --split-3 SRR1039508 > SRR1039508_dld.out &` to download the fastq file in the backstage. By doing so, multiple download processes can be submitted at once. <mark>P.S. `nohup command > xxx.out &` can be used to send any bash command to run at the backstage.</mark>
+
+The files already presented in your `LabPractical1` directory contains the first 20000 read pairs for each of the downloaded fastq files:
+
+-   `SRR1039508_sub_1.fastq` is the <mark>forward read / read1 / read sequenced from one end of the fragments</mark>.
+
+-   `SRR1039508_sub_2.fastq` is the <mark>reverse read / read2 / read sequenced from another end of the fragments</mark>.
+
+Please fill the following code chunk to check the first 12 lines of the file `SRR1039508_sub_1.fastq`.
+
+```{bash}
+head -n 12 SRR1039508_sub_1.fastq
+```
+
+Here we see three reads, with names, sequence, +, then quality score.
+
+We will try to find the position of the third read using a simple [BLAST search](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&BLAST_SPEC=OGP__9606__9558&LINK_LOC=blasthome) to the human genome (build hg19 / GRCh37).
+
+On the BLAST search page, under Choose Search Set \> Database \> choose Genome (GRCh37.p13 reference assembly...)
+
+Question 2.1: The third read aligns uniquely to chromosome 16 of the human genome, falling in the second exon of the gene DHX38, which is <mark>on the plus strand (transcribed from left to right)</mark>. What is the genomic position to which the first basepair of the third read aligns? (Use human genome build: hg19 / GRCh37)
+
+> Your Answer: Position **72096182** on chromosome 16 plus strand, according to `GRCh38.p14 reference assembly RS_2024_08` (read mapped to 72096182 - 72096244, in orientation of read).
+
+Next, check the first 12 lines of the file `SRR1039508_sub_2.fastq`.
+
+```{bash}
+head -n 12 SRR1039508_sub_2.fastq
+```
+
+Question 2.2: The third read in the second file also aligns uniquely to chromosome 16 of the human genome, <mark>aligning to the minus strand</mark>, also in the second exon of the gene DHX38. What is the genomic position to which the first basepair of the third read in the second file aligns?
+
+> Your Answer: Position **72096343** on chromosome 16 minus strand, according to `GRCh38.p14 reference assembly RS_2024_08` (read mapped to 72096343 - 72096281, in orientation of read).
+
+Above we saw the two reads of a paired-end fragment, both aligning within an exon of a human gene.
+
+For a <mark>strand-specific RNA-sequencing protocol</mark>, we could have seen this kind of alignment to a + strand gene:
+
+<mark>[1st read + strand] ... [2nd read - strand]</mark>
+
+...or we could have seen the 1st read aligning on the right side:
+
+<mark>[2nd read + strand] ... [1st read - strand]</mark>
+
+A strand-specific protocol means that we <mark>only observe fragments with the same strand as the gene</mark>.
+
+However, many experiments, including the one we are examining are not strand-specific. This means that, for a plus strand gene, we will observe, in addition to the above two kinds of paired-end fragments, two more:
+
+<mark>[1st read - strand] ... [2nd read + strand]</mark>
+
+<mark>[2nd read - strand] ... [1st read + strand]</mark>
+
+<mark>these are mappings to the reverse complementary strand of gene</mark>
+
+## 3. Run fastqc and Trim Galore (15%)
+
+Subsequently, we are going to check the qualities of the fastq file `SRR1039508_sub_2.fastq` with fastqc.
+
+Please type your code below; if you run it successfully, you can find the output a HTML report in the current directory.
+
+```{bash}
+fastqc SRR1039508_sub_2.fastq
+```
+
+The directory can be navigated with the "Files" panel on the right. Click and open the HTML report in a new page.
+
+Question 3.1: Which basepair has the lowest 10% quality score?
+
+> Your Answer: basepair at position **63** (lowest lower whisker in *Per base sequence quality* plot)
+
+Question 3.2: What base is most common in the first position of the read?
+
+> Your Answer: base **T** (red line in *Per base sequence content* plot at position 1)
+
+Next, using the code demonstrated in the course slides, apply Trim Galore to cut the paired end reads.
+
+```{bash, results = 'hide'}
+trim_galore --paired SRR1039508_sub_1.fastq SRR1039508_sub_2.fastq
+```
+
+Question 3.3: What percentage of the read-pairs are dropped after running trim_galore? (infer it from trim_galore stdout)
+
+> Your Answer: **0.92%** of the read-pairs (185 read-pairs) were removed after trimming under default parameters of `trim_galore`.
+
+## 4. Perform genome alignment with hisat2 (15%)
+
+The hisat2 index of hg19 can be directly downloaded from the [hisat2 webpage](https://daehwankimlab.github.io/hisat2/download/#h-sapiens)
+
+I store the previously downloaded index under the directory of `/data/hg19_idx/genome`.
+
+Next, you need to align the pairs of "trimmed reads" using the code demonstrated in the lecture, name the output SAM file as `SRR1039508.sam`
+
+```{bash}
+hisat2 -x /data/hg19_idx/genome -1 SRR1039508_sub_1_val_1.fq -2 SRR1039508_sub_2_val_2.fq -S SRR1039508.sam
+```
+
+The mapping efficiency is a crucial statistics for NGS data analysis; a high mapping rate (\> 80 %) usually indicate a fine library quality.
+
+It is defined as: $$\text{Mapping efficiency}= \frac{\text{# of uniquely best mapped reads}}{\text{# of total reads}} $$
+
+In case of the alignment of <mark>paired-end reads</mark>, the numerator of interest is the number of <mark>uniquely</mark> best <mark>concordant aligned</mark> reads.
+
+Question 4.1: Please enter the mapping efficiency returned by the hisat2 report.
+
+> Your Answer: **91.74%** (these reads are uniquely best concordant aligned for this pair-end sequencing result)
+
+## 5. SAM file (20%)
+
+The [SAM format](https://samtools.github.io/hts-specs/SAMv1.pdf) and its compressed version, BAM, contains information about the alignment of sequences to a reference genome.
+
+Section 1.3 describes the header of the SAM file.
+
+Check the head and end of the SAM file generated in last section with `head` and `tail`:
+
+```{bash}
+head SRR1039508.sam
+tail SRR1039508.sam
+```
+
+Question 5.1: What is the length of chr10 according to the SAM file?
+
+> Answer: **135534747** (`@SQ   SN:chr10    LN:135534747`)
+
+The CIGAR string tells us how the read aligned to the genome, using numbers and letters, M for match, I for insertion, D for deletion, N for skipped bases on the reference genome.
+
+Question 5.2: What is the CIGAR string for the last read? Try to interpret on the presence of a long gap region reflected by the CIGAR string.
+
+> Answer: **14M1407N49M**: first 14 bases of this read align to the reference genome at chr_7_position_128407696, then **1407 reference bases are skipped**, followed by another 49 aligned bases. The long gap probably indicates an intron between two exons.
+
+\<mark\>Bitwise FLAG is an integer which encodes possible YES/NO answers to the choices below. The bitwise FLAG is most easily decoded at this link, [Explain SAM Flags](http://broadinstitute.github.io/picard/explain-flags.html), for the PICARD software. Note: some terms are not mutually compatible, but FLAG still can be generated, be careful!\</mark\>
+
+Question 5.3: Refer to the PICARD webpage, explain the SAM FLAG of the last line of read.
+
+> Answer: The SAM FLAG for last line of read is *147*, indicates that the read is **paired**, **mapped in proper pair**, mapped to the **reverse strand**, and it is the **second read in the pair**.
+
+SAM can be converted into BAM using `samtools`:
+
+```{bash}
+samtools view -b SRR1039508.sam -o SRR1039508_unfiltered.bam
+```
+
+<mark>A filter for FLAG score can be passed with `-F INT` argument, and the output will only include reads with **none** of the FLAGS in INT present.</mark>
+
+Findout the FLAG score that have the following attributes, and then pass it to the following code chunk.
+
+-   read unmapped
+-   mate unmapped
+-   not primary alignment
+-   read fails platform/vendor quality checks
+-   read is PCR or optical duplicate
+-   supplementary alignment
+
+```{bash}
+samtools view -F 3852 -b SRR1039508.sam -o SRR1039508_filtered.bam
+```
+
+```{bash}
+ls -l SRR1039508_unfiltered.bam
+ls -l SRR1039508_filtered.bam
+```
+
+Question 5.4: Compare the file sizes (use `ls -l`) with and without the FLAG filter, what proportion of the reads are dropped?
+
+> Answer: **around 6.41%** ($\frac{2789037 - 2610232}{2789037} \approx 0.0641$)
+
+## 6. IGV (20%)
+
+In this assessment we will use IGV to visualize the BAM file `SRR1039508_subset.bam` under your current directory. Make sure to download the BAM and its index (+`.bai`) into your own computer. The download will be triggered by selecting the file and clicking More \> Export.
+
+IGV can be downloaded from [this link](https://www.broadinstitute.org/igv/).
+
+Once you have started IGV, you may have to click "More..." under genomes to get hg19.
+
+Zoom in to gene SRM which is within the range chr1:11,112,000-11,122,000.
+
+Question 6.1: Which strand is this gene: plus or minus?
+
+> Answer: **minus strand**
+
+Question 6.2: In the first exon (rightmost) there is an alternate allele (C) to the reference (T). What is the genomic location of this SNP? (The number of the basepair only, don't include the chromosome.)
+
+> Answer: **11,119,899**
+
+In IGV, right click on the BAM file track and choose Squished. We want to count how many reads are in a particular intron. First we will make sure that we see all the possible reads.
+
+Click View \> Preferences \> Alignments tab. At the top, make sure that "Downsample reads" is NOT checked. Later if you are using IGV for your own work, you may want to check this again, as it speeds up the visualization. But for this question we want to see all the reads.
+
+Question 6.3: How many reads are in the first intron (the rightmost intron)? (Just count by eye the number of reads falling entirely in this intron.)
+
+Answer: **3** reads fall entirely in this intron
+
+## 7. Quantify gene expression level (20%)
+
+In this question, we want to quantify gene expression levels by counting reads from a set of aligned RNA-Seq samples. The codes in the chunk bellow are R codes, as we will use the `SummarizedOverlaps` function in R to perform read count.
+
+```{r, warning=FALSE, message=FALSE}
+library(airway) #The airway package is used here since it contains a collection of exemplar RNA-seq BAM files
+dir <- system.file("extdata", package="airway", mustWork=TRUE)  
+list.files(dir) #To see all the example data stored in airway package
+csvfile <- file.path(dir,"sample_table.csv")  
+(sampleTable <- read.csv(csvfile,row.names=1)) #Load and examine the table for the sample information 
+filenames <- file.path(dir, paste0(sampleTable$Run, "_subset.bam")) 
+file.exists(filenames) 
+```
+
+After checking the directories of the BAM files on the genome, we will use <mark>Rsamtools</mark> package to <mark>scan all the BAM files and combine them into a `BamFileList` object</mark>.
+
+```{r, warning=FALSE, message=FALSE}
+library(Rsamtools)  
+bamfiles <- BamFileList(filenames, yieldSize=2000000) #yieldSize argument can control memory usage
+seqinfo(bamfiles[1]) #Checking the sequence info stored in the first BAM files
+```
+
+Next, we will <mark>make an annotation object (TxDb) directly from the GTF files using `txdbmaker::makeTxDbFromGFF()`</mark>. Again, <mark>the `GRangesList` containing the exons grouped by genes is extracted by the function `exonsBy()`</mark>.
+
+```{r, warning=FALSE, message=FALSE}
+library(GenomicFeatures)
+library(GenomicAlignments)
+gtffile <- file.path(dir,"Homo_sapiens.GRCh37.75_subset.gtf") 
+(txdb <- txdbmaker::makeTxDbFromGFF(gtffile, format="gtf", circ_seqs=character())) 
+(exbg <- exonsBy(txdb, by="gene")) #GrangesList object stores the gene features
+exbg #Try to understand the structure of this object; each row/ranges is an exon, and $`X` is a gene id.
+```
+
+<mark>The BamFileList, together with the GRangesList for gene features is now passed to the `summarizedOverlaps()` function.</mark> The function is an R equivalent implementation of the HTSeq package. You can type `?summarizedOverlaps()` in the console to see the documentation on its arguments.
+
+```{r, warning=FALSE, message=FALSE}
+se <- summarizeOverlaps(features=exbg,           # The gene features of interest, in our case exonic regions of genes.
+                        reads=bamfiles,        # The BAM file list for the aligned reads
+                        mode="Union",         # describes the overlapping rule applied during read count.
+                        singleEnd=FALSE,     # Should the read being treated as single end
+                        ignore.strand=TRUE, # Should the read count ignoring strands (FALSE for strand specific library only)
+                        fragments=TRUE )  # Should read be counted as fragment (TRUE for paired-end only)
+```
+
+The output of the `summarizedOverlaps()` is a SummarizedExperiment object. It is a very powerful R object for genomics having a matrix form (associated with `dim`). <mark>The row features / gene features in SummarizedExperiment can be accessed with `rowRanges(se)`, and the count matrix can be accessed with `assay(se)`</mark>.
+
+```{r}
+dim(se)               ## 20 genes, 8 samples / libraries
+head(assay(se), 3)    ## See the count of the first 3 rows
+colSums(assay(se))    ## Calculate sum of reads in each sample / library
+rowRanges(se)         ## The GRangesList for the row gene features
+colData(se)   ## The table for the experimental design (column data table)
+(colData(se) <- DataFrame(sampleTable))
+```
+
+The quantified gene expression values are usually normalized in the forms of <mark>FPKM(PE考虑) and RPKM(SE考虑)</mark>.
+
+The FPKM (Fragment Per Kb per Million Fragments) value for a gene feature is defined by the following equation: $$\text{FPKM}=\frac{\text{Fragment count of the gene feature} \times 10^3\times10^6}{\text{Total fragment count of the library} \times \text{Length of the gene feature}}$$
+
+Likewise, the RPKM (Read Per Kb per Million Reads) value for a gene feature is described by the equation below: $$\text{RPKM}=\frac{\text{Read count of the gene feature} \times 10^3\times10^6}{\text{Total read count of the library} \times \text{Length of the gene feature}}$$
+
+Using the count assay generated above, compute the matrix of FPKM value, save it in the `FPKM` variable. <mark>Hint: The length of the gene features (exonic regions of genes) in the `GRangeList` of exons grouped by genes can be calculated by `sum(width(GRangeList))`.</mark>
+
+You can write more than 1 line of code in "\_\_\_" if you want.
+
+```{r}
+gene_length <- sum(width(exbg))
+gene_count <- assay(se)
+library_count <- colSums(gene_count)
+
+n_gene <- nrow(gene_count)
+n_sample <- ncol(gene_count)
+
+gene_length_matrix <- matrix(gene_length, nrow = n_gene, ncol = n_sample)
+library_count_matrix <- matrix(library_count, nrow = n_gene, ncol = n_sample, byrow = TRUE)
+
+FPKM <- (gene_count * 10^3 * 10^6 ) / library_count_matrix / gene_length_matrix
+head(FPKM)
+```
+
+Modify the parameters used in `summarizeOverlaps()`, so that the resulting count matrix can be used to calculate the RPKM. Afterward, calculate the RPKM value and save it in the `RPKM` variable.
+
+```{r}
+se2 <- summarizeOverlaps(features=exbg, reads=bamfiles, 
+                         mode="Union",
+                         singleEnd=TRUE,
+                         ignore.strand=TRUE,
+                         fragments=FALSE) 
+gene_length <- sum(width(exbg))
+gene_count <- assay(se2)
+library_count <- colSums(gene_count)
+
+n_gene <- nrow(gene_count)
+n_sample <- ncol(gene_count)
+
+gene_length_matrix <- matrix(gene_length, nrow = n_gene, ncol = n_sample)
+library_count_matrix <- matrix(library_count, nrow = n_gene, ncol = n_sample, byrow = TRUE)
+
+RPKM <- (gene_count * 10^3 * 10^6 ) / library_count_matrix / gene_length_matrix
+head(RPKM)
+```
+
+```{r}
+hist(assay(se2)/assay(se)) #Draw a histogram of ratios between 2 count matrixes
+hist(RPKM/FPKM)
+```
+
+Question 7: What have you discovered from the ratio of two count matrices (assays)? Please explain the observed pattern. If you divide the RPKM matrix by the FPKM matrix, would you expect to see the same phenomenon?
+
+> Answer: The ratio `assay(se2) / assay(se)` is **around 2** because assay(se2) counts reads, while assay(se) counts fragments. **In paired-end sequencing, one fragment produces two reads**, so read counts are roughly twice fragment counts. If we divide RPKM by FPKM, we would not see the same pattern. Both the numerator (counts) and the library size are doubled, so the factor cancels out. Therefore, **RPKM / FPKM ≈ 1, showing significance of normalization for expression level**.
+
+## SessionInfo:
+
+```{r, echo=FALSE}
+sessioninfo::session_info()
+```

@@ -1,0 +1,1194 @@
+Sample	Species	RelativeAbundance	City	Cutotype	Age_Group	Age
+LOR002C	Cutibacterium acnes	62.29579770784064	Baoding	Cutotype 1	40-45	40
+LOR002C	Cutibacterium granulosum	0.5912315808622886	Baoding	Cutotype 1	40-45	40
+LOR002C	Janibacter indicus	0.3138075313807531	Baoding	Cutotype 1	40-45	40
+LOR002C	Klebsiella pneumoniae	0.21284336911042387	Baoding	Cutotype 1	40-45	40
+LOR002C	Kocuria palustris	0.6303438239039476	Baoding	Cutotype 1	40-45	40
+LOR002C	Micrococcus luteus	2.4986356194287795	Baoding	Cutotype 1	40-45	40
+LOR002C	Minor/Unclassified	32.882481353465515	Baoding	Cutotype 1	40-45	40
+LOR002C	Moraxella osloensis	0.31744587957067494	Baoding	Cutotype 1	40-45	40
+LOR002C	Pasteurella multocida	0.178279061306167	Baoding	Cutotype 1	40-45	40
+LOR002C	Staphylococcus aureus	0.07913407313079862	Baoding	Cutotype 1	40-45	40
+LOR003C	Cutibacterium acnes	65.4743152809997	Baoding	Cutotype 1	25-29	25
+LOR003C	Cutibacterium granulosum	4.405685864574085	Baoding	Cutotype 1	25-29	25
+LOR003C	Janibacter indicus	0.07637158595144676	Baoding	Cutotype 1	25-29	25
+LOR003C	Klebsiella pneumoniae	0.7923552042462602	Baoding	Cutotype 1	25-29	25
+LOR003C	Kocuria palustris	0.5680136705138853	Baoding	Cutotype 1	25-29	25
+LOR003C	Micrococcus luteus	2.721692394344684	Baoding	Cutotype 1	25-29	25
+LOR003C	Minor/Unclassified	24.56205668680979	Baoding	Cutotype 1	25-29	25
+LOR003C	Moraxella osloensis	0.8906836211587479	Baoding	Cutotype 1	25-29	25
+LOR003C	Pasteurella multocida	0.33412568853757957	Baoding	Cutotype 1	25-29	25
+LOR003C	Staphylococcus aureus	0.17470000286393447	Baoding	Cutotype 1	25-29	25
+LOR005C	Cutibacterium acnes	85.08639640704409	Baoding	Cutotype 1	35-39	36
+LOR005C	Cutibacterium granulosum	0.35882283418035693	Baoding	Cutotype 1	35-39	36
+LOR005C	Janibacter indicus	0.0208013237206004	Baoding	Cutotype 1	35-39	36
+LOR005C	Klebsiella pneumoniae	0.2642713627230824	Baoding	Cutotype 1	35-39	36
+LOR005C	Kocuria palustris	0.1872119134854036	Baoding	Cutotype 1	35-39	36
+LOR005C	Micrococcus luteus	2.919276681243352	Baoding	Cutotype 1	35-39	36
+LOR005C	Minor/Unclassified	9.937359650159554	Baoding	Cutotype 1	35-39	36
+LOR005C	Moraxella osloensis	1.090651223259662	Baoding	Cutotype 1	35-39	36
+LOR005C	Pasteurella multocida	0.08556908166883347	Baoding	Cutotype 1	35-39	36
+LOR005C	Staphylococcus aureus	0.04963952251506914	Baoding	Cutotype 1	35-39	36
+LOR006C	Cutibacterium acnes	77.26327997237479	Baoding	Cutotype 1	30-34	32
+LOR006C	Cutibacterium granulosum	0.7583901800199371	Baoding	Cutotype 1	30-34	32
+LOR006C	Janibacter indicus	0.4932142321950965	Baoding	Cutotype 1	30-34	32
+LOR006C	Klebsiella pneumoniae	0.42740889870539406	Baoding	Cutotype 1	30-34	32
+LOR006C	Kocuria palustris	0.26647902373552773	Baoding	Cutotype 1	30-34	32
+LOR006C	Micrococcus luteus	0.49516884606112727	Baoding	Cutotype 1	30-34	32
+LOR006C	Minor/Unclassified	16.53929099639698	Baoding	Cutotype 1	30-34	32
+LOR006C	Moraxella osloensis	3.654476391522188	Baoding	Cutotype 1	30-34	32
+LOR006C	Pasteurella multocida	0.08665454806069728	Baoding	Cutotype 1	30-34	32
+LOR006C	Staphylococcus aureus	0.01563691092824612	Baoding	Cutotype 1	30-34	32
+LOR007C	Cutibacterium acnes	88.16938540121932	Baoding	Cutotype 1	30-34	34
+LOR007C	Cutibacterium granulosum	0.05217773383863349	Baoding	Cutotype 1	30-34	34
+LOR007C	Janibacter indicus	0.06700719503487669	Baoding	Cutotype 1	30-34	34
+LOR007C	Klebsiella pneumoniae	0.2812105234250563	Baoding	Cutotype 1	30-34	34
+LOR007C	Kocuria palustris	0.12522656121272038	Baoding	Cutotype 1	30-34	34
+LOR007C	Micrococcus luteus	3.043334981051244	Baoding	Cutotype 1	30-34	34
+LOR007C	Minor/Unclassified	7.980447080793102	Baoding	Cutotype 1	30-34	34
+LOR007C	Moraxella osloensis	0.04064370846377767	Baoding	Cutotype 1	30-34	34
+LOR007C	Pasteurella multocida	0.1323666721590597	Baoding	Cutotype 1	30-34	34
+LOR007C	Staphylococcus aureus	0.10820014280221892	Baoding	Cutotype 1	30-34	34
+LOR008C	Cutibacterium acnes	76.20101775466284	Baoding	Cutotype 1	30-34	33
+LOR008C	Cutibacterium granulosum	2.72989149928264	Baoding	Cutotype 1	30-34	33
+LOR008C	Janibacter indicus	0.05268113342898135	Baoding	Cutotype 1	30-34	33
+LOR008C	Klebsiella pneumoniae	0.235383787661406	Baoding	Cutotype 1	30-34	33
+LOR008C	Kocuria palustris	0.20007621951219512	Baoding	Cutotype 1	30-34	33
+LOR008C	Micrococcus luteus	1.3164678981348636	Baoding	Cutotype 1	30-34	33
+LOR008C	Minor/Unclassified	18.543198529411764	Baoding	Cutotype 1	30-34	33
+LOR008C	Moraxella osloensis	0.5290530846484935	Baoding	Cutotype 1	30-34	33
+LOR008C	Pasteurella multocida	0.13002152080344334	Baoding	Cutotype 1	30-34	33
+LOR008C	Staphylococcus aureus	0.06220857245337159	Baoding	Cutotype 1	30-34	33
+LOR009C	Cutibacterium acnes	96.6887172018858	Baoding	Cutotype 1	35-39	38
+LOR009C	Cutibacterium granulosum	0.16414484239626786	Baoding	Cutotype 1	35-39	38
+LOR009C	Janibacter indicus	0.01727840446276504	Baoding	Cutotype 1	35-39	38
+LOR009C	Klebsiella pneumoniae	0.178337817490682	Baoding	Cutotype 1	35-39	38
+LOR009C	Kocuria palustris	0.10552168439760078	Baoding	Cutotype 1	35-39	38
+LOR009C	Micrococcus luteus	0.6214054747858712	Baoding	Cutotype 1	35-39	38
+LOR009C	Minor/Unclassified	1.8913682027991008	Baoding	Cutotype 1	35-39	38
+LOR009C	Moraxella osloensis	0.11169254313430256	Baoding	Cutotype 1	35-39	38
+LOR009C	Pasteurella multocida	0.15488855429121515	Baoding	Cutotype 1	35-39	38
+LOR009C	Staphylococcus aureus	0.06664527435637943	Baoding	Cutotype 1	35-39	38
+LOR011C	Cutibacterium acnes	69.72516986029468	Baoding	Cutotype 1	25-29	28
+LOR011C	Cutibacterium granulosum	4.227040232078784	Baoding	Cutotype 1	25-29	28
+LOR011C	Janibacter indicus	0.04885869150316818	Baoding	Cutotype 1	25-29	28
+LOR011C	Klebsiella pneumoniae	0.3488815940148103	Baoding	Cutotype 1	25-29	28
+LOR011C	Kocuria palustris	0.07557828841896327	Baoding	Cutotype 1	25-29	28
+LOR011C	Micrococcus luteus	4.147644858386136	Baoding	Cutotype 1	25-29	28
+LOR011C	Minor/Unclassified	17.52729215970683	Baoding	Cutotype 1	25-29	28
+LOR011C	Moraxella osloensis	3.752194824032369	Baoding	Cutotype 1	25-29	28
+LOR011C	Pasteurella multocida	0.10077105122528436	Baoding	Cutotype 1	25-29	28
+LOR011C	Staphylococcus aureus	0.04656844033895717	Baoding	Cutotype 1	25-29	28
+LOR012C	Cutibacterium acnes	87.00620507464521	Baoding	Cutotype 1	25-29	29
+LOR012C	Cutibacterium granulosum	1.6111691343613688	Baoding	Cutotype 1	25-29	29
+LOR012C	Janibacter indicus	0.02150273391902684	Baoding	Cutotype 1	25-29	29
+LOR012C	Klebsiella pneumoniae	0.24369765108230423	Baoding	Cutotype 1	25-29	29
+LOR012C	Kocuria palustris	0.6225553439413487	Baoding	Cutotype 1	25-29	29
+LOR012C	Micrococcus luteus	1.863058303127112	Baoding	Cutotype 1	25-29	29
+LOR012C	Minor/Unclassified	8.187421924597082	Baoding	Cutotype 1	25-29	29
+LOR012C	Moraxella osloensis	0.2841432696442833	Baoding	Cutotype 1	25-29	29
+LOR012C	Pasteurella multocida	0.10341791075341485	Baoding	Cutotype 1	25-29	29
+LOR012C	Staphylococcus aureus	0.05682865392885667	Baoding	Cutotype 1	25-29	29
+LOR013C	Cutibacterium acnes	8.132630236172373	Baoding	Cutotype 2	40-45	44
+LOR013C	Cutibacterium granulosum	0.4868977784165941	Baoding	Cutotype 2	40-45	44
+LOR013C	Janibacter indicus	0.11678359998921996	Baoding	Cutotype 2	40-45	44
+LOR013C	Klebsiella pneumoniae	3.004033525876551	Baoding	Cutotype 2	40-45	44
+LOR013C	Kocuria palustris	0.3611308245820495	Baoding	Cutotype 2	40-45	44
+LOR013C	Micrococcus luteus	0.7015999353198523	Baoding	Cutotype 2	40-45	44
+LOR013C	Minor/Unclassified	77.53712370976581	Baoding	Cutotype 2	40-45	44
+LOR013C	Moraxella osloensis	0.2560255845917515	Baoding	Cutotype 2	40-45	44
+LOR013C	Pasteurella multocida	0.556967938410126	Baoding	Cutotype 2	40-45	44
+LOR013C	Staphylococcus aureus	8.84680686687568	Baoding	Cutotype 2	40-45	44
+LOR014C	Cutibacterium acnes	61.20530799096019	Baoding	Cutotype 1	40-45	41
+LOR014C	Cutibacterium granulosum	0.9260010430549922	Baoding	Cutotype 1	40-45	41
+LOR014C	Janibacter indicus	0.05678854957408588	Baoding	Cutotype 1	40-45	41
+LOR014C	Klebsiella pneumoniae	1.659616387552877	Baoding	Cutotype 1	40-45	41
+LOR014C	Kocuria palustris	0.7857680941067393	Baoding	Cutotype 1	40-45	41
+LOR014C	Micrococcus luteus	19.282609955380423	Baoding	Cutotype 1	40-45	41
+LOR014C	Minor/Unclassified	13.167989801240081	Baoding	Cutotype 1	40-45	41
+LOR014C	Moraxella osloensis	0.5064611462015414	Baoding	Cutotype 1	40-45	41
+LOR014C	Pasteurella multocida	1.5159065886307006	Baoding	Cutotype 1	40-45	41
+LOR014C	Staphylococcus aureus	0.8935504432983716	Baoding	Cutotype 1	40-45	41
+LOR015C	Cutibacterium acnes	51.25122669283611	Baoding	Cutotype 2	40-45	44
+LOR015C	Cutibacterium granulosum	1.0312981915042758	Baoding	Cutotype 2	40-45	44
+LOR015C	Janibacter indicus	0.976973223047806	Baoding	Cutotype 2	40-45	44
+LOR015C	Klebsiella pneumoniae	0.6431375297911117	Baoding	Cutotype 2	40-45	44
+LOR015C	Kocuria palustris	2.1484648815365204	Baoding	Cutotype 2	40-45	44
+LOR015C	Micrococcus luteus	13.5864993691294	Baoding	Cutotype 2	40-45	44
+LOR015C	Minor/Unclassified	28.050084116080203	Baoding	Cutotype 2	40-45	44
+LOR015C	Moraxella osloensis	2.1581031823917005	Baoding	Cutotype 2	40-45	44
+LOR015C	Pasteurella multocida	0.10602130940698164	Baoding	Cutotype 2	40-45	44
+LOR015C	Staphylococcus aureus	0.04819150427590074	Baoding	Cutotype 2	40-45	44
+LOR016C	Cutibacterium acnes	57.5557001952636	Baoding	Cutotype 2	35-39	36
+LOR016C	Cutibacterium granulosum	2.1118509988484453	Baoding	Cutotype 2	35-39	36
+LOR016C	Janibacter indicus	0.06308516497271316	Baoding	Cutotype 2	35-39	36
+LOR016C	Klebsiella pneumoniae	1.1595654133079658	Baoding	Cutotype 2	35-39	36
+LOR016C	Kocuria palustris	0.15120412556951884	Baoding	Cutotype 2	35-39	36
+LOR016C	Micrococcus luteus	6.784158614129074	Baoding	Cutotype 2	35-39	36
+LOR016C	Minor/Unclassified	25.675662143894247	Baoding	Cutotype 2	35-39	36
+LOR016C	Moraxella osloensis	5.449356631452461	Baoding	Cutotype 2	35-39	36
+LOR016C	Pasteurella multocida	0.7510138687227758	Baoding	Cutotype 2	35-39	36
+LOR016C	Staphylococcus aureus	0.2984028438391829	Baoding	Cutotype 2	35-39	36
+LOR017C	Cutibacterium acnes	88.9248972312243	Baoding	Cutotype 1	35-39	38
+LOR017C	Cutibacterium granulosum	0.368300092075023	Baoding	Cutotype 1	35-39	38
+LOR017C	Janibacter indicus	0.08772502193125549	Baoding	Cutotype 1	35-39	38
+LOR017C	Klebsiella pneumoniae	0.7148501787125446	Baoding	Cutotype 1	35-39	38
+LOR017C	Kocuria palustris	0.25447506361876593	Baoding	Cutotype 1	35-39	38
+LOR017C	Micrococcus luteus	0.8823252205813051	Baoding	Cutotype 1	35-39	38
+LOR017C	Minor/Unclassified	7.666151916537976	Baoding	Cutotype 1	35-39	38
+LOR017C	Moraxella osloensis	0.40600010150002536	Baoding	Cutotype 1	35-39	38
+LOR017C	Pasteurella multocida	0.4538501134625283	Baoding	Cutotype 1	35-39	38
+LOR017C	Staphylococcus aureus	0.2414250603562651	Baoding	Cutotype 1	35-39	38
+LOR018C	Cutibacterium acnes	17.27032593123209	Baoding	Cutotype 2	30-34	31
+LOR018C	Cutibacterium granulosum	0.6290293696275072	Baoding	Cutotype 2	30-34	31
+LOR018C	Janibacter indicus	0.04253223495702005	Baoding	Cutotype 2	30-34	31
+LOR018C	Klebsiella pneumoniae	2.516117478510029	Baoding	Cutotype 2	30-34	31
+LOR018C	Kocuria palustris	0.4768087392550143	Baoding	Cutotype 2	30-34	31
+LOR018C	Micrococcus luteus	0.5641117478510028	Baoding	Cutotype 2	30-34	31
+LOR018C	Minor/Unclassified	76.33416905444123	Baoding	Cutotype 2	30-34	31
+LOR018C	Moraxella osloensis	0.30891833810888253	Baoding	Cutotype 2	30-34	31
+LOR018C	Pasteurella multocida	1.161801575931232	Baoding	Cutotype 2	30-34	31
+LOR018C	Staphylococcus aureus	0.6961855300859598	Baoding	Cutotype 2	30-34	31
+LOR019C	Cutibacterium acnes	14.520258307753052	Baoding	Cutotype 2	35-39	37
+LOR019C	Cutibacterium granulosum	0.2687521493803416	Baoding	Cutotype 2	35-39	37
+LOR019C	Janibacter indicus	0.45089223166180536	Baoding	Cutotype 2	35-39	37
+LOR019C	Klebsiella pneumoniae	0.631758607074168	Baoding	Cutotype 2	35-39	37
+LOR019C	Kocuria palustris	1.537364191005082	Baoding	Cutotype 2	35-39	37
+LOR019C	Micrococcus luteus	55.26996217090599	Baoding	Cutotype 2	35-39	37
+LOR019C	Minor/Unclassified	26.75548649233866	Baoding	Cutotype 2	35-39	37
+LOR019C	Moraxella osloensis	0.3579116302174218	Baoding	Cutotype 2	35-39	37
+LOR019C	Pasteurella multocida	0.13756034186292368	Baoding	Cutotype 2	35-39	37
+LOR019C	Staphylococcus aureus	0.07005387780056298	Baoding	Cutotype 2	35-39	37
+LOR020C	Cutibacterium acnes	51.92267668915196	Baoding	Cutotype 1	40-45	42
+LOR020C	Cutibacterium granulosum	0.7320984782635309	Baoding	Cutotype 1	40-45	42
+LOR020C	Janibacter indicus	0.4456251606821493	Baoding	Cutotype 1	40-45	42
+LOR020C	Klebsiella pneumoniae	1.455627241898559	Baoding	Cutotype 1	40-45	42
+LOR020C	Kocuria palustris	0.16649731278234148	Baoding	Cutotype 1	40-45	42
+LOR020C	Micrococcus luteus	1.072438573509788	Baoding	Cutotype 1	40-45	42
+LOR020C	Minor/Unclassified	36.68449983472697	Baoding	Cutotype 1	40-45	42
+LOR020C	Moraxella osloensis	6.029406363625234	Baoding	Cutotype 1	40-45	42
+LOR020C	Pasteurella multocida	1.0124505711102678	Baoding	Cutotype 1	40-45	42
+LOR020C	Staphylococcus aureus	0.4786797742492318	Baoding	Cutotype 1	40-45	42
+LOR021C	Cutibacterium acnes	65.88708904437841	Baoding	Cutotype 1	25-29	25
+LOR021C	Cutibacterium granulosum	0.4182532697820726	Baoding	Cutotype 1	25-29	25
+LOR021C	Janibacter indicus	0.0984637905945296	Baoding	Cutotype 1	25-29	25
+LOR021C	Klebsiella pneumoniae	1.034305481731917	Baoding	Cutotype 1	25-29	25
+LOR021C	Kocuria palustris	0.04095396599949461	Baoding	Cutotype 1	25-29	25
+LOR021C	Micrococcus luteus	0.13331822974303564	Baoding	Cutotype 1	25-29	25
+LOR021C	Minor/Unclassified	11.259726566924883	Baoding	Cutotype 1	25-29	25
+LOR021C	Moraxella osloensis	19.4435488789941	Baoding	Cutotype 1	25-29	25
+LOR021C	Pasteurella multocida	1.1432256040709985	Baoding	Cutotype 1	25-29	25
+LOR021C	Staphylococcus aureus	0.5411151677805565	Baoding	Cutotype 1	25-29	25
+LOR022C	Cutibacterium acnes	42.53580311761343	Baoding	Cutotype 2	40-45	41
+LOR022C	Cutibacterium granulosum	0.8234330825441456	Baoding	Cutotype 2	40-45	41
+LOR022C	Janibacter indicus	0.06643081153733257	Baoding	Cutotype 2	40-45	41
+LOR022C	Klebsiella pneumoniae	1.5665312302059355	Baoding	Cutotype 2	40-45	41
+LOR022C	Kocuria palustris	1.0922461338812588	Baoding	Cutotype 2	40-45	41
+LOR022C	Micrococcus luteus	1.0428092508767322	Baoding	Cutotype 2	40-45	41
+LOR022C	Minor/Unclassified	50.55848228769177	Baoding	Cutotype 2	40-45	41
+LOR022C	Moraxella osloensis	1.1107849650079562	Baoding	Cutotype 2	40-45	41
+LOR022C	Pasteurella multocida	0.8558760370158661	Baoding	Cutotype 2	40-45	41
+LOR022C	Staphylococcus aureus	0.3476030836255774	Baoding	Cutotype 2	40-45	41
+LOR023C	Cutibacterium acnes	72.04226584094329	Baoding	Cutotype 1	30-34	30
+LOR023C	Cutibacterium granulosum	0.1406528812847696	Baoding	Cutotype 1	30-34	30
+LOR023C	Janibacter indicus	0.14345194359889438	Baoding	Cutotype 1	30-34	30
+LOR023C	Klebsiella pneumoniae	1.2700745250341137	Baoding	Cutotype 1	30-34	30
+LOR023C	Kocuria palustris	1.2126937475945558	Baoding	Cutotype 1	30-34	30
+LOR023C	Micrococcus luteus	1.7025296525663902	Baoding	Cutotype 1	30-34	30
+LOR023C	Minor/Unclassified	17.11626605087297	Baoding	Cutotype 1	30-34	30
+LOR023C	Moraxella osloensis	0.6752737832826003	Baoding	Cutotype 1	30-34	30
+LOR023C	Pasteurella multocida	0.45414786046674366	Baoding	Cutotype 1	30-34	30
+LOR023C	Staphylococcus aureus	5.242643714355691	Baoding	Cutotype 1	30-34	30
+LOR024C	Cutibacterium acnes	61.25771467757093	Baoding	Cutotype 1	25-29	25
+LOR024C	Cutibacterium granulosum	5.58504558961725	Baoding	Cutotype 1	25-29	25
+LOR024C	Janibacter indicus	0.43176796281715896	Baoding	Cutotype 1	25-29	25
+LOR024C	Klebsiella pneumoniae	3.8300358113427984	Baoding	Cutotype 1	25-29	25
+LOR024C	Kocuria palustris	0.26922002387422855	Baoding	Cutotype 1	25-29	25
+LOR024C	Micrococcus luteus	2.080105656160313	Baoding	Cutotype 1	25-29	25
+LOR024C	Minor/Unclassified	19.653061742818682	Baoding	Cutotype 1	25-29	25
+LOR024C	Moraxella osloensis	0.38859116653544307	Baoding	Cutotype 1	25-29	25
+LOR024C	Pasteurella multocida	3.865593172986564	Baoding	Cutotype 1	25-29	25
+LOR024C	Staphylococcus aureus	2.638864196276636	Baoding	Cutotype 1	25-29	25
+LOR025C	Cutibacterium acnes	31.77241147124537	Baoding	Cutotype 2	25-29	27
+LOR025C	Cutibacterium granulosum	0.3397300523367918	Baoding	Cutotype 2	25-29	27
+LOR025C	Janibacter indicus	6.754812842408104	Baoding	Cutotype 2	25-29	27
+LOR025C	Klebsiella pneumoniae	5.827441618461727	Baoding	Cutotype 2	25-29	27
+LOR025C	Kocuria palustris	1.141615401095706	Baoding	Cutotype 2	25-29	27
+LOR025C	Micrococcus luteus	20.389924402411776	Baoding	Cutotype 2	25-29	27
+LOR025C	Minor/Unclassified	21.83148165151655	Baoding	Cutotype 2	25-29	27
+LOR025C	Moraxella osloensis	1.3589202093471673	Baoding	Cutotype 2	25-29	27
+LOR025C	Pasteurella multocida	6.574235607382242	Baoding	Cutotype 2	25-29	27
+LOR025C	Staphylococcus aureus	4.00942674379457	Baoding	Cutotype 2	25-29	27
+LOR026C	Cutibacterium acnes	9.616097922848663	Baoding	Cutotype 2	40-45	43
+LOR026C	Cutibacterium granulosum	0.16691394658753708	Baoding	Cutotype 2	40-45	43
+LOR026C	Janibacter indicus	0.27818991097922846	Baoding	Cutotype 2	40-45	43
+LOR026C	Klebsiella pneumoniae	1.9689663699307616	Baoding	Cutotype 2	40-45	43
+LOR026C	Kocuria palustris	0.15764094955489613	Baoding	Cutotype 2	40-45	43
+LOR026C	Micrococcus luteus	10.697947576656777	Baoding	Cutotype 2	40-45	43
+LOR026C	Minor/Unclassified	56.899109792284825	Baoding	Cutotype 2	40-45	43
+LOR026C	Moraxella osloensis	17.349777448071215	Baoding	Cutotype 2	40-45	43
+LOR026C	Pasteurella multocida	0.9458456973293768	Baoding	Cutotype 2	40-45	43
+LOR026C	Staphylococcus aureus	1.9195103857566769	Baoding	Cutotype 2	40-45	43
+LOR027C	Cutibacterium acnes	70.62373727624856	Baoding	Cutotype 1	25-29	25
+LOR027C	Cutibacterium granulosum	0.47356162091906984	Baoding	Cutotype 1	25-29	25
+LOR027C	Janibacter indicus	0.17887246007540955	Baoding	Cutotype 1	25-29	25
+LOR027C	Klebsiella pneumoniae	1.865935734599596	Baoding	Cutotype 1	25-29	25
+LOR027C	Kocuria palustris	0.37833455584295256	Baoding	Cutotype 1	25-29	25
+LOR027C	Micrococcus luteus	4.489827433115855	Baoding	Cutotype 1	25-29	25
+LOR027C	Minor/Unclassified	18.600162143381073	Baoding	Cutotype 1	25-29	25
+LOR027C	Moraxella osloensis	0.16729078999858446	Baoding	Cutotype 1	25-29	25
+LOR027C	Pasteurella multocida	2.076979500443964	Baoding	Cutotype 1	25-29	25
+LOR027C	Staphylococcus aureus	1.1452984853749244	Baoding	Cutotype 1	25-29	25
+LOR028C	Cutibacterium acnes	51.227576632201966	Baoding	Cutotype 2	35-39	38
+LOR028C	Cutibacterium granulosum	0.31054765993204486	Baoding	Cutotype 2	35-39	38
+LOR028C	Janibacter indicus	5.394395528113697	Baoding	Cutotype 2	35-39	38
+LOR028C	Klebsiella pneumoniae	2.1628731138796535	Baoding	Cutotype 2	35-39	38
+LOR028C	Kocuria palustris	0.15527382996602243	Baoding	Cutotype 2	35-39	38
+LOR028C	Micrococcus luteus	0.5863870519893317	Baoding	Cutotype 2	35-39	38
+LOR028C	Minor/Unclassified	37.329655474772586	Baoding	Cutotype 2	35-39	38
+LOR028C	Moraxella osloensis	0.40553870885243504	Baoding	Cutotype 2	35-39	38
+LOR028C	Pasteurella multocida	1.7244528880932373	Baoding	Cutotype 2	35-39	38
+LOR028C	Staphylococcus aureus	0.7032991121990427	Baoding	Cutotype 2	35-39	38
+LOR029C	Cutibacterium acnes	17.249324294386106	Baoding	Cutotype 2	40-45	44
+LOR029C	Cutibacterium granulosum	0.37219194470291106	Baoding	Cutotype 2	40-45	44
+LOR029C	Janibacter indicus	1.8698214364836725	Baoding	Cutotype 2	40-45	44
+LOR029C	Klebsiella pneumoniae	2.7914395852718332	Baoding	Cutotype 2	40-45	44
+LOR029C	Kocuria palustris	0.7643227435863352	Baoding	Cutotype 2	40-45	44
+LOR029C	Micrococcus luteus	2.1090876866498296	Baoding	Cutotype 2	40-45	44
+LOR029C	Minor/Unclassified	69.06154459657049	Baoding	Cutotype 2	40-45	44
+LOR029C	Moraxella osloensis	2.171119677433648	Baoding	Cutotype 2	40-45	44
+LOR029C	Pasteurella multocida	2.592051043466702	Baoding	Cutotype 2	40-45	44
+LOR029C	Staphylococcus aureus	1.019096991448447	Baoding	Cutotype 2	40-45	44
+LOR030C	Cutibacterium acnes	94.26927007198924	Baoding	Cutotype 1	25-29	25
+LOR030C	Cutibacterium granulosum	0.4472407172348059	Baoding	Cutotype 1	25-29	25
+LOR030C	Janibacter indicus	0.07927525008362851	Baoding	Cutotype 1	25-29	25
+LOR030C	Klebsiella pneumoniae	0.11914199434533763	Baoding	Cutotype 1	25-29	25
+LOR030C	Kocuria palustris	0.0632369046909869	Baoding	Cutotype 1	25-29	25
+LOR030C	Micrococcus luteus	0.07240167348678211	Baoding	Cutotype 1	25-29	25
+LOR030C	Minor/Unclassified	4.241454998694018	Baoding	Cutotype 1	25-29	25
+LOR030C	Moraxella osloensis	0.5613420887424563	Baoding	Cutotype 1	25-29	25
+LOR030C	Pasteurella multocida	0.09714654923542916	Baoding	Cutotype 1	25-29	25
+LOR030C	Staphylococcus aureus	0.0494897514972941	Baoding	Cutotype 1	25-29	25
+LOR033C	Cutibacterium acnes	62.94626279772957	Baoding	Cutotype 2	35-39	37
+LOR033C	Cutibacterium granulosum	0.7957137552384489	Baoding	Cutotype 2	35-39	37
+LOR033C	Janibacter indicus	0.23164111541385957	Baoding	Cutotype 2	35-39	37
+LOR033C	Klebsiella pneumoniae	1.441126023376302	Baoding	Cutotype 2	35-39	37
+LOR033C	Kocuria palustris	0.5729139037716832	Baoding	Cutotype 2	35-39	37
+LOR033C	Micrococcus luteus	2.5162237193429173	Baoding	Cutotype 2	35-39	37
+LOR033C	Minor/Unclassified	29.02056477994091	Baoding	Cutotype 2	35-39	37
+LOR033C	Moraxella osloensis	1.0574151680724275	Baoding	Cutotype 2	35-39	37
+LOR033C	Pasteurella multocida	0.999062826021608	Baoding	Cutotype 2	35-39	37
+LOR033C	Staphylococcus aureus	0.4190759110922498	Baoding	Cutotype 2	35-39	37
+LOR034C	Cutibacterium acnes	65.35743241583202	Baoding	Cutotype 1	25-29	29
+LOR034C	Cutibacterium granulosum	0.45779521239568577	Baoding	Cutotype 1	25-29	29
+LOR034C	Janibacter indicus	0.0843522484378455	Baoding	Cutotype 1	25-29	29
+LOR034C	Klebsiella pneumoniae	0.4324076424774992	Baoding	Cutotype 1	25-29	29
+LOR034C	Kocuria palustris	0.4422350888974424	Baoding	Cutotype 1	25-29	29
+LOR034C	Micrococcus luteus	12.68477646654164	Baoding	Cutotype 1	25-29	29
+LOR034C	Minor/Unclassified	20.250272302161218	Baoding	Cutotype 1	25-29	29
+LOR034C	Moraxella osloensis	0.07943852522787391	Baoding	Cutotype 1	25-29	29
+LOR034C	Pasteurella multocida	0.14823065016747605	Baoding	Cutotype 1	25-29	29
+LOR034C	Staphylococcus aureus	0.06305944786130198	Baoding	Cutotype 1	25-29	29
+LOR036C	Cutibacterium acnes	53.4397660988001	Baoding	Cutotype 2	30-34	33
+LOR036C	Cutibacterium granulosum	0.3473780196558063	Baoding	Cutotype 2	30-34	33
+LOR036C	Janibacter indicus	0.17947864348883324	Baoding	Cutotype 2	30-34	33
+LOR036C	Klebsiella pneumoniae	1.901894657615539	Baoding	Cutotype 2	30-34	33
+LOR036C	Kocuria palustris	1.0956881703310224	Baoding	Cutotype 2	30-34	33
+LOR036C	Micrococcus luteus	15.99096817148895	Baoding	Cutotype 2	30-34	33
+LOR036C	Minor/Unclassified	24.135535324002376	Baoding	Cutotype 2	30-34	33
+LOR036C	Moraxella osloensis	0.6339648858718464	Baoding	Cutotype 2	30-34	33
+LOR036C	Pasteurella multocida	1.6355715092127543	Baoding	Cutotype 2	30-34	33
+LOR036C	Staphylococcus aureus	0.6397545195327765	Baoding	Cutotype 2	30-34	33
+LOR037C	Cutibacterium acnes	46.90249205552768	Baoding	Cutotype 2	30-34	31
+LOR037C	Cutibacterium granulosum	0.2124101020237498	Baoding	Cutotype 2	30-34	31
+LOR037C	Janibacter indicus	0.4984111055360429	Baoding	Cutotype 2	30-34	31
+LOR037C	Klebsiella pneumoniae	2.0705803646094663	Baoding	Cutotype 2	30-34	31
+LOR037C	Kocuria palustris	0.1170764341863188	Baoding	Cutotype 2	30-34	31
+LOR037C	Micrococcus luteus	3.077437698611808	Baoding	Cutotype 2	30-34	31
+LOR037C	Minor/Unclassified	38.97474494062552	Baoding	Cutotype 2	30-34	31
+LOR037C	Moraxella osloensis	5.7451078775715	Baoding	Cutotype 2	30-34	31
+LOR037C	Pasteurella multocida	1.7160060210737582	Baoding	Cutotype 2	30-34	31
+LOR037C	Staphylococcus aureus	0.6857334002341529	Baoding	Cutotype 2	30-34	31
+LOR042C	Cutibacterium acnes	71.32881537479143	Baoding	Cutotype 1	35-39	39
+LOR042C	Cutibacterium granulosum	0.31103878715471606	Baoding	Cutotype 1	35-39	39
+LOR042C	Janibacter indicus	0.22864440645148	Baoding	Cutotype 1	35-39	39
+LOR042C	Klebsiella pneumoniae	3.351391435104126	Baoding	Cutotype 1	35-39	39
+LOR042C	Kocuria palustris	0.4037324654458566	Baoding	Cutotype 1	35-39	39
+LOR042C	Micrococcus luteus	3.695387974540136	Baoding	Cutotype 1	35-39	39
+LOR042C	Minor/Unclassified	12.715512802026902	Baoding	Cutotype 1	35-39	39
+LOR042C	Moraxella osloensis	3.015634333738439	Baoding	Cutotype 1	35-39	39
+LOR042C	Pasteurella multocida	3.5903351391435105	Baoding	Cutotype 1	35-39	39
+LOR042C	Staphylococcus aureus	1.3595072816033946	Baoding	Cutotype 1	35-39	39
+LOR046C	Cutibacterium acnes	74.25156371854658	Baoding	Cutotype 1	30-34	32
+LOR046C	Cutibacterium granulosum	0.529993156244529	Baoding	Cutotype 1	30-34	32
+LOR046C	Janibacter indicus	0.1925800958125766	Baoding	Cutotype 1	30-34	32
+LOR046C	Klebsiella pneumoniae	2.3905397017395873	Baoding	Cutotype 1	30-34	32
+LOR046C	Kocuria palustris	1.254157979341408	Baoding	Cutotype 1	30-34	32
+LOR046C	Micrococcus luteus	3.9104900447231463	Baoding	Cutotype 1	30-34	32
+LOR046C	Minor/Unclassified	12.516114656777708	Baoding	Cutotype 1	30-34	32
+LOR046C	Moraxella osloensis	0.7846445226082667	Baoding	Cutotype 1	30-34	32
+LOR046C	Pasteurella multocida	2.8027566010408873	Baoding	Cutotype 1	30-34	32
+LOR046C	Staphylococcus aureus	1.3671595231653164	Baoding	Cutotype 1	30-34	32
+LOR051C	Cutibacterium acnes	59.054455294009614	Baoding	Cutotype 1	25-29	25
+LOR051C	Cutibacterium granulosum	0.3504851694266736	Baoding	Cutotype 1	25-29	25
+LOR051C	Janibacter indicus	0.606079157611191	Baoding	Cutotype 1	25-29	25
+LOR051C	Klebsiella pneumoniae	1.7799748997520586	Baoding	Cutotype 1	25-29	25
+LOR051C	Kocuria palustris	0.16070280694236125	Baoding	Cutotype 1	25-29	25
+LOR051C	Micrococcus luteus	1.5626434846490558	Baoding	Cutotype 1	25-29	25
+LOR051C	Minor/Unclassified	23.64933117022253	Baoding	Cutotype 1	25-29	25
+LOR051C	Moraxella osloensis	10.725764486210169	Baoding	Cutotype 1	25-29	25
+LOR051C	Pasteurella multocida	1.4922403501790689	Baoding	Cutotype 1	25-29	25
+LOR051C	Staphylococcus aureus	0.6183231809972757	Baoding	Cutotype 1	25-29	25
+LOR054C	Cutibacterium acnes	43.32652429588363	Baoding	Cutotype 2	35-39	37
+LOR054C	Cutibacterium granulosum	2.0352831940575675	Baoding	Cutotype 2	35-39	37
+LOR054C	Janibacter indicus	1.363045496750232	Baoding	Cutotype 2	35-39	37
+LOR054C	Klebsiella pneumoniae	0.5967192819560507	Baoding	Cutotype 2	35-39	37
+LOR054C	Kocuria palustris	0.22284122562674097	Baoding	Cutotype 2	35-39	37
+LOR054C	Micrococcus luteus	1.6094088517486846	Baoding	Cutotype 2	35-39	37
+LOR054C	Minor/Unclassified	50.51067780872793	Baoding	Cutotype 2	35-39	37
+LOR054C	Moraxella osloensis	0.17084493964716807	Baoding	Cutotype 2	35-39	37
+LOR054C	Pasteurella multocida	0.11513463324048284	Baoding	Cutotype 2	35-39	37
+LOR054C	Staphylococcus aureus	0.04952027236149799	Baoding	Cutotype 2	35-39	37
+LOR055C	Cutibacterium acnes	69.42036115524513	Baoding	Cutotype 1	35-39	37
+LOR055C	Cutibacterium granulosum	0.5363292497036075	Baoding	Cutotype 1	35-39	37
+LOR055C	Janibacter indicus	0.09758772814155868	Baoding	Cutotype 1	35-39	37
+LOR055C	Klebsiella pneumoniae	0.3605100370188159	Baoding	Cutotype 1	35-39	37
+LOR055C	Kocuria palustris	0.47584098845883976	Baoding	Cutotype 1	35-39	37
+LOR055C	Micrococcus luteus	0.8968392867224234	Baoding	Cutotype 1	35-39	37
+LOR055C	Minor/Unclassified	27.646361429458583	Baoding	Cutotype 1	35-39	37
+LOR055C	Moraxella osloensis	0.22824237243025705	Baoding	Cutotype 1	35-39	37
+LOR055C	Pasteurella multocida	0.2516311667782339	Baoding	Cutotype 1	35-39	37
+LOR055C	Staphylococcus aureus	0.08629658604253534	Baoding	Cutotype 1	35-39	37
+LOR058C	Cutibacterium acnes	14.244911612587808	Baoding	Cutotype 2	30-34	30
+LOR058C	Cutibacterium granulosum	0.09005995419808044	Baoding	Cutotype 2	30-34	30
+LOR058C	Janibacter indicus	11.929084218922885	Baoding	Cutotype 2	30-34	30
+LOR058C	Klebsiella pneumoniae	3.226719501839796	Baoding	Cutotype 2	30-34	30
+LOR058C	Kocuria palustris	0.8028201631371742	Baoding	Cutotype 2	30-34	30
+LOR058C	Micrococcus luteus	1.14504798908988	Baoding	Cutotype 2	30-34	30
+LOR058C	Minor/Unclassified	62.63541157399065	Baoding	Cutotype 2	30-34	30
+LOR058C	Moraxella osloensis	3.090342999768417	Baoding	Cutotype 2	30-34	30
+LOR058C	Pasteurella multocida	1.7162854128605614	Baoding	Cutotype 2	30-34	30
+LOR058C	Staphylococcus aureus	1.119316573604714	Baoding	Cutotype 2	30-34	30
+LOR060C	Cutibacterium acnes	5.441045075022338	Baoding	Cutotype 2	35-39	35
+LOR060C	Cutibacterium granulosum	0.08626798533444249	Baoding	Cutotype 2	35-39	35
+LOR060C	Janibacter indicus	0.2218319622885664	Baoding	Cutotype 2	35-39	35
+LOR060C	Klebsiella pneumoniae	5.330129093878054	Baoding	Cutotype 2	35-39	35
+LOR060C	Kocuria palustris	1.589795729734726	Baoding	Cutotype 2	35-39	35
+LOR060C	Micrococcus luteus	15.54672335705703	Baoding	Cutotype 2	35-39	35
+LOR060C	Minor/Unclassified	63.18821825800289	Baoding	Cutotype 2	35-39	35
+LOR060C	Moraxella osloensis	0.973595834488708	Baoding	Cutotype 2	35-39	35
+LOR060C	Pasteurella multocida	5.431802076593647	Baoding	Cutotype 2	35-39	35
+LOR060C	Staphylococcus aureus	2.1905906275995934	Baoding	Cutotype 2	35-39	35
+LOR061C	Cutibacterium acnes	18.428632135606023	Baoding	Cutotype 2	40-45	44
+LOR061C	Cutibacterium granulosum	0.791664699309064	Baoding	Cutotype 2	40-45	44
+LOR061C	Janibacter indicus	0.17076663991060326	Baoding	Cutotype 2	40-45	44
+LOR061C	Klebsiella pneumoniae	0.6059461416182697	Baoding	Cutotype 2	40-45	44
+LOR061C	Kocuria palustris	2.8054519413884824	Baoding	Cutotype 2	40-45	44
+LOR061C	Micrococcus luteus	57.914286163967454	Baoding	Cutotype 2	40-45	44
+LOR061C	Minor/Unclassified	18.017847868171316	Baoding	Cutotype 2	40-45	44
+LOR061C	Moraxella osloensis	0.5618773313187592	Baoding	Cutotype 2	40-45	44
+LOR061C	Pasteurella multocida	0.4131450965579111	Baoding	Cutotype 2	40-45	44
+LOR061C	Staphylococcus aureus	0.29038198215213185	Baoding	Cutotype 2	40-45	44
+LOR062C	Cutibacterium acnes	67.64199055373003	Baoding	Cutotype 1	35-39	38
+LOR062C	Cutibacterium granulosum	2.065761108436761	Baoding	Cutotype 1	35-39	38
+LOR062C	Janibacter indicus	0.11720630402478076	Baoding	Cutotype 1	35-39	38
+LOR062C	Klebsiella pneumoniae	1.085553625372374	Baoding	Cutotype 1	35-39	38
+LOR062C	Kocuria palustris	10.575775968521736	Baoding	Cutotype 1	35-39	38
+LOR062C	Micrococcus luteus	5.970544939548058	Baoding	Cutotype 1	35-39	38
+LOR062C	Minor/Unclassified	10.919720658308735	Baoding	Cutotype 1	35-39	38
+LOR062C	Moraxella osloensis	0.7116097030075975	Baoding	Cutotype 1	35-39	38
+LOR062C	Pasteurella multocida	0.5720783886923823	Baoding	Cutotype 1	35-39	38
+LOR062C	Staphylococcus aureus	0.339758750357549	Baoding	Cutotype 1	35-39	38
+LOR063C	Cutibacterium acnes	72.68727796658638	Baoding	Cutotype 1	40-45	45
+LOR063C	Cutibacterium granulosum	3.058699310390339	Baoding	Cutotype 1	40-45	45
+LOR063C	Janibacter indicus	0.0681910669702269	Baoding	Cutotype 1	40-45	45
+LOR063C	Klebsiella pneumoniae	1.0723595209027617	Baoding	Cutotype 1	40-45	45
+LOR063C	Kocuria palustris	0.22327075153154935	Baoding	Cutotype 1	40-45	45
+LOR063C	Micrococcus luteus	3.2665720790576436	Baoding	Cutotype 1	40-45	45
+LOR063C	Minor/Unclassified	17.97934470584354	Baoding	Cutotype 1	40-45	45
+LOR063C	Moraxella osloensis	0.3321564875001375	Baoding	Cutotype 1	40-45	45
+LOR063C	Pasteurella multocida	0.9018818534771944	Baoding	Cutotype 1	40-45	45
+LOR063C	Staphylococcus aureus	0.410246257740236	Baoding	Cutotype 1	40-45	45
+LOR065C	Cutibacterium acnes	87.03211349602634	Baoding	Cutotype 1	30-34	30
+LOR065C	Cutibacterium granulosum	0.1570729668777785	Baoding	Cutotype 1	30-34	30
+LOR065C	Janibacter indicus	0.02882072786748229	Baoding	Cutotype 1	30-34	30
+LOR065C	Klebsiella pneumoniae	0.5742530027595847	Baoding	Cutotype 1	30-34	30
+LOR065C	Kocuria palustris	0.28892779687151	Baoding	Cutotype 1	30-34	30
+LOR065C	Micrococcus luteus	1.443197947964176	Baoding	Cutotype 1	30-34	30
+LOR065C	Minor/Unclassified	8.781675781221853	Baoding	Cutotype 1	30-34	30
+LOR065C	Moraxella osloensis	0.7515004791446008	Baoding	Cutotype 1	30-34	30
+LOR065C	Pasteurella multocida	0.578576111939707	Baoding	Cutotype 1	30-34	30
+LOR065C	Staphylococcus aureus	0.36386168932696394	Baoding	Cutotype 1	30-34	30
+LOR070C	Cutibacterium acnes	81.13346482577252	Baoding	Cutotype 1	35-39	35
+LOR070C	Cutibacterium granulosum	2.259916721455183	Baoding	Cutotype 1	35-39	35
+LOR070C	Janibacter indicus	0.03506465044926583	Baoding	Cutotype 1	35-39	35
+LOR070C	Klebsiella pneumoniae	0.2182774490466798	Baoding	Cutotype 1	35-39	35
+LOR070C	Kocuria palustris	0.08327854481700636	Baoding	Cutotype 1	35-39	35
+LOR070C	Micrococcus luteus	0.17532325224632916	Baoding	Cutotype 1	35-39	35
+LOR070C	Minor/Unclassified	15.049747972824893	Baoding	Cutotype 1	35-39	35
+LOR070C	Moraxella osloensis	0.8792461100153408	Baoding	Cutotype 1	35-39	35
+LOR070C	Pasteurella multocida	0.09029147490685951	Baoding	Cutotype 1	35-39	35
+LOR070C	Staphylococcus aureus	0.07538899846592154	Baoding	Cutotype 1	35-39	35
+LOR072C	Cutibacterium acnes	74.43403339977438	Baoding	Cutotype 1	40-45	41
+LOR072C	Cutibacterium granulosum	1.2275030833708405	Baoding	Cutotype 1	40-45	41
+LOR072C	Janibacter indicus	0.03390246611214702	Baoding	Cutotype 1	40-45	41
+LOR072C	Klebsiella pneumoniae	0.35129969195517863	Baoding	Cutotype 1	40-45	41
+LOR072C	Kocuria palustris	1.2052911228146062	Baoding	Cutotype 1	40-45	41
+LOR072C	Micrococcus luteus	15.246757346021427	Baoding	Cutotype 1	40-45	41
+LOR072C	Minor/Unclassified	5.498044762945776	Baoding	Cutotype 1	40-45	41
+LOR072C	Moraxella osloensis	1.633748151438809	Baoding	Cutotype 1	40-45	41
+LOR072C	Pasteurella multocida	0.2338101111182553	Baoding	Cutotype 1	40-45	41
+LOR072C	Staphylococcus aureus	0.13560986444858808	Baoding	Cutotype 1	40-45	41
+LOR074C	Cutibacterium acnes	40.27722223931571	Baoding	Cutotype 2	35-39	35
+LOR074C	Cutibacterium granulosum	0.5599827697609304	Baoding	Cutotype 2	35-39	35
+LOR074C	Janibacter indicus	0.6645949355404449	Baoding	Cutotype 2	35-39	35
+LOR074C	Klebsiella pneumoniae	1.9645549367711763	Baoding	Cutotype 2	35-39	35
+LOR074C	Kocuria palustris	3.3598966185655827	Baoding	Cutotype 2	35-39	35
+LOR074C	Micrococcus luteus	5.741361804252177	Baoding	Cutotype 2	35-39	35
+LOR074C	Minor/Unclassified	45.92012553459896	Baoding	Cutotype 2	35-39	35
+LOR074C	Moraxella osloensis	0.26153041444878616	Baoding	Cutotype 2	35-39	35
+LOR074C	Pasteurella multocida	0.8938186517337928	Baoding	Cutotype 2	35-39	35
+LOR074C	Staphylococcus aureus	0.35691209501246113	Baoding	Cutotype 2	35-39	35
+LOR076C	Cutibacterium acnes	56.15466248327412	Baoding	Cutotype 1	30-34	31
+LOR076C	Cutibacterium granulosum	0.916347529183777	Baoding	Cutotype 1	30-34	31
+LOR076C	Janibacter indicus	0.4097263876712961	Baoding	Cutotype 1	30-34	31
+LOR076C	Klebsiella pneumoniae	0.6570387117611775	Baoding	Cutotype 1	30-34	31
+LOR076C	Kocuria palustris	0.47524569741152584	Baoding	Cutotype 1	30-34	31
+LOR076C	Micrococcus luteus	1.555852904535597	Baoding	Cutotype 1	30-34	31
+LOR076C	Minor/Unclassified	34.64494993771053	Baoding	Cutotype 1	30-34	31
+LOR076C	Moraxella osloensis	4.499607806948738	Baoding	Cutotype 1	30-34	31
+LOR076C	Pasteurella multocida	0.474322890232086	Baoding	Cutotype 1	30-34	31
+LOR076C	Staphylococcus aureus	0.2122456512711669	Baoding	Cutotype 1	30-34	31
+LOR078C	Cutibacterium acnes	32.678858330970606	Baoding	Cutotype 2	25-29	27
+LOR078C	Cutibacterium granulosum	0.6402986485209338	Baoding	Cutotype 2	25-29	27
+LOR078C	Janibacter indicus	0.31424251015972027	Baoding	Cutotype 2	25-29	27
+LOR078C	Klebsiella pneumoniae	2.0555713070598243	Baoding	Cutotype 2	25-29	27
+LOR078C	Kocuria palustris	0.18429259994329455	Baoding	Cutotype 2	25-29	27
+LOR078C	Micrococcus luteus	2.5682827710046308	Baoding	Cutotype 2	25-29	27
+LOR078C	Minor/Unclassified	58.94055382289009	Baoding	Cutotype 2	25-29	27
+LOR078C	Moraxella osloensis	1.0112465740478216	Baoding	Cutotype 2	25-29	27
+LOR078C	Pasteurella multocida	0.46309422549853513	Baoding	Cutotype 2	25-29	27
+LOR078C	Staphylococcus aureus	1.143559209904546	Baoding	Cutotype 2	25-29	27
+LOR081C	Cutibacterium acnes	30.605637507841113	Baoding	Cutotype 2	40-45	42
+LOR081C	Cutibacterium granulosum	0.4047026447317833	Baoding	Cutotype 2	40-45	42
+LOR081C	Janibacter indicus	17.26056779781056	Baoding	Cutotype 2	40-45	42
+LOR081C	Klebsiella pneumoniae	1.920314049252312	Baoding	Cutotype 2	40-45	42
+LOR081C	Kocuria palustris	0.03439972480220158	Baoding	Cutotype 2	40-45	42
+LOR081C	Micrococcus luteus	0.21449240170784517	Baoding	Cutotype 2	40-45	42
+LOR081C	Minor/Unclassified	37.48153544183411	Baoding	Cutotype 2	40-45	42
+LOR081C	Moraxella osloensis	10.230882858819482	Baoding	Cutotype 2	40-45	42
+LOR081C	Pasteurella multocida	1.1473319978146057	Baoding	Cutotype 2	40-45	42
+LOR081C	Staphylococcus aureus	0.7001355753859851	Baoding	Cutotype 2	40-45	42
+LOR082C	Cutibacterium acnes	69.70955366484715	Baoding	Cutotype 1	40-45	42
+LOR082C	Cutibacterium granulosum	2.216670857226282	Baoding	Cutotype 1	40-45	42
+LOR082C	Janibacter indicus	0.11598387580803451	Baoding	Cutotype 1	40-45	42
+LOR082C	Klebsiella pneumoniae	0.5344991199824808	Baoding	Cutotype 1	40-45	42
+LOR082C	Kocuria palustris	0.19790255732280015	Baoding	Cutotype 1	40-45	42
+LOR082C	Micrococcus luteus	9.48634553462078	Baoding	Cutotype 1	40-45	42
+LOR082C	Minor/Unclassified	15.364213702318873	Baoding	Cutotype 1	40-45	42
+LOR082C	Moraxella osloensis	1.745435669502729	Baoding	Cutotype 1	40-45	42
+LOR082C	Pasteurella multocida	0.4379810694848856	Baoding	Cutotype 1	40-45	42
+LOR082C	Staphylococcus aureus	0.19141394888598703	Baoding	Cutotype 1	40-45	42
+LOR083C	Cutibacterium acnes	24.549523700218064	Baoding	Cutotype 2	30-34	32
+LOR083C	Cutibacterium granulosum	0.4514327250468648	Baoding	Cutotype 2	30-34	32
+LOR083C	Janibacter indicus	0.17853271612022903	Baoding	Cutotype 2	30-34	32
+LOR083C	Klebsiella pneumoniae	4.798704362574441	Baoding	Cutotype 2	30-34	32
+LOR083C	Kocuria palustris	0.2524962699414668	Baoding	Cutotype 2	30-34	32
+LOR083C	Micrococcus luteus	2.1219888544575793	Baoding	Cutotype 2	30-34	32
+LOR083C	Minor/Unclassified	40.76029432393487	Baoding	Cutotype 2	30-34	32
+LOR083C	Moraxella osloensis	2.669064105997424	Baoding	Cutotype 2	30-34	32
+LOR083C	Pasteurella multocida	2.329851945368989	Baoding	Cutotype 2	30-34	32
+LOR083C	Staphylococcus aureus	21.88811099634008	Baoding	Cutotype 2	30-34	32
+LOR084C	Cutibacterium acnes	52.5836213079481	Baoding	Cutotype 2	40-45	42
+LOR084C	Cutibacterium granulosum	3.0009128251939754	Baoding	Cutotype 2	40-45	42
+LOR084C	Janibacter indicus	0.2053856686444546	Baoding	Cutotype 2	40-45	42
+LOR084C	Klebsiella pneumoniae	1.8794418725956836	Baoding	Cutotype 2	40-45	42
+LOR084C	Kocuria palustris	0.2542870183217057	Baoding	Cutotype 2	40-45	42
+LOR084C	Micrococcus luteus	1.6284149442524614	Baoding	Cutotype 2	40-45	42
+LOR084C	Minor/Unclassified	34.22279454912954	Baoding	Cutotype 2	40-45	42
+LOR084C	Moraxella osloensis	4.7287605137901805	Baoding	Cutotype 2	40-45	42
+LOR084C	Pasteurella multocida	1.0709395579317988	Baoding	Cutotype 2	40-45	42
+LOR084C	Staphylococcus aureus	0.4254417421920845	Baoding	Cutotype 2	40-45	42
+LOR085C	Cutibacterium acnes	58.71428202679332	Baoding	Cutotype 2	40-45	45
+LOR085C	Cutibacterium granulosum	0.730492243359748	Baoding	Cutotype 2	40-45	45
+LOR085C	Janibacter indicus	0.11357476575204564	Baoding	Cutotype 2	40-45	45
+LOR085C	Klebsiella pneumoniae	3.7776515835936086	Baoding	Cutotype 2	40-45	45
+LOR085C	Kocuria palustris	0.2929712707467541	Baoding	Cutotype 2	40-45	45
+LOR085C	Micrococcus luteus	7.781162076353217	Baoding	Cutotype 2	40-45	45
+LOR085C	Minor/Unclassified	26.154461681422784	Baoding	Cutotype 2	40-45	45
+LOR085C	Moraxella osloensis	0.5949768978601482	Baoding	Cutotype 2	40-45	45
+LOR085C	Pasteurella multocida	1.0725071629539764	Baoding	Cutotype 2	40-45	45
+LOR085C	Staphylococcus aureus	0.7679202911643995	Baoding	Cutotype 2	40-45	45
+LOR086C	Cutibacterium acnes	52.8801483684974	Baoding	Cutotype 2	25-29	26
+LOR086C	Cutibacterium granulosum	1.3037330836041794	Baoding	Cutotype 2	25-29	26
+LOR086C	Janibacter indicus	0.2515653978222149	Baoding	Cutotype 2	25-29	26
+LOR086C	Klebsiella pneumoniae	2.5982849483097374	Baoding	Cutotype 2	25-29	26
+LOR086C	Kocuria palustris	0.7455149745680236	Baoding	Cutotype 2	25-29	26
+LOR086C	Micrococcus luteus	5.354486861675756	Baoding	Cutotype 2	25-29	26
+LOR086C	Minor/Unclassified	32.80082263721328	Baoding	Cutotype 2	25-29	26
+LOR086C	Moraxella osloensis	0.916285646082374	Baoding	Cutotype 2	25-29	26
+LOR086C	Pasteurella multocida	2.0363943517141334	Baoding	Cutotype 2	25-29	26
+LOR086C	Staphylococcus aureus	1.1127637305128628	Baoding	Cutotype 2	25-29	26
+LOR090C	Cutibacterium acnes	27.45856606537863	Baoding	Cutotype 2	25-29	28
+LOR090C	Cutibacterium granulosum	0.31704972072154564	Baoding	Cutotype 2	25-29	28
+LOR090C	Janibacter indicus	21.74938192473217	Baoding	Cutotype 2	25-29	28
+LOR090C	Klebsiella pneumoniae	0.9191008149436865	Baoding	Cutotype 2	25-29	28
+LOR090C	Kocuria palustris	0.8756066294295394	Baoding	Cutotype 2	25-29	28
+LOR090C	Micrococcus luteus	4.305924365900559	Baoding	Cutotype 2	25-29	28
+LOR090C	Minor/Unclassified	42.821170222507135	Baoding	Cutotype 2	25-29	28
+LOR090C	Moraxella osloensis	0.7119311418368282	Baoding	Cutotype 2	25-29	28
+LOR090C	Pasteurella multocida	0.5574123248786741	Baoding	Cutotype 2	25-29	28
+LOR090C	Staphylococcus aureus	0.28385678967127553	Baoding	Cutotype 2	25-29	28
+LOR091C	Cutibacterium acnes	84.80918091244106	Baoding	Cutotype 1	25-29	29
+LOR091C	Cutibacterium granulosum	0.7364066119645671	Baoding	Cutotype 1	25-29	29
+LOR091C	Janibacter indicus	0.07408011953266745	Baoding	Cutotype 1	25-29	29
+LOR091C	Klebsiella pneumoniae	0.3578446452001733	Baoding	Cutotype 1	25-29	29
+LOR091C	Kocuria palustris	0.10860898880636838	Baoding	Cutotype 1	25-29	29
+LOR091C	Micrococcus luteus	0.21659017998957855	Baoding	Cutotype 1	25-29	29
+LOR091C	Minor/Unclassified	13.210745384117974	Baoding	Cutotype 1	25-29	29
+LOR091C	Moraxella osloensis	0.0929140482274134	Baoding	Cutotype 1	25-29	29
+LOR091C	Pasteurella multocida	0.26430279934960166	Baoding	Cutotype 1	25-29	29
+LOR091C	Staphylococcus aureus	0.12932631037058895	Baoding	Cutotype 1	25-29	29
+LOR098C	Cutibacterium acnes	32.391387013974715	Baoding	Cutotype 2	25-29	29
+LOR098C	Cutibacterium granulosum	2.424184808441867	Baoding	Cutotype 2	25-29	29
+LOR098C	Janibacter indicus	0.13309249928700448	Baoding	Cutotype 2	25-29	29
+LOR098C	Klebsiella pneumoniae	3.3130525715372183	Baoding	Cutotype 2	25-29	29
+LOR098C	Kocuria palustris	2.797319136800076	Baoding	Cutotype 2	25-29	29
+LOR098C	Micrococcus luteus	25.292328168076818	Baoding	Cutotype 2	25-29	29
+LOR098C	Minor/Unclassified	19.585987261146485	Baoding	Cutotype 2	25-29	29
+LOR098C	Moraxella osloensis	8.08299267991254	Baoding	Cutotype 2	25-29	29
+LOR098C	Pasteurella multocida	3.7265899800361257	Baoding	Cutotype 2	25-29	29
+LOR098C	Staphylococcus aureus	2.253065880787147	Baoding	Cutotype 2	25-29	29
+LOR202C	Cutibacterium acnes	79.02819611589248	Dalian	Cutotype 1	40-45	41
+LOR202C	Cutibacterium granulosum	8.43141108556646	Dalian	Cutotype 1	40-45	41
+LOR202C	Janibacter indicus	0.01873951615483411	Dalian	Cutotype 1	40-45	41
+LOR202C	Klebsiella pneumoniae	0.4035851893833785	Dalian	Cutotype 1	40-45	41
+LOR202C	Kocuria palustris	0.1526584974564535	Dalian	Cutotype 1	40-45	41
+LOR202C	Micrococcus luteus	1.556293963590491	Dalian	Cutotype 1	40-45	41
+LOR202C	Minor/Unclassified	6.766793577373638	Dalian	Cutotype 1	40-45	41
+LOR202C	Moraxella osloensis	3.4211043516813	Dalian	Cutotype 1	40-45	41
+LOR202C	Pasteurella multocida	0.14031784047644075	Dalian	Cutotype 1	40-45	41
+LOR202C	Staphylococcus aureus	0.08089986242452774	Dalian	Cutotype 1	40-45	41
+LOR203C	Cutibacterium acnes	94.65130237488134	Dalian	Cutotype 1	35-39	35
+LOR203C	Cutibacterium granulosum	1.002907409851139	Dalian	Cutotype 1	35-39	35
+LOR203C	Janibacter indicus	0.00638523393368721	Dalian	Cutotype 1	35-39	35
+LOR203C	Klebsiella pneumoniae	0.0970555557920457	Dalian	Cutotype 1	35-39	35
+LOR203C	Kocuria palustris	0.2349766087596896	Dalian	Cutotype 1	35-39	35
+LOR203C	Micrococcus luteus	0.08002826530221312	Dalian	Cutotype 1	35-39	35
+LOR203C	Minor/Unclassified	3.7911262275612225	Dalian	Cutotype 1	35-39	35
+LOR203C	Moraxella osloensis	0.01873001953881583	Dalian	Cutotype 1	35-39	35
+LOR203C	Pasteurella multocida	0.0732173491062801	Dalian	Cutotype 1	35-39	35
+LOR203C	Staphylococcus aureus	0.0442709552735647	Dalian	Cutotype 1	35-39	35
+LOR204C	Cutibacterium acnes	94.09866317804943	Dalian	Cutotype 1	25-29	29
+LOR204C	Cutibacterium granulosum	0.17760758254420697	Dalian	Cutotype 1	25-29	29
+LOR204C	Janibacter indicus	0.02079308283444374	Dalian	Cutotype 1	25-29	29
+LOR204C	Klebsiella pneumoniae	0.34958370515408543	Dalian	Cutotype 1	25-29	29
+LOR204C	Kocuria palustris	0.07364216837198825	Dalian	Cutotype 1	25-29	29
+LOR204C	Micrococcus luteus	0.30713116103376276	Dalian	Cutotype 1	25-29	29
+LOR204C	Minor/Unclassified	2.9456867348795295	Dalian	Cutotype 1	25-29	29
+LOR204C	Moraxella osloensis	0.2356549387903624	Dalian	Cutotype 1	25-29	29
+LOR204C	Pasteurella multocida	0.1628791488698093	Dalian	Cutotype 1	25-29	29
+LOR204C	Staphylococcus aureus	1.6283582994723755	Dalian	Cutotype 1	25-29	29
+LOR206C	Cutibacterium acnes	18.69321401356025	Dalian	Cutotype 2	35-39	38
+LOR206C	Cutibacterium granulosum	1.1235076887004436	Dalian	Cutotype 2	35-39	38
+LOR206C	Janibacter indicus	14.212860743664391	Dalian	Cutotype 2	35-39	38
+LOR206C	Klebsiella pneumoniae	1.5377400887082593	Dalian	Cutotype 2	35-39	38
+LOR206C	Kocuria palustris	7.436643935989371	Dalian	Cutotype 2	35-39	38
+LOR206C	Micrococcus luteus	8.452685671857598	Dalian	Cutotype 2	35-39	38
+LOR206C	Minor/Unclassified	44.36976103479944	Dalian	Cutotype 2	35-39	38
+LOR206C	Moraxella osloensis	2.377928447214678	Dalian	Cutotype 2	35-39	38
+LOR206C	Pasteurella multocida	1.16649406983333	Dalian	Cutotype 2	35-39	38
+LOR206C	Staphylococcus aureus	0.6291643056722483	Dalian	Cutotype 2	35-39	38
+LOR207C	Cutibacterium acnes	75.09163779908161	Dalian	Cutotype 1	25-29	25
+LOR207C	Cutibacterium granulosum	2.0986062998469346	Dalian	Cutotype 1	25-29	25
+LOR207C	Janibacter indicus	0.1017078868927737	Dalian	Cutotype 1	25-29	25
+LOR207C	Klebsiella pneumoniae	1.1469830016917748	Dalian	Cutotype 1	25-29	25
+LOR207C	Kocuria palustris	0.28196245871264	Dalian	Cutotype 1	25-29	25
+LOR207C	Micrococcus luteus	1.2909852573914444	Dalian	Cutotype 1	25-29	25
+LOR207C	Minor/Unclassified	17.947917505840657	Dalian	Cutotype 1	25-29	25
+LOR207C	Moraxella osloensis	0.7834528317086925	Dalian	Cutotype 1	25-29	25
+LOR207C	Pasteurella multocida	0.8056070248932571	Dalian	Cutotype 1	25-29	25
+LOR207C	Staphylococcus aureus	0.45113993394022395	Dalian	Cutotype 1	25-29	25
+LOR208C	Cutibacterium acnes	19.688763720392835	Dalian	Cutotype 2	30-34	34
+LOR208C	Cutibacterium granulosum	0.3141247833622184	Dalian	Cutotype 2	30-34	34
+LOR208C	Janibacter indicus	0.924321201617562	Dalian	Cutotype 2	30-34	34
+LOR208C	Klebsiella pneumoniae	6.217504332755633	Dalian	Cutotype 2	30-34	34
+LOR208C	Kocuria palustris	1.3937030618139803	Dalian	Cutotype 2	30-34	34
+LOR208C	Micrococcus luteus	2.9896013864818025	Dalian	Cutotype 2	30-34	34
+LOR208C	Minor/Unclassified	57.75563258232236	Dalian	Cutotype 2	30-34	34
+LOR208C	Moraxella osloensis	0.5596476025418833	Dalian	Cutotype 2	30-34	34
+LOR208C	Pasteurella multocida	6.029751588677065	Dalian	Cutotype 2	30-34	34
+LOR208C	Staphylococcus aureus	4.126949740034662	Dalian	Cutotype 2	30-34	34
+LOR210C	Cutibacterium acnes	47.06129914695932	Dalian	Cutotype 2	40-45	42
+LOR210C	Cutibacterium granulosum	0.18452872335259551	Dalian	Cutotype 2	40-45	42
+LOR210C	Janibacter indicus	0.2606063549102446	Dalian	Cutotype 2	40-45	42
+LOR210C	Klebsiella pneumoniae	1.175156606613898	Dalian	Cutotype 2	40-45	42
+LOR210C	Kocuria palustris	0.7462082584697065	Dalian	Cutotype 2	40-45	42
+LOR210C	Micrococcus luteus	4.184269735670697	Dalian	Cutotype 2	40-45	42
+LOR210C	Minor/Unclassified	42.138914517878185	Dalian	Cutotype 2	40-45	42
+LOR210C	Moraxella osloensis	3.6403956036841	Dalian	Cutotype 2	40-45	42
+LOR210C	Pasteurella multocida	0.4354230401916509	Dalian	Cutotype 2	40-45	42
+LOR210C	Staphylococcus aureus	0.17319801226954143	Dalian	Cutotype 2	40-45	42
+LOR211C	Cutibacterium acnes	35.74069087081059	Dalian	Cutotype 2	35-39	35
+LOR211C	Cutibacterium granulosum	0.4773912404827772	Dalian	Cutotype 2	35-39	35
+LOR211C	Janibacter indicus	0.4137390750850736	Dalian	Cutotype 2	35-39	35
+LOR211C	Klebsiella pneumoniae	5.185203319705241	Dalian	Cutotype 2	35-39	35
+LOR211C	Kocuria palustris	1.1971503415183489	Dalian	Cutotype 2	35-39	35
+LOR211C	Micrococcus luteus	21.979582343868582	Dalian	Cutotype 2	35-39	35
+LOR211C	Minor/Unclassified	23.110632359781615	Dalian	Cutotype 2	35-39	35
+LOR211C	Moraxella osloensis	5.819276813474674	Dalian	Cutotype 2	35-39	35
+LOR211C	Pasteurella multocida	3.2805346781893405	Dalian	Cutotype 2	35-39	35
+LOR211C	Staphylococcus aureus	2.7957989570837514	Dalian	Cutotype 2	35-39	35
+LOR212C	Cutibacterium acnes	44.07790215664433	Dalian	Cutotype 2	40-45	41
+LOR212C	Cutibacterium granulosum	0.06939245083179635	Dalian	Cutotype 2	40-45	41
+LOR212C	Janibacter indicus	2.157557385730721	Dalian	Cutotype 2	40-45	41
+LOR212C	Klebsiella pneumoniae	0.7176640309709464	Dalian	Cutotype 2	40-45	41
+LOR212C	Kocuria palustris	0.5377914939464217	Dalian	Cutotype 2	40-45	41
+LOR212C	Micrococcus luteus	1.4307627691240117	Dalian	Cutotype 2	40-45	41
+LOR212C	Minor/Unclassified	49.54986212815695	Dalian	Cutotype 2	40-45	41
+LOR212C	Moraxella osloensis	1.132192618834572	Dalian	Cutotype 2	40-45	41
+LOR212C	Pasteurella multocida	0.22552546520333813	Dalian	Cutotype 2	40-45	41
+LOR212C	Staphylococcus aureus	0.10134950055696572	Dalian	Cutotype 2	40-45	41
+LOR214C	Cutibacterium acnes	81.60426713659714	Dalian	Cutotype 1	25-29	27
+LOR214C	Cutibacterium granulosum	0.8095286796579367	Dalian	Cutotype 1	25-29	27
+LOR214C	Janibacter indicus	0.02281470525760949	Dalian	Cutotype 1	25-29	27
+LOR214C	Klebsiella pneumoniae	0.6639865943938762	Dalian	Cutotype 1	25-29	27
+LOR214C	Kocuria palustris	0.1266609498784527	Dalian	Cutotype 1	25-29	27
+LOR214C	Micrococcus luteus	0.34772757668494464	Dalian	Cutotype 1	25-29	27
+LOR214C	Minor/Unclassified	6.118274578911343	Dalian	Cutotype 1	25-29	27
+LOR214C	Moraxella osloensis	9.306039603181471	Dalian	Cutotype 1	25-29	27
+LOR214C	Pasteurella multocida	0.6868012996514857	Dalian	Cutotype 1	25-29	27
+LOR214C	Staphylococcus aureus	0.31389887578573056	Dalian	Cutotype 1	25-29	27
+LOR215C	Cutibacterium acnes	80.94765019179292	Dalian	Cutotype 2	30-34	30
+LOR215C	Cutibacterium granulosum	0.24560532052874137	Dalian	Cutotype 2	30-34	30
+LOR215C	Klebsiella pneumoniae	1.5922951679222894	Dalian	Cutotype 2	30-34	30
+LOR215C	Micrococcus luteus	0.05519220686039131	Dalian	Cutotype 2	30-34	30
+LOR215C	Minor/Unclassified	13.657311587603829	Dalian	Cutotype 2	30-34	30
+LOR215C	Moraxella osloensis	0.19041311366835004	Dalian	Cutotype 2	30-34	30
+LOR215C	Pasteurella multocida	1.0514115406904545	Dalian	Cutotype 2	30-34	30
+LOR215C	Staphylococcus aureus	2.260120870933024	Dalian	Cutotype 2	30-34	30
+LOR216C	Cutibacterium acnes	67.11508818289192	Dalian	Cutotype 1	40-45	43
+LOR216C	Cutibacterium granulosum	0.8548035153043861	Dalian	Cutotype 1	40-45	43
+LOR216C	Janibacter indicus	0.15547948404833878	Dalian	Cutotype 1	40-45	43
+LOR216C	Klebsiella pneumoniae	0.6365984024983484	Dalian	Cutotype 1	40-45	43
+LOR216C	Kocuria palustris	0.16281971720083546	Dalian	Cutotype 1	40-45	43
+LOR216C	Micrococcus luteus	5.316330684176459	Dalian	Cutotype 1	40-45	43
+LOR216C	Minor/Unclassified	9.662416004377445	Dalian	Cutotype 1	40-45	43
+LOR216C	Moraxella osloensis	2.368226132564611	Dalian	Cutotype 1	40-45	43
+LOR216C	Pasteurella multocida	0.26157921779806353	Dalian	Cutotype 1	40-45	43
+LOR216C	Staphylococcus aureus	13.466658659139592	Dalian	Cutotype 1	40-45	43
+LOR217C	Cutibacterium acnes	97.71552926324442	Dalian	Cutotype 1	35-39	36
+LOR217C	Cutibacterium granulosum	0.23486928056603495	Dalian	Cutotype 1	35-39	36
+LOR217C	Janibacter indicus	0.00880759802122631	Dalian	Cutotype 1	35-39	36
+LOR217C	Klebsiella pneumoniae	0.05101067187293572	Dalian	Cutotype 1	35-39	36
+LOR217C	Kocuria palustris	0.101654360494987	Dalian	Cutotype 1	35-39	36
+LOR217C	Micrococcus luteus	1.12920746297139	Dalian	Cutotype 1	35-39	36
+LOR217C	Minor/Unclassified	0.5431352113089558	Dalian	Cutotype 1	35-39	36
+LOR217C	Moraxella osloensis	0.13541681957635454	Dalian	Cutotype 1	35-39	36
+LOR217C	Pasteurella multocida	0.05614843738531773	Dalian	Cutotype 1	35-39	36
+LOR217C	Staphylococcus aureus	0.02422089455837235	Dalian	Cutotype 1	35-39	36
+LOR218C	Cutibacterium acnes	88.39508412316901	Dalian	Cutotype 1	30-34	33
+LOR218C	Cutibacterium granulosum	0.43252006711713753	Dalian	Cutotype 1	30-34	33
+LOR218C	Janibacter indicus	0.2023717745226974	Dalian	Cutotype 1	30-34	33
+LOR218C	Klebsiella pneumoniae	0.32481520112466555	Dalian	Cutotype 1	30-34	33
+LOR218C	Kocuria palustris	0.1088386014239717	Dalian	Cutotype 1	30-34	33
+LOR218C	Micrococcus luteus	0.9336311278400072	Dalian	Cutotype 1	30-34	33
+LOR218C	Minor/Unclassified	8.95537617341618	Dalian	Cutotype 1	30-34	33
+LOR218C	Moraxella osloensis	0.31517844995691807	Dalian	Cutotype 1	30-34	33
+LOR218C	Pasteurella multocida	0.21824407056369324	Dalian	Cutotype 1	30-34	33
+LOR218C	Staphylococcus aureus	0.11394041086572038	Dalian	Cutotype 1	30-34	33
+LOR219C	Cutibacterium acnes	55.77154533734882	Dalian	Cutotype 1	35-39	35
+LOR219C	Cutibacterium granulosum	0.2765548857138272	Dalian	Cutotype 1	35-39	35
+LOR219C	Janibacter indicus	0.0390493358938286	Dalian	Cutotype 1	35-39	35
+LOR219C	Klebsiella pneumoniae	0.39156320375729503	Dalian	Cutotype 1	35-39	35
+LOR219C	Kocuria palustris	0.2942073252274758	Dalian	Cutotype 1	35-39	35
+LOR219C	Micrococcus luteus	0.5413414784185554	Dalian	Cutotype 1	35-39	35
+LOR219C	Minor/Unclassified	6.555474128477666	Dalian	Cutotype 1	35-39	35
+LOR219C	Moraxella osloensis	35.69216285177835	Dalian	Cutotype 1	35-39	35
+LOR219C	Pasteurella multocida	0.3097200751031063	Dalian	Cutotype 1	35-39	35
+LOR219C	Staphylococcus aureus	0.12838137828108032	Dalian	Cutotype 1	35-39	35
+LOR220C	Cutibacterium acnes	76.63070181933217	Dalian	Cutotype 1	30-34	30
+LOR220C	Cutibacterium granulosum	0.1817312934556542	Dalian	Cutotype 1	30-34	30
+LOR220C	Janibacter indicus	0.08211562148736967	Dalian	Cutotype 1	30-34	30
+LOR220C	Klebsiella pneumoniae	0.31971246070902126	Dalian	Cutotype 1	30-34	30
+LOR220C	Kocuria palustris	0.2153852366881827	Dalian	Cutotype 1	30-34	30
+LOR220C	Micrococcus luteus	5.195495756237758	Dalian	Cutotype 1	30-34	30
+LOR220C	Minor/Unclassified	14.871677514454381	Dalian	Cutotype 1	30-34	30
+LOR220C	Moraxella osloensis	2.2938527707291465	Dalian	Cutotype 1	30-34	30
+LOR220C	Pasteurella multocida	0.14067348271196936	Dalian	Cutotype 1	30-34	30
+LOR220C	Staphylococcus aureus	0.06865404419435825	Dalian	Cutotype 1	30-34	30
+LOR221C	Cutibacterium acnes	39.133038511147966	Dalian	Cutotype 2	40-45	43
+LOR221C	Cutibacterium granulosum	0.538971807628524	Dalian	Cutotype 2	40-45	43
+LOR221C	Janibacter indicus	0.3777409250046066	Dalian	Cutotype 2	40-45	43
+LOR221C	Klebsiella pneumoniae	3.482587064676617	Dalian	Cutotype 2	40-45	43
+LOR221C	Kocuria palustris	2.287175234936429	Dalian	Cutotype 2	40-45	43
+LOR221C	Micrococcus luteus	5.113322277501382	Dalian	Cutotype 2	40-45	43
+LOR221C	Minor/Unclassified	43.61525704809287	Dalian	Cutotype 2	40-45	43
+LOR221C	Moraxella osloensis	1.1078864934586328	Dalian	Cutotype 2	40-45	43
+LOR221C	Pasteurella multocida	2.8975492905841165	Dalian	Cutotype 2	40-45	43
+LOR221C	Staphylococcus aureus	1.4464713469688597	Dalian	Cutotype 2	40-45	43
+LOR222C	Cutibacterium acnes	15.684239510304366	Dalian	Cutotype 2	25-29	28
+LOR222C	Cutibacterium granulosum	0.06777794251583251	Dalian	Cutotype 2	25-29	28
+LOR222C	Janibacter indicus	0.10378497447736852	Dalian	Cutotype 2	25-29	28
+LOR222C	Klebsiella pneumoniae	3.1897994196513673	Dalian	Cutotype 2	25-29	28
+LOR222C	Kocuria palustris	0.8980577383347806	Dalian	Cutotype 2	25-29	28
+LOR222C	Micrococcus luteus	11.255374579035434	Dalian	Cutotype 2	25-29	28
+LOR222C	Minor/Unclassified	31.04017961154766	Dalian	Cutotype 2	25-29	28
+LOR222C	Moraxella osloensis	32.793933874144834	Dalian	Cutotype 2	25-29	28
+LOR222C	Pasteurella multocida	3.427022218456781	Dalian	Cutotype 2	25-29	28
+LOR222C	Staphylococcus aureus	1.5398301315315697	Dalian	Cutotype 2	25-29	28
+LOR223C	Cutibacterium acnes	84.92260806800866	Dalian	Cutotype 1	30-34	30
+LOR223C	Cutibacterium granulosum	1.676156869035207	Dalian	Cutotype 1	30-34	30
+LOR223C	Janibacter indicus	0.01804475098243644	Dalian	Cutotype 1	30-34	30
+LOR223C	Klebsiella pneumoniae	0.610179912850536	Dalian	Cutotype 1	30-34	30
+LOR223C	Kocuria palustris	0.7532012724891063	Dalian	Cutotype 1	30-34	30
+LOR223C	Micrococcus luteus	0.2459432726495041	Dalian	Cutotype 1	30-34	30
+LOR223C	Minor/Unclassified	10.693185767369744	Dalian	Cutotype 1	30-34	30
+LOR223C	Moraxella osloensis	0.5039163792872992	Dalian	Cutotype 1	30-34	30
+LOR223C	Pasteurella multocida	0.3702515571951774	Dalian	Cutotype 1	30-34	30
+LOR223C	Staphylococcus aureus	0.20651215013232815	Dalian	Cutotype 1	30-34	30
+LOR224C	Cutibacterium acnes	93.6969762238097	Dalian	Cutotype 1	40-45	40
+LOR224C	Cutibacterium granulosum	0.8788933960345096	Dalian	Cutotype 1	40-45	40
+LOR224C	Janibacter indicus	0.05025666798291273	Dalian	Cutotype 1	40-45	40
+LOR224C	Klebsiella pneumoniae	0.3679506048748968	Dalian	Cutotype 1	40-45	40
+LOR224C	Kocuria palustris	0.03170956432255208	Dalian	Cutotype 1	40-45	40
+LOR224C	Micrococcus luteus	0.9925691926625264	Dalian	Cutotype 1	40-45	40
+LOR224C	Minor/Unclassified	3.391726795180143	Dalian	Cutotype 1	40-45	40
+LOR224C	Moraxella osloensis	0.3003434205645499	Dalian	Cutotype 1	40-45	40
+LOR224C	Pasteurella multocida	0.2153857199267689	Dalian	Cutotype 1	40-45	40
+LOR224C	Staphylococcus aureus	0.0741884146414426	Dalian	Cutotype 1	40-45	40
+LOR225C	Cutibacterium acnes	45.84475677550092	Dalian	Cutotype 2	35-39	35
+LOR225C	Cutibacterium granulosum	0.3175084795353323	Dalian	Cutotype 2	35-39	35
+LOR225C	Janibacter indicus	0.9774493124261766	Dalian	Cutotype 2	35-39	35
+LOR225C	Klebsiella pneumoniae	2.4186994072452617	Dalian	Cutotype 2	35-39	35
+LOR225C	Kocuria palustris	0.43670961519706114	Dalian	Cutotype 2	35-39	35
+LOR225C	Micrococcus luteus	5.262188316121412	Dalian	Cutotype 2	35-39	35
+LOR225C	Minor/Unclassified	40.59015398619436	Dalian	Cutotype 2	35-39	35
+LOR225C	Moraxella osloensis	2.8619109025693263	Dalian	Cutotype 2	35-39	35
+LOR225C	Pasteurella multocida	0.9471072051668274	Dalian	Cutotype 2	35-39	35
+LOR225C	Staphylococcus aureus	0.34351600004334587	Dalian	Cutotype 2	35-39	35
+LOR226C	Cutibacterium acnes	65.55117766538822	Dalian	Cutotype 1	25-29	29
+LOR226C	Cutibacterium granulosum	1.1331428272117237	Dalian	Cutotype 1	25-29	29
+LOR226C	Janibacter indicus	0.07042130564592633	Dalian	Cutotype 1	25-29	29
+LOR226C	Klebsiella pneumoniae	0.2374536587069251	Dalian	Cutotype 1	25-29	29
+LOR226C	Kocuria palustris	1.2332458401960156	Dalian	Cutotype 1	25-29	29
+LOR226C	Micrococcus luteus	6.653358397886197	Dalian	Cutotype 1	25-29	29
+LOR226C	Minor/Unclassified	21.74505159379129	Dalian	Cutotype 1	25-29	29
+LOR226C	Moraxella osloensis	3.253347921989489	Dalian	Cutotype 1	25-29	29
+LOR226C	Pasteurella multocida	0.08613515070741402	Dalian	Cutotype 1	25-29	29
+LOR226C	Staphylococcus aureus	0.03666563847680462	Dalian	Cutotype 1	25-29	29
+LOR227C	Cutibacterium acnes	95.8858287161343	Dalian	Cutotype 1	35-39	36
+LOR227C	Cutibacterium granulosum	0.1329034923086594	Dalian	Cutotype 1	35-39	36
+LOR227C	Janibacter indicus	0.01257195197514345	Dalian	Cutotype 1	35-39	36
+LOR227C	Klebsiella pneumoniae	0.1028206072252804	Dalian	Cutotype 1	35-39	36
+LOR227C	Kocuria palustris	0.125270521466608	Dalian	Cutotype 1	35-39	36
+LOR227C	Micrococcus luteus	1.2082543844682514	Dalian	Cutotype 1	35-39	36
+LOR227C	Minor/Unclassified	2.271931321222352	Dalian	Cutotype 1	35-39	36
+LOR227C	Moraxella osloensis	0.13514848373279215	Dalian	Cutotype 1	35-39	36
+LOR227C	Pasteurella multocida	0.08081969126877936	Dalian	Cutotype 1	35-39	36
+LOR227C	Staphylococcus aureus	0.04445083019782864	Dalian	Cutotype 1	35-39	36
+LOR228C	Cutibacterium acnes	78.22689554499114	Dalian	Cutotype 1	40-45	40
+LOR228C	Cutibacterium granulosum	0.06479161299891494	Dalian	Cutotype 1	40-45	40
+LOR228C	Janibacter indicus	0.01483181502384799	Dalian	Cutotype 1	40-45	40
+LOR228C	Klebsiella pneumoniae	0.6791410037235662	Dalian	Cutotype 1	40-45	40
+LOR228C	Kocuria palustris	0.2724370233327869	Dalian	Cutotype 1	40-45	40
+LOR228C	Micrococcus luteus	10.168380131612842	Dalian	Cutotype 1	40-45	40
+LOR228C	Minor/Unclassified	5.7937753214210455	Dalian	Cutotype 1	40-45	40
+LOR228C	Moraxella osloensis	3.835195116429748	Dalian	Cutotype 1	40-45	40
+LOR228C	Pasteurella multocida	0.6822634910970079	Dalian	Cutotype 1	40-45	40
+LOR228C	Staphylococcus aureus	0.2622889393691014	Dalian	Cutotype 1	40-45	40
+LOR229C	Cutibacterium acnes	71.38609041652556	Dalian	Cutotype 1	35-39	35
+LOR229C	Cutibacterium granulosum	0.6349475110057569	Dalian	Cutotype 1	35-39	35
+LOR229C	Janibacter indicus	0.03492211310531663	Dalian	Cutotype 1	35-39	35
+LOR229C	Klebsiella pneumoniae	1.060362343379614	Dalian	Cutotype 1	35-39	35
+LOR229C	Kocuria palustris	0.9608872333220454	Dalian	Cutotype 1	35-39	35
+LOR229C	Micrococcus luteus	5.007619370132069	Dalian	Cutotype 1	35-39	35
+LOR229C	Minor/Unclassified	18.249449712157123	Dalian	Cutotype 1	35-39	35
+LOR229C	Moraxella osloensis	1.2773027429732475	Dalian	Cutotype 1	35-39	35
+LOR229C	Pasteurella multocida	0.9704114459871316	Dalian	Cutotype 1	35-39	35
+LOR229C	Staphylococcus aureus	0.41800711141212327	Dalian	Cutotype 1	35-39	35
+LOR230C	Cutibacterium acnes	80.66980885902538	Dalian	Cutotype 1	40-45	41
+LOR230C	Cutibacterium granulosum	0.4664361667427751	Dalian	Cutotype 1	40-45	41
+LOR230C	Janibacter indicus	0.21690912649226957	Dalian	Cutotype 1	40-45	41
+LOR230C	Klebsiella pneumoniae	0.9442886033009328	Dalian	Cutotype 1	40-45	41
+LOR230C	Kocuria palustris	0.3897840694109205	Dalian	Cutotype 1	40-45	41
+LOR230C	Micrococcus luteus	1.5028703764107247	Dalian	Cutotype 1	40-45	41
+LOR230C	Minor/Unclassified	12.492660969404398	Dalian	Cutotype 1	40-45	41
+LOR230C	Moraxella osloensis	1.9831691565007503	Dalian	Cutotype 1	40-45	41
+LOR230C	Pasteurella multocida	0.9377650205492856	Dalian	Cutotype 1	40-45	41
+LOR230C	Staphylococcus aureus	0.3963076521625677	Dalian	Cutotype 1	40-45	41
+LOR231C	Cutibacterium acnes	85.5689086242718	Dalian	Cutotype 1	25-29	25
+LOR231C	Cutibacterium granulosum	0.37234692630464006	Dalian	Cutotype 1	25-29	25
+LOR231C	Janibacter indicus	0.04399722980404937	Dalian	Cutotype 1	25-29	25
+LOR231C	Klebsiella pneumoniae	0.7430643255795005	Dalian	Cutotype 1	25-29	25
+LOR231C	Kocuria palustris	0.202876115207561	Dalian	Cutotype 1	25-29	25
+LOR231C	Micrococcus luteus	2.9967002077646963	Dalian	Cutotype 1	25-29	25
+LOR231C	Minor/Unclassified	7.942314743145805	Dalian	Cutotype 1	25-29	25
+LOR231C	Moraxella osloensis	0.9663095286593066	Dalian	Cutotype 1	25-29	25
+LOR231C	Pasteurella multocida	0.6526255754267324	Dalian	Cutotype 1	25-29	25
+LOR231C	Staphylococcus aureus	0.5108567238359066	Dalian	Cutotype 1	25-29	25
+LOR233C	Cutibacterium acnes	86.45711648567185	Dalian	Cutotype 1	25-29	28
+LOR233C	Cutibacterium granulosum	0.20262766985390615	Dalian	Cutotype 1	25-29	28
+LOR233C	Janibacter indicus	0.04398678954123942	Dalian	Cutotype 1	25-29	28
+LOR233C	Klebsiella pneumoniae	0.7045097275703428	Dalian	Cutotype 1	25-29	28
+LOR233C	Kocuria palustris	0.03028598624150911	Dalian	Cutotype 1	25-29	28
+LOR233C	Micrococcus luteus	3.2997303105034685	Dalian	Cutotype 1	25-29	28
+LOR233C	Minor/Unclassified	4.108077705187556	Dalian	Cutotype 1	25-29	28
+LOR233C	Moraxella osloensis	4.109519895008581	Dalian	Cutotype 1	25-29	28
+LOR233C	Pasteurella multocida	0.6497065143714216	Dalian	Cutotype 1	25-29	28
+LOR233C	Staphylococcus aureus	0.39443891605013054	Dalian	Cutotype 1	25-29	28
+LOR234C	Cutibacterium acnes	73.7465510445408	Dalian	Cutotype 1	25-29	26
+LOR234C	Cutibacterium granulosum	0.29266850610957823	Dalian	Cutotype 1	25-29	26
+LOR234C	Janibacter indicus	0.11332282223098147	Dalian	Cutotype 1	25-29	26
+LOR234C	Klebsiella pneumoniae	0.920378399684667	Dalian	Cutotype 1	25-29	26
+LOR234C	Kocuria palustris	0.17737485218762317	Dalian	Cutotype 1	25-29	26
+LOR234C	Micrococcus luteus	2.0338983050847457	Dalian	Cutotype 1	25-29	26
+LOR234C	Minor/Unclassified	18.688411509657083	Dalian	Cutotype 1	25-29	26
+LOR234C	Moraxella osloensis	2.4408750492707925	Dalian	Cutotype 1	25-29	26
+LOR234C	Pasteurella multocida	0.9322033898305084	Dalian	Cutotype 1	25-29	26
+LOR234C	Staphylococcus aureus	0.6543161214032321	Dalian	Cutotype 1	25-29	26
+LOR235C	Cutibacterium acnes	87.06608712832164	Dalian	Cutotype 1	25-29	26
+LOR235C	Cutibacterium granulosum	0.3037637064111429	Dalian	Cutotype 1	25-29	26
+LOR235C	Janibacter indicus	0.04346537587671639	Dalian	Cutotype 1	25-29	26
+LOR235C	Klebsiella pneumoniae	0.2761039217623234	Dalian	Cutotype 1	25-29	26
+LOR235C	Kocuria palustris	0.04692284895781883	Dalian	Cutotype 1	25-29	26
+LOR235C	Micrococcus luteus	0.12397510619381606	Dalian	Cutotype 1	25-29	26
+LOR235C	Minor/Unclassified	11.704534228983512	Dalian	Cutotype 1	25-29	26
+LOR235C	Moraxella osloensis	0.03902005334387039	Dalian	Cutotype 1	25-29	26
+LOR235C	Pasteurella multocida	0.2553590832757088	Dalian	Cutotype 1	25-29	26
+LOR235C	Staphylococcus aureus	0.1407685468734565	Dalian	Cutotype 1	25-29	26
+LOR237C	Cutibacterium acnes	74.2414445763728	Dalian	Cutotype 1	35-39	36
+LOR237C	Cutibacterium granulosum	0.9969081739416668	Dalian	Cutotype 1	35-39	36
+LOR237C	Janibacter indicus	0.12343792248098467	Dalian	Cutotype 1	35-39	36
+LOR237C	Klebsiella pneumoniae	0.5443024581780562	Dalian	Cutotype 1	35-39	36
+LOR237C	Kocuria palustris	0.384420958583638	Dalian	Cutotype 1	35-39	36
+LOR237C	Micrococcus luteus	4.40261923515512	Dalian	Cutotype 1	35-39	36
+LOR237C	Minor/Unclassified	18.45220601201462	Dalian	Cutotype 1	35-39	36
+LOR237C	Moraxella osloensis	0.3373969881146915	Dalian	Cutotype 1	35-39	36
+LOR237C	Pasteurella multocida	0.36796256891950674	Dalian	Cutotype 1	35-39	36
+LOR237C	Staphylococcus aureus	0.14930110623890527	Dalian	Cutotype 1	35-39	36
+LOR238C	Cutibacterium acnes	57.885279769448445	Dalian	Cutotype 1	30-34	32
+LOR238C	Cutibacterium granulosum	0.3367997083383969	Dalian	Cutotype 1	30-34	32
+LOR238C	Janibacter indicus	0.12152566795715351	Dalian	Cutotype 1	30-34	32
+LOR238C	Klebsiella pneumoniae	0.6319334733771983	Dalian	Cutotype 1	30-34	32
+LOR238C	Kocuria palustris	22.57773302546831	Dalian	Cutotype 1	30-34	32
+LOR238C	Micrococcus luteus	1.0017187201611084	Dalian	Cutotype 1	30-34	32
+LOR238C	Minor/Unclassified	12.888665127341543	Dalian	Cutotype 1	30-34	32
+LOR238C	Moraxella osloensis	3.847155431329317	Dalian	Cutotype 1	30-34	32
+LOR238C	Pasteurella multocida	0.4774222669745317	Dalian	Cutotype 1	30-34	32
+LOR238C	Staphylococcus aureus	0.23176680960399992	Dalian	Cutotype 1	30-34	32
+LOR239C	Cutibacterium acnes	78.97987470200144	Dalian	Cutotype 1	35-39	39
+LOR239C	Cutibacterium granulosum	0.22620169651272384	Dalian	Cutotype 1	35-39	39
+LOR239C	Janibacter indicus	0.02106780506736153	Dalian	Cutotype 1	35-39	39
+LOR239C	Klebsiella pneumoniae	1.152076287630981	Dalian	Cutotype 1	35-39	39
+LOR239C	Kocuria palustris	0.05655042412818096	Dalian	Cutotype 1	35-39	39
+LOR239C	Micrococcus luteus	0.5289127903753396	Dalian	Cutotype 1	35-39	39
+LOR239C	Minor/Unclassified	16.82984975328491	Dalian	Cutotype 1	35-39	39
+LOR239C	Moraxella osloensis	0.5655042412818096	Dalian	Cutotype 1	35-39	39
+LOR239C	Pasteurella multocida	1.1332261462549205	Dalian	Cutotype 1	35-39	39
+LOR239C	Staphylococcus aureus	0.5067361534623275	Dalian	Cutotype 1	35-39	39
+LOR240C	Cutibacterium acnes	74.60414174922333	Dalian	Cutotype 1	40-45	45
+LOR240C	Cutibacterium granulosum	0.06017797636509978	Dalian	Cutotype 1	40-45	45
+LOR240C	Janibacter indicus	0.7289057387222712	Dalian	Cutotype 1	40-45	45
+LOR240C	Klebsiella pneumoniae	0.4799193615116707	Dalian	Cutotype 1	40-45	45
+LOR240C	Kocuria palustris	0.14517936798080322	Dalian	Cutotype 1	40-45	45
+LOR240C	Micrococcus luteus	0.967360970068979	Dalian	Cutotype 1	40-45	45
+LOR240C	Minor/Unclassified	22.369658264316737	Dalian	Cutotype 1	40-45	45
+LOR240C	Moraxella osloensis	0.2452252536877816	Dalian	Cutotype 1	40-45	45
+LOR240C	Pasteurella multocida	0.2534997254379828	Dalian	Cutotype 1	40-45	45
+LOR240C	Staphylococcus aureus	0.14593159268536698	Dalian	Cutotype 1	40-45	45
+LOR241C	Cutibacterium acnes	33.78817023322914	Dalian	Cutotype 2	35-39	37
+LOR241C	Cutibacterium granulosum	0.5710507333493628	Dalian	Cutotype 2	35-39	37
+LOR241C	Klebsiella pneumoniae	2.6328444337581147	Dalian	Cutotype 2	35-39	37
+LOR241C	Micrococcus luteus	0.28251983649915846	Dalian	Cutotype 2	35-39	37
+LOR241C	Minor/Unclassified	60.131642221687834	Dalian	Cutotype 2	35-39	37
+LOR241C	Moraxella osloensis	0.2945419572012503	Dalian	Cutotype 2	35-39	37
+LOR241C	Pasteurella multocida	0.6672276989660976	Dalian	Cutotype 2	35-39	37
+LOR241C	Staphylococcus aureus	1.6320028853089683	Dalian	Cutotype 2	35-39	37
+LOR242C	Cutibacterium acnes	9.35825255867046	Dalian	Cutotype 2	40-45	40
+LOR242C	Cutibacterium granulosum	0.4740070036953199	Dalian	Cutotype 2	40-45	40
+LOR242C	Janibacter indicus	0.42563894209375663	Dalian	Cutotype 2	40-45	40
+LOR242C	Klebsiella pneumoniae	0.638458413140635	Dalian	Cutotype 2	40-45	40
+LOR242C	Kocuria palustris	4.3898852709578815	Dalian	Cutotype 2	40-45	40
+LOR242C	Micrococcus luteus	6.1814382726797845	Dalian	Cutotype 2	40-45	40
+LOR242C	Minor/Unclassified	76.69046375297474	Dalian	Cutotype 2	40-45	40
+LOR242C	Moraxella osloensis	1.5729293632828372	Dalian	Cutotype 2	40-45	40
+LOR242C	Pasteurella multocida	0.15671251958906496	Dalian	Cutotype 2	40-45	40
+LOR242C	Staphylococcus aureus	0.11221390291562676	Dalian	Cutotype 2	40-45	40
+LOR243C	Cutibacterium acnes	49.04265141121552	Dalian	Cutotype 2	30-34	32
+LOR243C	Cutibacterium granulosum	0.042280379315403	Dalian	Cutotype 2	30-34	32
+LOR243C	Janibacter indicus	0.11217243491841612	Dalian	Cutotype 2	30-34	32
+LOR243C	Klebsiella pneumoniae	0.5574107150561294	Dalian	Cutotype 2	30-34	32
+LOR243C	Kocuria palustris	0.33392871010328495	Dalian	Cutotype 2	30-34	32
+LOR243C	Micrococcus luteus	19.277264373171803	Dalian	Cutotype 2	30-34	32
+LOR243C	Minor/Unclassified	18.11929969886017	Dalian	Cutotype 2	30-34	32
+LOR243C	Moraxella osloensis	12.005039130922489	Dalian	Cutotype 2	30-34	32
+LOR243C	Pasteurella multocida	0.35118600778304127	Dalian	Cutotype 2	30-34	32
+LOR243C	Staphylococcus aureus	0.15876713865375822	Dalian	Cutotype 2	30-34	32
+LOR246C	Cutibacterium acnes	90.40977631124582	Dalian	Cutotype 1	30-34	34
+LOR246C	Cutibacterium granulosum	1.6568826817071456	Dalian	Cutotype 1	30-34	34
+LOR246C	Klebsiella pneumoniae	0.5601810996431723	Dalian	Cutotype 1	30-34	34
+LOR246C	Kocuria palustris	0.03708961618642009	Dalian	Cutotype 1	30-34	34
+LOR246C	Micrococcus luteus	0.12405837138216372	Dalian	Cutotype 1	30-34	34
+LOR246C	Minor/Unclassified	6.288608372021638	Dalian	Cutotype 1	30-34	34
+LOR246C	Moraxella osloensis	0.02366061722237143	Dalian	Cutotype 1	30-34	34
+LOR246C	Pasteurella multocida	0.5179756743275908	Dalian	Cutotype 1	30-34	34
+LOR246C	Staphylococcus aureus	0.3817672562636688	Dalian	Cutotype 1	30-34	34
+LOR248C	Cutibacterium acnes	61.496777198014456	Dalian	Cutotype 1	25-29	28
+LOR248C	Cutibacterium granulosum	0.4032471449890456	Dalian	Cutotype 1	25-29	28
+LOR248C	Janibacter indicus	0.08996327381645375	Dalian	Cutotype 1	25-29	28
+LOR248C	Klebsiella pneumoniae	1.4648137760231998	Dalian	Cutotype 1	25-29	28
+LOR248C	Kocuria palustris	0.48050972132552944	Dalian	Cutotype 1	25-29	28
+LOR248C	Micrococcus luteus	17.29517479334907	Dalian	Cutotype 1	25-29	28
+LOR248C	Minor/Unclassified	14.026861975170139	Dalian	Cutotype 1	25-29	28
+LOR248C	Moraxella osloensis	1.7357619889292253	Dalian	Cutotype 1	25-29	28
+LOR248C	Pasteurella multocida	1.746345903495867	Dalian	Cutotype 1	25-29	28
+LOR248C	Staphylococcus aureus	1.260544224887017	Dalian	Cutotype 1	25-29	28
+LOR249C	Cutibacterium acnes	99.39777329786806	Dalian	Cutotype 1	40-45	41
+LOR249C	Cutibacterium granulosum	0.17488721969566698	Dalian	Cutotype 1	40-45	41
+LOR249C	Klebsiella pneumoniae	0.02268411636219948	Dalian	Cutotype 1	40-45	41
+LOR249C	Kocuria palustris	0.0087809482692385	Dalian	Cutotype 1	40-45	41
+LOR249C	Micrococcus luteus	0.06110076504011796	Dalian	Cutotype 1	40-45	41
+LOR249C	Minor/Unclassified	0.26086733816529395	Dalian	Cutotype 1	40-45	41
+LOR249C	Moraxella osloensis	0.00914682111379011	Dalian	Cutotype 1	40-45	41
+LOR249C	Pasteurella multocida	0.03146506463143799	Dalian	Cutotype 1	40-45	41
+LOR249C	Staphylococcus aureus	0.03329442885419601	Dalian	Cutotype 1	40-45	41
+LOR254C	Cutibacterium acnes	96.85802727521715	Dalian	Cutotype 1	25-29	26
+LOR254C	Cutibacterium granulosum	0.04495914918685952	Dalian	Cutotype 1	25-29	26
+LOR254C	Klebsiella pneumoniae	0.13384390390111053	Dalian	Cutotype 1	25-29	26
+LOR254C	Kocuria palustris	0.00723480561627624	Dalian	Cutotype 1	25-29	26
+LOR254C	Micrococcus luteus	0.08681766739531495	Dalian	Cutotype 1	25-29	26
+LOR254C	Minor/Unclassified	2.551819295226578	Dalian	Cutotype 1	25-29	26
+LOR254C	Moraxella osloensis	0.05994553224914603	Dalian	Cutotype 1	25-29	26
+LOR254C	Pasteurella multocida	0.16640052917435363	Dalian	Cutotype 1	25-29	26
+LOR254C	Staphylococcus aureus	0.09095184203318708	Dalian	Cutotype 1	25-29	26
+LOR258C	Cutibacterium acnes	84.46161028818811	Dalian	Cutotype 1	35-39	35
+LOR258C	Cutibacterium granulosum	1.7010219336096846	Dalian	Cutotype 1	35-39	35
+LOR258C	Janibacter indicus	0.01084654961824861	Dalian	Cutotype 1	35-39	35
+LOR258C	Klebsiella pneumoniae	0.10280642681644336	Dalian	Cutotype 1	35-39	35
+LOR258C	Kocuria palustris	0.028295346830213772	Dalian	Cutotype 1	35-39	35
+LOR258C	Micrococcus luteus	4.078774245575315	Dalian	Cutotype 1	35-39	35
+LOR258C	Minor/Unclassified	9.280402171196274	Dalian	Cutotype 1	35-39	35
+LOR258C	Moraxella osloensis	0.23862409160146947	Dalian	Cutotype 1	35-39	35
+LOR258C	Pasteurella multocida	0.05281798074973237	Dalian	Cutotype 1	35-39	35
+LOR258C	Staphylococcus aureus	0.04480096581450513	Dalian	Cutotype 1	35-39	35
+LOR259C	Cutibacterium acnes	95.11591331328192	Dalian	Cutotype 1	25-29	28
+LOR259C	Cutibacterium granulosum	0.03896245824602416	Dalian	Cutotype 1	25-29	28
+LOR259C	Janibacter indicus	0.00950303859659126	Dalian	Cutotype 1	25-29	28
+LOR259C	Klebsiella pneumoniae	0.4176585463201859	Dalian	Cutotype 1	25-29	28
+LOR259C	Kocuria palustris	0.03896245824602416	Dalian	Cutotype 1	25-29	28
+LOR259C	Micrococcus luteus	0.47325132211024473	Dalian	Cutotype 1	25-29	28
+LOR259C	Minor/Unclassified	3.2343591863498355	Dalian	Cutotype 1	25-29	28
+LOR259C	Moraxella osloensis	0.0822012838605144	Dalian	Cutotype 1	25-29	28
+LOR259C	Pasteurella multocida	0.3981773171971738	Dalian	Cutotype 1	25-29	28
+LOR259C	Staphylococcus aureus	0.19101107579148432	Dalian	Cutotype 1	25-29	28
+LOR260C	Cutibacterium acnes	43.5070156394484	Dalian	Cutotype 2	35-39	35
+LOR260C	Cutibacterium granulosum	0.29449603988260364	Dalian	Cutotype 2	35-39	35
+LOR260C	Janibacter indicus	1.1196880151167934	Dalian	Cutotype 2	35-39	35
+LOR260C	Klebsiella pneumoniae	0.5196397700317613	Dalian	Cutotype 2	35-39	35
+LOR260C	Kocuria palustris	0.14373014915772123	Dalian	Cutotype 2	35-39	35
+LOR260C	Micrococcus luteus	0.7739315723877297	Dalian	Cutotype 2	35-39	35
+LOR260C	Minor/Unclassified	53.175129658666044	Dalian	Cutotype 2	35-39	35
+LOR260C	Moraxella osloensis	0.2844449805009448	Dalian	Cutotype 2	35-39	35
+LOR260C	Pasteurella multocida	0.1256382422707353	Dalian	Cutotype 2	35-39	35
+LOR260C	Staphylococcus aureus	0.05628593253728943	Dalian	Cutotype 2	35-39	35
+LOR262C	Cutibacterium acnes	80.73544329478597	Dalian	Cutotype 1	35-39	36
+LOR262C	Cutibacterium granulosum	0.17447758165956584	Dalian	Cutotype 1	35-39	36
+LOR262C	Janibacter indicus	1.1898965307364575	Dalian	Cutotype 1	35-39	36
+LOR262C	Klebsiella pneumoniae	0.891661594643944	Dalian	Cutotype 1	35-39	36
+LOR262C	Kocuria palustris	0.09332521809697708	Dalian	Cutotype 1	35-39	36
+LOR262C	Micrococcus luteus	0.3154798133495638	Dalian	Cutotype 1	35-39	36
+LOR262C	Minor/Unclassified	15.437208358693445	Dalian	Cutotype 1	35-39	36
+LOR262C	Moraxella osloensis	0.25968756340028404	Dalian	Cutotype 1	35-39	36
+LOR262C	Pasteurella multocida	0.5893690403733008	Dalian	Cutotype 1	35-39	36
+LOR262C	Staphylococcus aureus	0.3134510042604991	Dalian	Cutotype 1	35-39	36
+LOR264C	Cutibacterium acnes	84.86358396899239	Dalian	Cutotype 1	40-45	42
+LOR264C	Cutibacterium granulosum	0.1134312730479029	Dalian	Cutotype 1	40-45	42
+LOR264C	Janibacter indicus	0.01515478546793844	Dalian	Cutotype 1	40-45	42
+LOR264C	Klebsiella pneumoniae	0.1216975196667784	Dalian	Cutotype 1	40-45	42
+LOR264C	Kocuria palustris	0.1639472246076977	Dalian	Cutotype 1	40-45	42
+LOR264C	Micrococcus luteus	4.709005157219418	Dalian	Cutotype 1	40-45	42
+LOR264C	Minor/Unclassified	6.497729078359425	Dalian	Cutotype 1	40-45	42
+LOR264C	Moraxella osloensis	3.4070713147465246	Dalian	Cutotype 1	40-45	42
+LOR264C	Pasteurella multocida	0.0771516351095048	Dalian	Cutotype 1	40-45	42
+LOR264C	Staphylococcus aureus	0.03122804278241861	Dalian	Cutotype 1	40-45	42
+LOR269C	Cutibacterium acnes	95.1098819218598	Dalian	Cutotype 1	30-34	31
+LOR269C	Cutibacterium granulosum	0.12228582448696931	Dalian	Cutotype 1	30-34	31
+LOR269C	Janibacter indicus	0.02235332275568256	Dalian	Cutotype 1	30-34	31
+LOR269C	Klebsiella pneumoniae	0.1236007258255389	Dalian	Cutotype 1	30-34	31
+LOR269C	Kocuria palustris	0.11877942091745047	Dalian	Cutotype 1	30-34	31
+LOR269C	Micrococcus luteus	0.19109899453877643	Dalian	Cutotype 1	30-34	31
+LOR269C	Minor/Unclassified	3.8903547603811472	Dalian	Cutotype 1	30-34	31
+LOR269C	Moraxella osloensis	0.21608211997159812	Dalian	Cutotype 1	30-34	31
+LOR269C	Pasteurella multocida	0.1376263401036142	Dalian	Cutotype 1	30-34	31
+LOR269C	Staphylococcus aureus	0.0679365691594274	Dalian	Cutotype 1	30-34	31
+LOR270C	Cutibacterium acnes	84.89374093121046	Dalian	Cutotype 1	30-34	33
+LOR270C	Cutibacterium granulosum	0.5586867899199479	Dalian	Cutotype 1	30-34	33
+LOR270C	Janibacter indicus	0.04343148190190407	Dalian	Cutotype 1	30-34	33
+LOR270C	Klebsiella pneumoniae	1.370065838178247	Dalian	Cutotype 1	30-34	33
+LOR270C	Kocuria palustris	4.777463009209448	Dalian	Cutotype 1	30-34	33
+LOR270C	Micrococcus luteus	0.20531245989991015	Dalian	Cutotype 1	30-34	33
+LOR270C	Minor/Unclassified	5.387477914104374	Dalian	Cutotype 1	30-34	33
+LOR270C	Moraxella osloensis	0.09377251774274745	Dalian	Cutotype 1	30-34	33
+LOR270C	Pasteurella multocida	1.6977761107107956	Dalian	Cutotype 1	30-34	33
+LOR270C	Staphylococcus aureus	0.9722729471221708	Dalian	Cutotype 1	30-34	33
+LOR272C	Cutibacterium acnes	47.69416963368469	Dalian	Cutotype 2	25-29	25
+LOR272C	Cutibacterium granulosum	0.19701937826313343	Dalian	Cutotype 2	25-29	25
+LOR272C	Janibacter indicus	0.34337663068717544	Dalian	Cutotype 2	25-29	25
+LOR272C	Klebsiella pneumoniae	1.8533894369467625	Dalian	Cutotype 2	25-29	25
+LOR272C	Kocuria palustris	0.1421354086041177	Dalian	Cutotype 2	25-29	25
+LOR272C	Micrococcus luteus	13.141192530151	Dalian	Cutotype 2	25-29	25
+LOR272C	Minor/Unclassified	32.61233622764182	Dalian	Cutotype 2	25-29	25
+LOR272C	Moraxella osloensis	1.1075303620934716	Dalian	Cutotype 2	25-29	25
+LOR272C	Pasteurella multocida	1.9589355324448696	Dalian	Cutotype 2	25-29	25
+LOR272C	Staphylococcus aureus	0.9499148594829648	Dalian	Cutotype 2	25-29	25
+LOR274C	Cutibacterium acnes	68.5626655513732	Dalian	Cutotype 1	35-39	36
+LOR274C	Cutibacterium granulosum	0.10455876202425764	Dalian	Cutotype 1	35-39	36
+LOR274C	Janibacter indicus	0.5158232259863377	Dalian	Cutotype 1	35-39	36
+LOR274C	Klebsiella pneumoniae	1.1202724502599033	Dalian	Cutotype 1	35-39	36
+LOR274C	Kocuria palustris	0.4003106888928721	Dalian	Cutotype 1	35-39	36
+LOR274C	Micrococcus luteus	1.3034992332357451	Dalian	Cutotype 1	35-39	36
+LOR274C	Minor/Unclassified	25.113023042759565	Dalian	Cutotype 1	35-39	36
+LOR274C	Moraxella osloensis	0.09957977335643584	Dalian	Cutotype 1	35-39	36
+LOR274C	Pasteurella multocida	1.5952679691701022	Dalian	Cutotype 1	35-39	36
+LOR274C	Staphylococcus aureus	1.1849993029415864	Dalian	Cutotype 1	35-39	36
+LOR275C	Cutibacterium acnes	30.14521782674011	Dalian	Cutotype 2	35-39	35
+LOR275C	Cutibacterium granulosum	0.13730272828597737	Dalian	Cutotype 2	35-39	35
+LOR275C	Janibacter indicus	1.4085644595926148	Dalian	Cutotype 2	35-39	35
+LOR275C	Klebsiella pneumoniae	0.2956046973686336	Dalian	Cutotype 2	35-39	35
+LOR275C	Kocuria palustris	4.38561067407563	Dalian	Cutotype 2	35-39	35
+LOR275C	Micrococcus luteus	3.613484743243898	Dalian	Cutotype 2	35-39	35
+LOR275C	Minor/Unclassified	59.58292277125369	Dalian	Cutotype 2	35-39	35
+LOR275C	Moraxella osloensis	0.3133732857350542	Dalian	Cutotype 2	35-39	35
+LOR275C	Pasteurella multocida	0.0678437010354241	Dalian	Cutotype 2	35-39	35
+LOR275C	Staphylococcus aureus	0.0500751126690035	Dalian	Cutotype 2	35-39	35
+LOR279C	Cutibacterium acnes	89.68008424866451	Dalian	Cutotype 1	40-45	43
+LOR279C	Cutibacterium granulosum	0.577845438622338	Dalian	Cutotype 1	40-45	43
+LOR279C	Janibacter indicus	0.03546737819683849	Dalian	Cutotype 1	40-45	43
+LOR279C	Klebsiella pneumoniae	0.3481259583012763	Dalian	Cutotype 1	40-45	43
+LOR279C	Kocuria palustris	0.17297167520612003	Dalian	Cutotype 1	40-45	43
+LOR279C	Micrococcus luteus	0.49927155461703415	Dalian	Cutotype 1	40-45	43
+LOR279C	Minor/Unclassified	7.3914016162211444	Dalian	Cutotype 1	40-45	43
+LOR279C	Moraxella osloensis	0.7038910442141794	Dalian	Cutotype 1	40-45	43
+LOR279C	Pasteurella multocida	0.3006542367147386	Dalian	Cutotype 1	40-45	43
+LOR279C	Staphylococcus aureus	0.2902868492418166	Dalian	Cutotype 1	40-45	43
+LOR281C	Cutibacterium acnes	8.436963804232372	Dalian	Cutotype 2	25-29	28
+LOR281C	Cutibacterium granulosum	0.20426505433450445	Dalian	Cutotype 2	25-29	28
+LOR281C	Janibacter indicus	0.8513767464662145	Dalian	Cutotype 2	25-29	28
+LOR281C	Klebsiella pneumoniae	0.6765258599558788	Dalian	Cutotype 2	25-29	28
+LOR281C	Kocuria palustris	0.369311218236784	Dalian	Cutotype 2	25-29	28
+LOR281C	Micrococcus luteus	6.838794019119209	Dalian	Cutotype 2	25-29	28
+LOR281C	Minor/Unclassified	60.8366696625541	Dalian	Cutotype 2	25-29	28
+LOR281C	Moraxella osloensis	21.51646376337936	Dalian	Cutotype 2	25-29	28
+LOR281C	Pasteurella multocida	0.17321676607565978	Dalian	Cutotype 2	25-29	28
+LOR281C	Staphylococcus aureus	0.09641310564588612	Dalian	Cutotype 2	25-29	28
+LOR282C	Cutibacterium acnes	34.228151075977166	Dalian	Cutotype 2	30-34	30
+LOR282C	Cutibacterium granulosum	0.27875372078270627	Dalian	Cutotype 2	30-34	30
+LOR282C	Janibacter indicus	8.010662177328843	Dalian	Cutotype 2	30-34	30
+LOR282C	Klebsiella pneumoniae	0.22080710486507588	Dalian	Cutotype 2	30-34	30
+LOR282C	Kocuria palustris	1.1516127458156444	Dalian	Cutotype 2	30-34	30
+LOR282C	Micrococcus luteus	42.91587371297516	Dalian	Cutotype 2	30-34	30
+LOR282C	Minor/Unclassified	12.344459083589529	Dalian	Cutotype 2	30-34	30
+LOR282C	Moraxella osloensis	0.6148440931049627	Dalian	Cutotype 2	30-34	30
+LOR282C	Pasteurella multocida	0.14700141511735715	Dalian	Cutotype 2	30-34	30
+LOR282C	Staphylococcus aureus	0.0878348704435661	Dalian	Cutotype 2	30-34	30
+LOR283C	Cutibacterium acnes	69.20035769755731	Dalian	Cutotype 1	40-45	41
+LOR283C	Cutibacterium granulosum	1.4213771355956135	Dalian	Cutotype 1	40-45	41
+LOR283C	Janibacter indicus	0.3746411258059961	Dalian	Cutotype 1	40-45	41
+LOR283C	Klebsiella pneumoniae	0.8594154468866193	Dalian	Cutotype 1	40-45	41
+LOR283C	Kocuria palustris	0.9977879230008944	Dalian	Cutotype 1	40-45	41
+LOR283C	Micrococcus luteus	9.227655669035627	Dalian	Cutotype 1	40-45	41
+LOR283C	Minor/Unclassified	15.623852779215888	Dalian	Cutotype 1	40-45	41
+LOR283C	Moraxella osloensis	0.6335012001694357	Dalian	Cutotype 1	40-45	41
+LOR283C	Pasteurella multocida	0.975196498329176	Dalian	Cutotype 1	40-45	41
+LOR283C	Staphylococcus aureus	0.6862145244034452	Dalian	Cutotype 1	40-45	41
+LOR284C	Cutibacterium acnes	9.020007756057623	Dalian	Cutotype 2	40-45	40
+LOR284C	Cutibacterium granulosum	0.05745227870100398	Dalian	Cutotype 2	40-45	40
+LOR284C	Janibacter indicus	0.5027074386337849	Dalian	Cutotype 2	40-45	40
+LOR284C	Klebsiella pneumoniae	0.5098889734714103	Dalian	Cutotype 2	40-45	40
+LOR284C	Kocuria palustris	0.15368484552518563	Dalian	Cutotype 2	40-45	40
+LOR284C	Micrococcus luteus	29.90103844993752	Dalian	Cutotype 2	40-45	40
+LOR284C	Minor/Unclassified	55.11253465090561	Dalian	Cutotype 2	40-45	40
+LOR284C	Moraxella osloensis	4.431006994814932	Dalian	Cutotype 2	40-45	40
+LOR284C	Pasteurella multocida	0.19533774758341352	Dalian	Cutotype 2	40-45	40
+LOR284C	Staphylococcus aureus	0.11634086436953306	Dalian	Cutotype 2	40-45	40
+LOR287C	Cutibacterium acnes	64.24104961090713	Dalian	Cutotype 1	30-34	32
+LOR287C	Cutibacterium granulosum	6.8470319920803	Dalian	Cutotype 1	30-34	32
+LOR287C	Janibacter indicus	0.03383416247916693	Dalian	Cutotype 1	30-34	32
+LOR287C	Klebsiella pneumoniae	1.8633851706118971	Dalian	Cutotype 1	30-34	32
+LOR287C	Kocuria palustris	1.1779301011265524	Dalian	Cutotype 1	30-34	32
+LOR287C	Micrococcus luteus	1.162892695580256	Dalian	Cutotype 1	30-34	32
+LOR287C	Minor/Unclassified	20.616283003972367	Dalian	Cutotype 1	30-34	32
+LOR287C	Moraxella osloensis	0.48746256312577535	Dalian	Cutotype 1	30-34	32
+LOR287C	Pasteurella multocida	2.2418265435270235	Dalian	Cutotype 1	30-34	32
+LOR287C	Staphylococcus aureus	1.3283041565895164	Dalian	Cutotype 1	30-34	32
+LOR288C	Cutibacterium acnes	91.44529464135326	Dalian	Cutotype 1	35-39	35
+LOR288C	Cutibacterium granulosum	1.606751846772059	Dalian	Cutotype 1	35-39	35
+LOR288C	Janibacter indicus	0.02225751341466349	Dalian	Cutotype 1	35-39	35
+LOR288C	Klebsiella pneumoniae	0.46861089054115834	Dalian	Cutotype 1	35-39	35
+LOR288C	Kocuria palustris	0.0920378257417166	Dalian	Cutotype 1	35-39	35
+LOR288C	Micrococcus luteus	1.3113886282153084	Dalian	Cutotype 1	35-39	35
+LOR288C	Minor/Unclassified	4.323973146610844	Dalian	Cutotype 1	35-39	35
+LOR288C	Moraxella osloensis	0.17565388965085782	Dalian	Cutotype 1	35-39	35
+LOR288C	Pasteurella multocida	0.3392766909694651	Dalian	Cutotype 1	35-39	35
+LOR288C	Staphylococcus aureus	0.2147549267306721	Dalian	Cutotype 1	35-39	35
+LOR289C	Cutibacterium acnes	63.30383249278832	Dalian	Cutotype 2	30-34	34
+LOR289C	Cutibacterium granulosum	0.4513432367197158	Dalian	Cutotype 2	30-34	34
+LOR289C	Janibacter indicus	0.03532251417806472	Dalian	Cutotype 2	30-34	34
+LOR289C	Klebsiella pneumoniae	1.287309405600581	Dalian	Cutotype 2	30-34	34
+LOR289C	Kocuria palustris	0.1177417139268824	Dalian	Cutotype 2	30-34	34
+LOR289C	Micrococcus luteus	0.8124178260954885	Dalian	Cutotype 2	30-34	34
+LOR289C	Minor/Unclassified	30.703114268333366	Dalian	Cutotype 2	30-34	34
+LOR289C	Moraxella osloensis	1.273572872309111	Dalian	Cutotype 2	30-34	34
+LOR289C	Pasteurella multocida	0.7417727977393591	Dalian	Cutotype 2	30-34	34
+LOR289C	Staphylococcus aureus	1.273572872309111	Dalian	Cutotype 2	30-34	34
+LOR294C	Cutibacterium acnes	75.87289301685587	Dalian	Cutotype 1	40-45	40
+LOR294C	Cutibacterium granulosum	1.436188510491916	Dalian	Cutotype 1	40-45	40
+LOR294C	Janibacter indicus	0.09889920880632956	Dalian	Cutotype 1	40-45	40
+LOR294C	Klebsiella pneumoniae	1.9507510606581815	Dalian	Cutotype 1	40-45	40
+LOR294C	Kocuria palustris	0.1920651301456255	Dalian	Cutotype 1	40-45	40
+LOR294C	Micrococcus luteus	5.14849214539617	Dalian	Cutotype 1	40-45	40
+LOR294C	Minor/Unclassified	9.54592363261094	Dalian	Cutotype 1	40-45	40
+LOR294C	Moraxella osloensis	1.5408210067652792	Dalian	Cutotype 1	40-45	40
+LOR294C	Pasteurella multocida	2.4724802201582388	Dalian	Cutotype 1	40-45	40
+LOR294C	Staphylococcus aureus	1.741486068111455	Dalian	Cutotype 1	40-45	40
+LOR295C	Cutibacterium acnes	29.924571304536578	Dalian	Cutotype 2	35-39	35
+LOR295C	Cutibacterium granulosum	0.06240503581506403	Dalian	Cutotype 2	35-39	35
+LOR295C	Janibacter indicus	2.983232038202735	Dalian	Cutotype 2	35-39	35
+LOR295C	Klebsiella pneumoniae	0.7637833731278489	Dalian	Cutotype 2	35-39	35
+LOR295C	Kocuria palustris	0.2916757108747558	Dalian	Cutotype 2	35-39	35
+LOR295C	Micrococcus luteus	7.713805079227263	Dalian	Cutotype 2	35-39	35
+LOR295C	Minor/Unclassified	53.77957456045146	Dalian	Cutotype 2	35-39	35
+LOR295C	Moraxella osloensis	4.010201866724549	Dalian	Cutotype 2	35-39	35
+LOR295C	Pasteurella multocida	0.30388539179509444	Dalian	Cutotype 2	35-39	35
+LOR295C	Staphylococcus aureus	0.16686563924462774	Dalian	Cutotype 2	35-39	35
+LOR300C	Cutibacterium acnes	95.5064357367888	Dalian	Cutotype 1	40-45	41
+LOR300C	Cutibacterium granulosum	0.6112550322931989	Dalian	Cutotype 1	40-45	41
+LOR300C	Janibacter indicus	0.01221492154457683	Dalian	Cutotype 1	40-45	41
+LOR300C	Klebsiella pneumoniae	0.17304472188150508	Dalian	Cutotype 1	40-45	41
+LOR300C	Kocuria palustris	0.08346863055460833	Dalian	Cutotype 1	40-45	41
+LOR300C	Micrococcus luteus	0.12214921544576827	Dalian	Cutotype 1	40-45	41
+LOR300C	Minor/Unclassified	3.039479644342201	Dalian	Cutotype 1	40-45	41
+LOR300C	Moraxella osloensis	0.33183870196100385	Dalian	Cutotype 1	40-45	41
+LOR300C	Pasteurella multocida	0.06769102355952993	Dalian	Cutotype 1	40-45	41
+LOR300C	Staphylococcus aureus	0.05242237162880889	Dalian	Cutotype 1	40-45	41
+LOR301C	Cutibacterium acnes	83.88906440787957	Dalian	Cutotype 1	40-45	41
+LOR301C	Cutibacterium granulosum	0.8521684185359439	Dalian	Cutotype 1	40-45	41
+LOR301C	Janibacter indicus	0.02732403746808637	Dalian	Cutotype 1	40-45	41
+LOR301C	Klebsiella pneumoniae	0.9665878254335556	Dalian	Cutotype 1	40-45	41
+LOR301C	Kocuria palustris	0.1400356920239427	Dalian	Cutotype 1	40-45	41
+LOR301C	Micrococcus luteus	1.559177888022679	Dalian	Cutotype 1	40-45	41
+LOR301C	Minor/Unclassified	9.736749976518405	Dalian	Cutotype 1	40-45	41
+LOR301C	Moraxella osloensis	0.6591924039175838	Dalian	Cutotype 1	40-45	41
+LOR301C	Pasteurella multocida	1.4182883198278586	Dalian	Cutotype 1	40-45	41
+LOR301C	Staphylococcus aureus	0.7514110303723754	Dalian	Cutotype 1	40-45	41
+LOR303C	Cutibacterium acnes	77.8489363429685	Dalian	Cutotype 1	30-34	30
+LOR303C	Cutibacterium granulosum	0.04364241636895095	Dalian	Cutotype 1	30-34	30
+LOR303C	Janibacter indicus	0.1202703799935044	Dalian	Cutotype 1	30-34	30
+LOR303C	Klebsiella pneumoniae	0.19334605391360832	Dalian	Cutotype 1	30-34	30
+LOR303C	Kocuria palustris	0.2948400454693082	Dalian	Cutotype 1	30-34	30
+LOR303C	Micrococcus luteus	3.0295956479376422	Dalian	Cutotype 1	30-34	30
+LOR303C	Minor/Unclassified	18.11261773303021	Dalian	Cutotype 1	30-34	30
+LOR303C	Moraxella osloensis	0.2232867814225398	Dalian	Cutotype 1	30-34	30
+LOR303C	Pasteurella multocida	0.08119519324455993	Dalian	Cutotype 1	30-34	30
+LOR303C	Staphylococcus aureus	0.05226940565118545	Dalian	Cutotype 1	30-34	30

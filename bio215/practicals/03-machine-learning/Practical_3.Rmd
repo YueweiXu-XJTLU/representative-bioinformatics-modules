@@ -1,0 +1,375 @@
+---
+title: "BIO215 Session 3 – Practicals: Machine Learning Part 1"
+author: "Yuewei Xu"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Practical 3: Introduction
+
+In this practical, you will go through the demonstration work on simple course grade and progression state prediction tasks, as introduced in the lecture slides. The dataset provided is simulated for demonstration purposes, so no personal information from real students will be disclosed.
+
+Next, we will build a prediction model based on our m6A sequencing data table. Initially, we will use only factorial genomic features to predict target variables of modification level (regression) and modification status (classification).
+
+Finally, we will make feature engineering to enhance predictive performance by incorporating DNA sequence features into the model through **one-hot encoding**.
+
+## Task 1: Build baseline ML models to predict the grade dataset
+
+### Load data and EDA
+
+1.  Load the `"course.csv"` file from the project directory and save it as the variable `data_df`.
+
+2.  Check the summary statistics for the numeric columns `english_score`, `attendance_rate`, and `final_grade` separately using the function `summary()`.
+
+3.  Check the frequency distribution of the categorical column `pass` using the function `table()`.
+
+```{r}
+# Your code here
+data_df <- read.csv("course.csv")
+
+summary(data_df$english_score)
+summary(data_df$attendance_rate)
+summary(data_df$final_grade)
+
+table(data_df$pass)
+```
+
+Question: What is the highest final exam grade in this cohort? How many students failed the module?
+
+> Answer: 100; 17
+
+### Split the Data into Training and Testing
+
+Using `data_df`, randomly sample 80% of the rows and subset them into a new data frame named `train_df`. The remaining rows will form a new data frame named `test_df`.
+
+Hint: Use the function `sample.int()` to sample the indices for subsetting. Set the seed to 123 with `set.seed()` before sampling the indices. See `?sample.int()` to understand its behavior. Display the heads of `train_df` and `test_df` to ensure the split is done correctly.
+
+```{r}
+# Your code here
+set.seed(123)
+row_num <- nrow(data_df)
+
+# sample.int(n, size = n, replace = FALSE, prob = NULL)
+# n: 从整数1:n中抽样
+# size: 抽取多少个样本
+# replace: FALSE = 抽样不放回; TRUE = 抽样放回
+# prob: 一个向量, 长度为n, 为每个数指定抽到的概率, 默认等概率
+# 返回一个向量, 包含抽样出的数字
+samples_train <- sample.int(row_num, size = round(row_num * 0.8), replace = FALSE)
+
+train_df <- data_df[samples_train,]
+test_df <- data_df[-samples_train, ]
+
+head(train_df)
+head(test_df)
+```
+
+### Fit the Linear Regression Model
+
+Using the base R function `lm()`, fit a linear regression model on the training dataset (`train_df`) to predict `final_grade` from `english_score` and `attendance_rate`. The dataset can be specified by setting the `data` argument in `lm()` to `train_df`.
+
+`lm()` requires a design formula as its first argument, with the following structure:
+
+[target variable] \~ [feature variable 1] + [feature variable 2] + ... + [feature variable p]
+
+Refer to the help page `?lm` for more detailed instructions.
+
+```{r, eval=FALSE}
+#Fill in the blank at `___`
+lm_fit <- lm(final_grade ~ english_score + attendance_rate, data = train_df)
+lm_fit
+```
+
+```{r, echo=FALSE}
+lm_fit <- lm(final_grade ~ english_score + attendance_rate, data = train_df)
+lm_fit
+```
+
+### Make Predictions on New Data
+
+1.  Use the fitted model stored in `lm_fit` to make predictions on the test dataset with the `predict()` function. Check `?predict.lm` if you are unsure how to use it.
+
+2.  Using the predicted values on the test set, manually calculate the mean squared error (MSE) against the ground truth values in the `final_grade` column of `test_df`. <mark> 均方误差mean squared error (MSE): $\mathrm{MSE}=\frac{\sum_{i=1}^n (y_{predict} - y_i)^2}{n}$, MSE越小, 说明预测值与真实值越接近 </mark>
+
+3.  Calculate the correlation between the actual `final_grade` values and the predicted values with `cor()`. This is useful because <mark> MSE depends on the scale of the data (量纲), whereas correlation (线性相关系数) is bounded between 0 and 1, making it comparable across different contexts. </mark>
+
+```{r}
+# Your code here
+# predict(object, newdata)
+# object: 拟合模型
+# newdata: 预测的输入数据
+predicted_data <- predict(lm_fit, test_df)
+predicted_data
+
+# y_i: 实际值ground truth
+mse <- sum((predicted_data - test_df$final_grade) ^ 2) / nrow(test_df)
+mse
+
+# cor: (线性)相关系数Correlation Coefficient == R
+linear_cor <- cor(test_df$final_grade, predicted_data)
+linear_cor
+```
+
+### Fit Classification Model Using Random Forest
+<mark>
+0. About Random Forest:  
+  1. 确定超参数: # of decision trees (决策树) inside the forest; # of layers inside every tress  
+  2. each decision tree randomly pick d features of n samples from in total D features in N samples  
+  3. each tree get a result, the model globally evaluated the result to get the final output (for regression; get mean, for calssification, get mode(众数))
+  
+</mark>
+
+1.  Load the package `randomForest` with `library()`.
+
+2.  Convert the `pass` column to a factor data type using `factor()`, and set the levels to `"0"` and `"1"`. <mark> Remember that in R, the first level in a factor is treated as the reference level, which corresponds to the negative label in machine learning or the baseline in statistical modeling. </mark> In our case, <mark> the `"0"` value of the `pass` column represents the negative class </mark> , so it must be the first level. This step is necessary because otherwise `randomForest` will default to regression mode <mark> (randomForest自动对factor类型变量进行classification, 对numeric类型变量进行regression). </mark>
+
+3.  Fit a random forest classification model using `randomForest()`. Its usage follows the same basic structure as `lm()`: the first argument specifies the design formula, and the training data is passed with the `data` argument. The features are the same as in the regression task (`english_score` and `attendance_rate`), but the target variable is now `pass`.
+
+```{r}
+#Fill in the blank at `___`
+# install.packages("randomForest")
+library(randomForest)
+train_df$pass <- factor(train_df$pass, levels = c(0, 1))
+test_df$pass <- factor(test_df$pass, levels = c(0, 1))
+
+rf_fit <- randomForest(data = train_df, pass ~ english_score + attendance_rate)
+rf_fit
+```
+
+### Evaluate the Random Forest Classification Model
+
+1.  Use the fitted model stored in `rf_fit` to make predictions on the testing dataset with `predict()`.
+
+2.  Create a confusion matrix named `cm` using `table()`. You can generate a 2×2 table of two categorical variables with `table(var1, var2)`.
+
+3.  Calculate the accuracy from the confusion matrix (see the definition in the lecture slides).
+
+```{r}
+#Your code here
+rf_predicted_data <- predict(rf_fit, test_df)
+rf_predicted_data
+
+cm <- table(test_df$pass, rf_predicted_data)
+cm
+
+accuracy = sum(diag(cm)) / sum(cm) # diag()取矩阵对角线的所有元素, 返回为向量
+accuracy
+```
+
+## Task 2: Build Baseline ML Models to Predict the m6A Dataset
+
+Load the file `../../data/m6A_combined.csv` into R. Using the m6A dataset explored in the previous exercise, complete the following tasks (feel free to reuse the code and variable names from the grade-prediction tasks):
+
+1.  Randomly split the dataset into 80% training and 20% testing sets, using a seed of 123.
+
+2.  Build a linear regression model on the training data with `lm()` to predict `m6A_level` using the features `gc_content`, `RNA_type`, `RNA_region`, `exon_length`, `distance_to_junction`, and `evolutionary_conservation`. Calculate the MSE and the correlation on the testing data.
+
+3.  Check the frequency distribution of `m6A_status` using `table()`.
+
+4.  Build a random forest classification model with `randomForest()` to predict the binary class `m6A_status` using the same feature set as in the regression task. Calculate and display the confusion matrix and the accuracy in the console.
+
+```{r}
+#Your code here
+# load data
+data_df <- read.csv("../../data/m6A_combined.csv")
+
+# traint/test data split
+set.seed(123)
+nr <- nrow(data_df)
+train_data_idx <- sample.int(nr, size = round(nr * 0.8), replace = FALSE)
+train_df <- data_df[train_data_idx, ]
+test_df <- data_df[-train_data_idx, ]
+
+# linear regression - fit
+lm_fit <- lm(data = train_df, m6A_level ~ gc_content + RNA_type + RNA_region  + exon_length + distance_to_junction + evolutionary_conservation)
+
+# linear regression - prediction
+lm_pred <- predict(lm_fit, test_df)
+
+# linear regression - evaluation
+mse <- sum((lm_pred - test_df$m6A_level) ^ 2) / nrow(test_df)
+mse
+lm_cor <- cor(lm_pred, test_df$m6A_level)
+lm_cor
+
+library(randomForest)
+
+# random forest classification - data preparation
+table(data_df$m6A_status)
+train_df$m6A_status <- factor(train_df$m6A_status, levels = c("Negative", "Positive"))
+test_df$m6A_status <- factor(test_df$m6A_status, levels = c("Negative", "Positive"))
+
+# random forest classification - fit
+rf_fit <- randomForest(data = train_df, m6A_status ~ gc_content + RNA_type + RNA_region  + exon_length + distance_to_junction + evolutionary_conservation)
+
+# random forest classification - prediction
+rf_pred <- predict(rf_fit, test_df)
+
+# random forest classification - evaluation
+cm <- table(rf_pred, test_df$m6A_status)
+accuracy <- sum(diag(cm)) / sum(cm)
+accuracy
+```
+
+## Task 3: Add Additional DNA Sequence Features to Enhance Predictive Performance
+
+In the previous task, we saw that <mark> the performance of the regression model was not very satisfactory (low correlation). </mark> One important way to improve model performance is by <mark> introducing biologically meaningful and informative features—a process professionally called *feature engineering*. </mark>
+
+We have stored a 5-mer DNA sequence surrounding the A sites (with the modification occurring in the middle) in the column `DNA_5mer`. However, raw DNA strings are often not suitable as input features for machine learning because <mark> the number of factor levels grows exponentially with sequence length </mark> (\# of unique levels = 4\^n, where *n* is the sequence length).
+
+A simple way to reduce the size of the input feature space is to encode the sequence position by position, so that each position adds only 4 possible levels (\# of total levels = 4 × n). The provided code splits the DNA string into a matrix `seq_m`, which can then be used as one-hot encoded additional columns to enhance both regression and classification models. <mark> 将每一位作为一个新feature, 增加n个(列)性特征 </mark>>
+
+Your tasks are:
+
+1.  Build a linear regression model and a random forest classifier using the same targets as in Task 2, but with the feature sets additionally expanded to include `nt_pos1`, `nt_pos2`, `nt_pos4`, and `nt_pos5`. (Drop `nt_pos3` because it is constant—all middle bases at the reference sites are `"A"`. <mark> Keeping this column would introduce multicollinearity (多重共线性), as the model would try to estimate redundant information that does not vary across samples.) </mark>
+
+2.  With the additional features, calculate the out-of-sample performance metrics (MSE, correlation, and accuracy). Verify whether these metrics have significantly improved. To make it comparable between task2 and task3, use the same index for training & test split.
+
+```{r}
+# 手动转为one-hot
+
+#Realize one-hot encoding
+nn <- nchar(data_df$DNA_5mer[1]) #Set length of sequences, nn is 5L, L means integer
+
+seq_m <- matrix( unlist( strsplit(data_df$DNA_5mer, "") ), ncol = nn, byrow = TRUE) # 创建矩阵, nn列, 按行填充, 每行是将原DNA_5mer逐字符拆解(拆解后是一个含nrow(data_df)个元素的列表, unlist为多个向量)
+
+colnames(seq_m) <- paste0("nt_pos", 1:nn) # 改列名
+
+head(seq_m) #Check the one-hot encoded DNA 5mer 
+
+#Your code afterwards
+
+#################################################
+
+# get one-hot columns (这里one-hot实现了将char/string类型的变量转化为numeric类型)
+generate_one_hot_vector <- function(col, base) {
+  rs <- c()
+  for (char in col) {
+    rs <- c(rs, ifelse(char == base, 1, 0))
+  }
+  return(rs)
+}
+
+generate_one_hot_vector_whole <- function(seq_m) {
+  rs <- NULL
+  alphabet <- c('A', 'T', 'C', 'G')
+  for (i in 1:ncol(seq_m)) {
+    for (char in alphabet) {
+      if (is.null(rs)) {
+        rs <- data.frame(generate_one_hot_vector(seq_m[,i], char))
+      } else {
+      rs <- cbind(rs, generate_one_hot_vector(seq_m[,i], char))
+      }
+      colnames(rs)[ncol(rs)] <- paste0("nt_pos", i, "_", char) # 将colnames(rs)向量的最后一个元素命名为..., paste()默认在输入值之间自动加空格, paste0()默认直接连接输入
+    }
+  }
+  return(rs)
+}
+
+df_one_hot <- generate_one_hot_vector_whole(seq_m)
+
+# conbime new features into data set (exclude DNA_5mer[3])
+data_df_with_one_hot <- cbind(data_df, df_one_hot[,-(9:12)])
+
+#################################################
+
+# train/test data split
+train_df <- data_df_with_one_hot[train_data_idx, ]
+test_df <- data_df_with_one_hot[-train_data_idx, ]
+
+# linear regression - fit
+lm_fit <- lm(data = train_df, m6A_level ~ gc_content + RNA_type + RNA_region  + exon_length + distance_to_junction + evolutionary_conservation + nt_pos1_A + nt_pos1_T + nt_pos1_C + nt_pos1_G + nt_pos2_A + nt_pos2_T + nt_pos2_C + nt_pos2_G + nt_pos4_A + nt_pos4_T + nt_pos4_C + nt_pos4_G + nt_pos5_A + nt_pos5_T + nt_pos5_C + nt_pos5_G)
+
+# linear regression - prediction
+lm_pred <- predict(lm_fit, test_df)
+
+# linear regression - evaluation
+mse <- sum((lm_pred - test_df$m6A_level) ^ 2) / nrow(test_df)
+mse
+lm_cor <- cor(lm_pred, test_df$m6A_level)
+lm_cor
+
+library(randomForest)
+
+# random forest classification - data preparation
+table(data_df$m6A_status)
+train_df$m6A_status <- factor(train_df$m6A_status, levels = c("Negative", "Positive"))
+test_df$m6A_status <- factor(test_df$m6A_status, levels = c("Negative", "Positive"))
+
+# random forest classification - fit
+rf_fit <- randomForest(data = train_df, m6A_status ~ gc_content + RNA_type + RNA_region  + exon_length + distance_to_junction + evolutionary_conservation + nt_pos1_A + nt_pos1_T + nt_pos1_C + nt_pos1_G + nt_pos2_A + nt_pos2_T + nt_pos2_C + nt_pos2_G + nt_pos4_A + nt_pos4_T + nt_pos4_C + nt_pos4_G + nt_pos5_A + nt_pos5_T + nt_pos5_C + nt_pos5_G)
+
+# random forest classification - prediction
+rf_pred <- predict(rf_fit, test_df)
+
+# random forest classification - evaluation
+cm <- table(rf_pred, test_df$m6A_status)
+accuracy <- sum(diag(cm)) / sum(cm)
+accuracy
+```
+
+```{r}
+# 让R自动char转factor, 自动展开为one-hot
+
+#Realize one-hot encoding
+nn <- nchar(data_df$DNA_5mer[1])
+seq_m <- matrix( unlist( strsplit(data_df$DNA_5mer, "") ), ncol = nn, byrow = TRUE)
+colnames(seq_m) <- paste0("nt_pos", 1:nn)
+head(seq_m)
+
+#Your code afterwards
+
+#################################################
+
+# conbime new features into data set (exclude DNA_5mer[3])
+data_df_with_one_hot <- cbind(data_df, seq_m[, -3])
+
+#################################################
+
+# train/test data split
+train_df <- data_df_with_one_hot[train_data_idx, ]
+test_df <- data_df_with_one_hot[-train_data_idx, ]
+
+# linear regression - fit
+lm_fit <- lm(data = train_df, m6A_level ~ gc_content + RNA_type + RNA_region  + exon_length + distance_to_junction + evolutionary_conservation + nt_pos1 + nt_pos2 + nt_pos4 + nt_pos5)
+
+# linear regression - prediction
+lm_pred <- predict(lm_fit, test_df)
+
+# linear regression - evaluation
+mse <- sum((lm_pred - test_df$m6A_level) ^ 2) / nrow(test_df)
+mse
+lm_cor <- cor(lm_pred, test_df$m6A_level)
+lm_cor
+
+library(randomForest)
+
+# random forest classification - data preparation
+table(data_df$m6A_status)
+train_df$m6A_status <- factor(train_df$m6A_status, levels = c("Negative", "Positive"))
+test_df$m6A_status <- factor(test_df$m6A_status, levels = c("Negative", "Positive"))
+
+# random forest classification - fit
+rf_fit <- randomForest(data = train_df, m6A_status ~ gc_content + RNA_type + RNA_region  + exon_length + distance_to_junction + evolutionary_conservation + nt_pos1 + nt_pos2 + nt_pos4 + nt_pos5)
+
+# random forest classification - prediction
+rf_pred <- predict(rf_fit, test_df)
+
+# random forest classification - evaluation
+cm <- table(rf_pred, test_df$m6A_status)
+accuracy <- sum(diag(cm)) / sum(cm)
+accuracy
+```
+
+```{r}
+sessionInfo()
+```

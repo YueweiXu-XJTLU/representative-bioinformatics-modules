@@ -1,0 +1,945 @@
+---
+title: "BIO215 Session 5 – Practicals: Shiny Part 1"
+author: "Yuewei Xu"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: "show"
+    self-contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+## Practical 5: Introduction
+
+**Why Shiny?**
+
+- A website or web server allows people who don’t know programming to use your tool.
+
+- Having a web app or website can greatly enhance the delivery of your tool within a team or when publishing a paper.
+
+- While large-scale web development usually relies on **HTML, CSS, JavaScript, and PHP**, **R Shiny** is suitable for most small- to medium-scale projects (e.g., total data size < 100 GB).
+
+- Shiny is an excellent starting point to familiarize yourself with the logic of web & app development.
+
+**Why should we use AI?**
+
+- It is now much easier to create or upgrade a web page or app with the help of AI, so you are encouraged to use AI in the later part of this practical.
+
+- In the past, people needed to memorize all the technical languages involved in web development. Today, it is recommended to interact with AI using **natural language** instead.
+
+- You can even begin with a draft paper to demonstrate your design concept to AI and let it produce the code.
+
+- However, you still need to understand the basic grammar and mechanics of codes; otherwise, you won’t be able to give customized technical instructions to AI or debug the code it produces.
+
+**How to use AI?**
+
+- Describe your needs as **clearly and specifically** as possible.
+
+- Update the web app **incrementally** --- for example, add one ui module at a time and refine each part through multiple rounds of prompts.
+
+- Use a strong LLM service, such as ChatGPT5, Gemini 2.5 pro, Claude, and XIPU AI.
+
+- Sometimes AI tries to impress you by delivering overly comprehensive code or doing things you didn’t ask for. You may need to explicitly inhibit it, making it to write only the basic code necessary to implement the requested features.
+
+## Task 1: Build a Simplest Shiny App
+
+Firstly, we need to produce a Shiny app to draw a histogram of random Gaussian numbers, which is the same as the code demo in our course. Then we will incrementally add new elements to the app to demonstrate the concept of web development.
+
+### Step 1: Create the minimal app
+
+At the beginning, start your code by loading the Shiny library with `library(shiny)`.
+
+Then, **create the user interface (UI)** using `fluidPage()`, which defines the overall page layout.  
+Inside it, add a `titlePanel()` for the app title, and a `sidebarLayout()` that contains two parts:  
+
+- a `sidebarPanel()` for user input controls: inside it, use a `sliderInput` to select the number of samples, set the inputId = `n`.
+
+- a `mainPanel()` to display the output: inside it, use a `plotOutput` to display the histogram.  
+
+Make sure each UI component is properly nested and separated by commas.
+
+Next, **define the server** using a `server` function, where you generate random Gaussian numbers with selected number `n` using `rnorm()`, and draw the histogram with `hist()` inside `renderPlot()`.
+
+Finally, **run the entire app** with `shinyApp(ui, server)`.
+
+```{r}
+# Enter your code below
+# Make it in the style of single-file shiny app (app.R), so that you can run the code chunk to load the app
+# ---- app.R (single-file style inside Rmd chunk) ----
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel(
+    title = "Random Gaussian Histogram"
+    ),
+  
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(
+        'n',
+        "Number of samples:",
+        min = 10,
+        max = 1000, 
+        value = 100
+        )
+      ),
+    
+    mainPanel(
+      plotOutput(
+        "hist",
+        height = "400px"
+        )
+      )
+    )
+  )
+
+server <- function(input, output, session) {
+  output$hist <- renderPlot({
+    hist(rnorm(input$n), breaks = 30)
+    })
+  }
+
+shinyApp(ui, server)
+```
+
+### Step 2: Add more input UI elements.
+
+With the previous app code framework, add two `numericInput()` elements inside the `sidebarPanel()` to allow users to specify the **mean** and **standard deviation** of the simulated random Gaussian numbers. In addition, add one more `sliderInput()` to let users specify the **number of bins** used in the histogram. Make sure to update the corresponding server part to implement these new functionalities.
+
+```{r}
+# Enter your code below
+# Make it in the style of single-file shiny app (app.R), so that you can run the code chunk to load the app
+# ---- app.R (single-file style inside Rmd chunk) ----
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel(
+    title = "Random Gaussian Histogram"
+    ),
+  
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(
+        'n',
+        "Number of samples:",
+        min = 10,
+        max = 1000, 
+        value = 100
+        ),
+      
+      sliderInput(
+        'bins',
+        "Number of bins:",
+        min = 1,
+        max = 100, 
+        value = 30
+        ),
+
+      numericInput(
+        "mean",
+        "Mean of samples:",
+        value = 0
+      ),
+      
+      numericInput(
+        "sd",
+        "Standard deviation of samples:",
+        value = 1
+      )
+      ),
+    
+    mainPanel(
+      plotOutput(
+        "hist",
+        height = "400px"
+        )
+      )
+    )
+  )
+
+server <- function(input, output, session) {
+  output$hist <- renderPlot({
+    hist(
+      rnorm(input$n, mean = input$mean, sd = input$sd), 
+      breaks = input$bins, 
+      xlab = 'x', 
+      ylab = 'y',
+      main = "Histogram"
+      )
+    })
+  }
+
+shinyApp(ui, server)
+```
+
+## Task 2: Build a mini-Bioinformatics database 
+
+In the second task today, you will use the `shiny` and `shinydashboard` packages to build a mini bioinformatics database for browsing the m6A dataset we previously used for machine learning modeling. You are encouraged to use AI assistance for this part of the project. The `shinydashboard` package is an extension of basic `shiny` that provides a more professional-looking user interface layout.
+
+---
+
+---
+
+---
+
+dashboardPage-ui部分基本结构
+
+```{r}
+dashboardPage(
+  
+  dashboardHeader(title = "..."),
+  
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Home", tabName = "home", icon = icon("home")),
+      menuItem("Data", tabName = "data", icon = icon("table")),
+      )
+    ),
+
+  dashboardBody(
+    tabItems(
+      tabItem(
+        tabName = "home", 
+        fluidRow(
+          box(...)
+        )),
+      tabItem(
+        tabName = "data", 
+        fluidRow(
+          box(...)
+        )),
+    )
+)
+```
+
+box()内容:
+
+| 参数名 | 功能 | 典型取值或示例 |
+|:--------|:------|:----------------|
+| **title** | 面板顶部标题文字 | `"Welcome"`、`"Download m6A Data"` |
+| **width** | 占用列宽（满行为 12 格） | `width = 6` → 半行；`width = 12` → 整行 |
+| **status** | 标题栏颜色（Bootstrap 主题） | `"primary"`(蓝)、`"info"`(浅蓝)、`"warning"`(橙)、`"danger"`(红)、`"success"`(绿) |
+| **solidHeader** | 是否让标题栏背景实色 | `TRUE` = 实色；`FALSE` = 灰背景 |
+| **background** | 面板整体背景色（可选） | `"light-blue"`、`"yellow"`、`"red"` 等 |
+| **collapsible** | 是否允许用户折叠隐藏内容 | `TRUE` / `FALSE` |
+| **collapsed** | 默认是否折叠 | `TRUE` = 初始折叠 |
+| **height** | 固定高度 | `"300px"` |
+| **内容** | `box()` 内可放任意 UI 元素 | 如 `p()`、`plotOutput()`、`DTOutput()`、`downloadButton()` 等 |
+
+---
+
+---
+
+---
+
+### Step 1: Setup a home page and table page
+
+We will first build a baseline website framework using `shiny` and `shinydashboard`, keeping it simple with two pages (sidebar menu items):
+
+- **Home page** --- provides a brief introduction to the database.  
+- **Data page** --- displays the m6A **Data Table** (from the CSV) using `renderDT()` from `DT` package.
+
+The dataset to be displayed is stored in a CSV file named `../../data/m6A_imbalanced.csv`, which should be saved in the current working directory.
+
+Suggestion: the table has many columns and rows, try to set `options = list(scrollX = TRUE, pageLength = 15)` within `renderDT()` to enable horizontal scroll bar and longer default row # to show in each page.
+
+```{r}
+# Prompt for AI helpers:
+# Please do NOT generate overly comprehensive or decorative code.
+# Keep the app minimal, readable, and only implement the exact requested features.
+# Avoid adding extra UI elements, error checking, styling, or animations.
+# The goal is clarity and simplicity for beginners.
+# ---- app.R (single-file style inside Rmd chunk) ----
+library(shiny)
+library(shinydashboard)
+library(DT)
+library(ggplot2)
+
+m6A_data <- read.csv("../../data/m6A_imbalanced.csv")
+
+ui <- dashboardPage(
+  dashboardHeader(title = "m6A Bioinformatics Database"),
+  
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Home", tabName = "home", icon = icon("home")),
+      menuItem("Data", tabName = "data", icon = icon("table")),
+      menuItem("Visualization", tabName = "visualization", icon = icon("chart-simple"))
+    )
+  ),
+  
+  dashboardBody(
+    tabItems(
+      
+      # --- Home Page ---
+      tabItem(tabName = "home",
+              fluidRow(
+                box(
+                  title = "Welcome",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  p("This mini bioinformatics database allows you to explore and 
+                    browse the m6A dataset used for our machine learning modeling task."),
+                  p("Use the 'Data' tab on the left to view the dataset, 
+                    and scroll horizontally to see all columns.")
+                )
+              )
+      ),
+      
+      # --- Data Page ---
+      tabItem(tabName = "data",
+              fluidRow(
+                box(
+                  title = "m6A Dataset Table",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  DTOutput("m6A_table")
+                )
+              )
+      ),
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  # --- Data Table ---
+  output$m6A_table <- renderDT({
+    datatable(m6A_data,
+              options = list(scrollX = TRUE, pageLength = 15),
+              rownames = FALSE)
+  })
+  
+}
+
+shinyApp(ui, server)
+```
+
+Note that <mark> Data Table (DT) is a commonly used interface for exploring tabular data in bioinformatics databases </mark>. Please explore the DT and practice filtering the data using the `Search` area.
+
+### Add a data visualization page
+
+With the previous app code framework, add a new page that allows users to browse the data in graphical ways.
+
+The new page should use the **`ggplot2`** package to explore the dataset as follows:
+
+- **Panel 1:**  
+  Allow users to select one of the three categorical columns (`m6A_status`, `RNA_region`, or `RNA_type`) from `../../data/m6A_imbalanced.csv`.  
+  Based on the selected column, display a **pie chart** showing the distribution of its values.
+
+- **Panel 2:**  
+  Allow users to select specific combinations of unique values within `m6A_status`, `RNA_region`, and `RNA_type` using selection inputs (select bars).  
+  Each select bar should also include a **"No filter"** option, which disables filtering for that column.
+
+Then, implement a **reactive structure** in the server logic so that the app dynamically filters the dataset based on the selected combination of categorical values and plots a **histogram of `m6A_level`** after filtering.
+
+Please try to optimize the ggplot2 figures to enhance their presentations in shiny.
+
+```{r}
+# Prompt for AI helpers:
+# Please do NOT generate overly comprehensive or decorative code.
+# Keep the app minimal, readable, and only implement the exact requested features.
+# Avoid adding extra UI elements, error checking, styling, or animations.
+# The goal is clarity and simplicity for beginners.
+# ---- app.R (single-file style inside Rmd chunk) ----
+library(shiny)
+library(shinydashboard)
+library(DT)
+library(ggplot2)
+
+m6A_data <- read.csv("../../data/m6A_imbalanced.csv")
+
+ui <- dashboardPage(
+  dashboardHeader(title = "m6A Bioinformatics Database"),
+  
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Home", tabName = "home", icon = icon("home")),
+      menuItem("Data", tabName = "data", icon = icon("table")),
+      menuItem("Visualization", tabName = "visualization", icon = icon("chart-simple"))
+    )
+  ),
+  
+  dashboardBody(
+    tabItems(
+      
+      # --- Home Page ---
+      tabItem(tabName = "home",
+              fluidRow(
+                box(
+                  title = "Welcome",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  p("This mini bioinformatics database allows you to explore and 
+                    browse the m6A dataset used for our machine learning modeling task."),
+                  p("Use the 'Data' tab on the left to view the dataset, 
+                    and scroll horizontally to see all columns.")
+                )
+              )
+      ),
+      
+      # --- Data Page ---
+      tabItem(tabName = "data",
+              fluidRow(
+                box(
+                  title = "m6A Dataset Table",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  DTOutput("m6A_table")
+                )
+              )
+      ),
+      
+      # --- Visualization Page ---
+      tabItem(tabName = "visualization",
+              fluidRow(
+                box(
+                  title = "Pie Chart",
+                  width = 6,
+                  status = "info",
+                  solidHeader = TRUE,
+                  selectInput(
+                    "category_col",
+                    "Select the column to plot:",
+                    choices = c("m6A_status", "RNA_region", "RNA_type"),
+                    selected = "m6A_status"
+                  ),
+                  plotOutput("pie", height = "300px")
+                ),
+                
+                box(
+                  title = "Histogram",
+                  width = 6,
+                  status = "info",
+                  solidHeader = TRUE,
+                  selectInput(
+                    "filter_m6A_status", 
+                    "m6A_status:",
+                    choices = c("No filter", unique(m6A_data$m6A_status))),
+                  selectInput(
+                    "filter_RNA_region", 
+                    "RNA_region:",
+                    choices = c("No filter", unique(m6A_data$RNA_region))),
+                  selectInput(
+                    "filter_RNA_type", 
+                    "RNA_type:", 
+                    choices = c("No filter", unique(m6A_data$RNA_type))),
+                  plotOutput("hist", height = "300px")
+                ),
+              )
+              )
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  # --- Data Table ---
+  output$m6A_table <- renderDT({
+    datatable(m6A_data,
+              options = list(scrollX = TRUE, pageLength = 15),
+              rownames = FALSE)
+  })
+  
+  # --- Pie Chart ---
+  output$pie <- renderPlot({
+    pie_col <- input$category_col
+    ggplot(m6A_data) +
+      aes_string(1, fill = pie_col) + # 用aes_string(), 将内部string展开为变量
+      geom_bar(stat = "count", position = "stack") +
+      coord_polar(theta = "y") +
+      geom_text(stat = "count", aes(label = scales::percent(..count../100)), size = 3, position = position_stack(vjust = 0.5)) +
+      theme(
+      panel.grid = element_blank(), # 去掉坐标轴
+      axis.text = element_blank(), # 去掉坐标轴数字
+      axis.ticks = element_blank(), # 去掉y轴刻度
+      axis.title = element_blank()
+    ) + 
+      theme_void() + # 去除背景色
+      labs(
+      x = NULL,  # 去掉xlab
+      y = NULL,  # 去掉ylab
+    )
+  })
+  
+  # --- Histogram ---
+  output$hist <- renderPlot({
+    filtered_data <- m6A_data
+    if (input$filter_m6A_status != "No filter") {
+    filtered_data <- filtered_data[filtered_data$m6A_status == input$filter_m6A_status, ]
+    }
+    if (input$filter_RNA_region != "No filter") {
+    filtered_data <- filtered_data[filtered_data$RNA_region == input$filter_RNA_region, ]
+    }
+    if (input$filter_RNA_type != "No filter") {
+    filtered_data <- filtered_data[filtered_data$RNA_type == input$filter_RNA_type, ]
+    }
+    
+    ggplot(filtered_data) + 
+      aes(m6A_level) +
+      geom_histogram(fill = "lightblue") +
+      theme_minimal() +
+      theme(
+      panel.grid = element_blank(),
+      axis.title = element_blank()
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+### Add a data download page 
+
+With the previous app code framework, add a new page that allows users to download the data from the database.
+
+The new page should include download buttons that trigger the download of the following CSV tables:
+
+1. Total m6A dataset (unfiltered)  
+
+2. m6A dataset on mRNA  
+
+3. m6A dataset on lincRNA  
+
+4. m6A dataset on lncRNA  
+
+5. m6A dataset on pseudogene  
+
+The values `mRNA`, `lincRNA`, `lncRNA`, and `pseudogene` correspond to unique entries in the `RNA_type` column of `../../data/m6A_imbalanced.csv`.  
+Make sure to subset the table by rows before exporting the CSV file when users choose to download datasets 2–5.
+
+```{r}
+# Prompt for AI helpers:
+# Please do NOT generate overly comprehensive or decorative code.
+# Keep the app minimal, readable, and only implement the exact requested features.
+# Avoid adding extra UI elements, error checking, styling, or animations.
+# The goal is clarity and simplicity for beginners.
+# ---- app.R (single-file style inside Rmd chunk) ----
+library(shiny)
+library(shinydashboard)
+library(DT)
+library(ggplot2)
+
+m6A_data <- read.csv("../../data/m6A_imbalanced.csv")
+
+ui <- dashboardPage(
+  dashboardHeader(title = "m6A Bioinformatics Database"),
+  
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Home", tabName = "home", icon = icon("home")),
+      menuItem("Data", tabName = "data", icon = icon("table")),
+      menuItem("Visualization", tabName = "visualization", icon = icon("chart-simple")),
+      menuItem("Download", tabName = "download", icon = icon("download"))
+    )
+  ),
+  
+  dashboardBody(
+    tabItems(
+      
+      # --- Home Page ---
+      tabItem(tabName = "home",
+              fluidRow(
+                box(
+                  title = "Welcome",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  p("This mini bioinformatics database allows you to explore and 
+                    browse the m6A dataset used for our machine learning modeling task."),
+                  p("Use the 'Data' tab on the left to view the dataset, 
+                    and scroll horizontally to see all columns.")
+                )
+              )
+      ),
+      
+      # --- Data Page ---
+      tabItem(tabName = "data",
+              fluidRow(
+                box(
+                  title = "m6A Dataset Table",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  DTOutput("m6A_table")
+                )
+              )
+      ),
+      
+      # --- Visualization Page ---
+      tabItem(tabName = "visualization",
+              fluidRow(
+                box(
+                  title = "Pie Chart",
+                  width = 6,
+                  status = "info",
+                  solidHeader = TRUE,
+                  selectInput(
+                    "category_col",
+                    "Select the column to plot:",
+                    choices = c("m6A_status", "RNA_region", "RNA_type"),
+                    selected = "m6A_status"
+                  ),
+                  plotOutput("pie", height = "300px")
+                ),
+                
+                box(
+                  title = "Histogram",
+                  width = 6,
+                  status = "info",
+                  solidHeader = TRUE,
+                  selectInput(
+                    "filter_m6A_status", 
+                    "m6A_status:",
+                    choices = c("No filter", unique(m6A_data$m6A_status))),
+                  selectInput(
+                    "filter_RNA_region", 
+                    "RNA_region:",
+                    choices = c("No filter", unique(m6A_data$RNA_region))),
+                  selectInput(
+                    "filter_RNA_type", 
+                    "RNA_type:", 
+                    choices = c("No filter", unique(m6A_data$RNA_type))),
+                  plotOutput("hist", height = "300px")
+                )
+              )
+              ),
+      
+      # --- Download Page ---
+      tabItem(tabName = "download",
+              fluidRow(
+                box(
+                  title = "Download m6A Datasets",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  p("Click below to download specific subsets of the m6A dataset:"),
+                  selectInput(
+                    "download_option", 
+                    "Choose content to download",
+                    choices = c("Full Dataset", "mRNA", "lincRNA", "lncRNA", "pseudogene")),
+                  downloadButton("download_action", "Download")
+                )
+              )
+              )
+      )
+    )
+  )
+
+server <- function(input, output, session) {
+  
+  # --- Data Table ---
+  output$m6A_table <- renderDT({
+    datatable(m6A_data,
+              options = list(scrollX = TRUE, pageLength = 15),
+              rownames = FALSE)
+  })
+  
+  # --- Pie Chart ---
+  output$pie <- renderPlot({
+    pie_col <- input$category_col
+    ggplot(m6A_data) +
+      aes_string(1, fill = pie_col) + # 用aes_string(), 将内部string展开为变量
+      geom_bar(stat = "count", position = "stack") +
+      coord_polar(theta = "y") +
+      geom_text(stat = "count", aes(label = scales::percent(..count../100)), size = 3, position = position_stack(vjust = 0.5)) +
+      theme(
+        panel.grid = element_blank(), # 去掉坐标轴
+        axis.text = element_blank(), # 去掉坐标轴数字
+        axis.ticks = element_blank(), # 去掉y轴刻度
+        axis.title = element_blank()
+      ) + 
+      theme_void() + # 去除背景色
+      labs(
+        x = NULL,  # 去掉xlab
+        y = NULL  # 去掉ylab
+      )
+  })
+  
+  # --- Histogram ---
+  output$hist <- renderPlot({
+    filtered_data <- m6A_data
+    if (input$filter_m6A_status != "No filter") {
+      filtered_data <- filtered_data[filtered_data$m6A_status == input$filter_m6A_status, ]
+    }
+    if (input$filter_RNA_region != "No filter") {
+      filtered_data <- filtered_data[filtered_data$RNA_region == input$filter_RNA_region, ]
+    }
+    if (input$filter_RNA_type != "No filter") {
+      filtered_data <- filtered_data[filtered_data$RNA_type == input$filter_RNA_type, ]
+    }
+    
+    ggplot(filtered_data) + 
+      aes(m6A_level) +
+      geom_histogram(fill = "lightblue") +
+      theme_minimal() +
+      theme(
+        panel.grid = element_blank(),
+        axis.title = element_blank()
+      )
+  })
+  
+  # --- Download Handlers ---
+  # Standard Format:
+  # output$download_name <- downloadHandler(
+  # filename = function() {"file_name"},
+  # content = function(file) {
+  #   actions
+  # }
+  # )
+  output$download_action <- downloadHandler(
+    filename = function() {
+      paste("m6A_", ifelse(input$download_option == "Full Dataset", "all", input$download_option), ".csv", sep = "")
+    },
+    content = function(file) {
+      if (input$download_option == "Full Dataset") {
+        write.csv(m6A_data, file, row.names = FALSE)
+      } else {
+        write.csv(m6A_data[m6A_data$RNA_type == input$download_option, ], file, row.names = FALSE)
+      }
+      }
+    )
+}
+
+shinyApp(ui, server)
+```
+
+### Create a professional documentation and UI
+
+With the previous app code framework, enhance the professional presentation of the webpage by:
+
+1. Improving the **Home** page to create a more professional introduction and guide page.  
+   Highlight the content stored in the bioinformatics database and explain its scientific value.  
+   The column names and data types in `../../data/m6A_imbalanced.csv` are shown below (assessed using `str()`):
+
+   > str(m6a_data)
+   'data.frame': 48055 obs. of  16 variables:
+   $ chromosome               : chr  "chr22" "chr19" "chr16" "chr19" ...
+   $ start                    : int  25029339 4047876 89522797 10310480 121449451 38068308 3722951 74585851 42472264 40553424 ...
+   $ end                      : int  25029339 4047876 89522797 10310480 121449451 38068308 3722951 74585851 42472264 40553424 ...
+   $ width                    : int  1 1 1 1 1 1 1 1 1 1 ...
+   $ strand                   : chr  "+" "-" "+" "-" ...
+   $ m6A_status               : chr  "Positive" "Positive" "Positive" "Positive" ...
+   $ m6A_coverage             : int  142 9 26 139 22 349 332 11 33 34 ...
+   $ total_coverage           : int  241 40 27 728 34 456 380 107 166 82 ...
+   $ m6A_level                : num  0.589 0.225 0.963 0.191 0.647 ...
+   $ gc_content               : num  0.652 0.756 0.637 0.607 0.348 ...
+   $ DNA_5mer                 : chr  "GGACA" "GGACG" "GGACT" "GAACA" ...
+   $ RNA_type                 : chr  "mRNA" "mRNA" "mRNA" "mRNA" ...
+   $ RNA_region               : chr  "CDS" "CDS" "intron" "3'UTR" ...
+   $ exon_length              : num  10.63 11.1 10.58 8.37 11.5 ...
+   $ distance_to_junction     : num  7.66 8.53 10.24 5.86 11.36 ...
+   $ evolutionary_conservation: num  0.18109 0.33333 0.00896 0.44776 0.80896 ...
+
+2. Making the **Download** page spatially better organized than the current version.  
+   Provide clear and specific instructions for each downloadable item to improve user understanding and usability.
+
+```{r}
+# ---- app.R (single-file style inside Rmd chunk) ----
+library(shiny)
+library(shinydashboard)
+library(DT)
+library(ggplot2)
+
+m6A_data <- read.csv("../../data/m6A_imbalanced.csv")
+
+ui <- dashboardPage(
+  dashboardHeader(title = "m6A Bioinformatics Database"),
+  
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Home", tabName = "home", icon = icon("home")),
+      menuItem("Data", tabName = "data", icon = icon("table")),
+      menuItem("Visualization", tabName = "visualization", icon = icon("chart-simple")),
+      menuItem("Download", tabName = "download", icon = icon("download"))
+    )
+  ),
+  
+  dashboardBody(
+    tabItems(
+      
+      # --- Home Page ---
+      tabItem(tabName = "home",
+              fluidRow(
+                box(
+                  title = "About This Database",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  p("This bioinformatics database contains 48,055 m6A RNA modification entries 
+                    used for computational modeling and feature-based analysis."),
+                  p("Each record corresponds to one potential m6A site on a transcript, 
+                    annotated with genomic coordinates, sequence composition, GC content, 
+                    conservation score, and other biologically relevant attributes."),
+                  
+                  tags$h4("Included Feature Columns:"),
+                  tags$ul(
+                    tags$li("Genomic information: chromosome, start, end, strand, width"),
+                    tags$li("m6A-related values: m6A_status, m6A_level, m6A_coverage, total_coverage"),
+                    tags$li("Sequence & structure: DNA_5mer, gc_content, exon_length, distance_to_junction"),
+                    tags$li("Functional annotation: RNA_type, RNA_region, evolutionary_conservation")
+                  ),
+                  
+                  p("Use the sidebar to explore this dataset:"),
+                  tags$ul(
+                    tags$li("View the data in the 'Data' tab"),
+                    tags$li("Generate summary plots in 'Visualization'"),
+                    tags$li("Download specific subsets in 'Download'")
+                  )
+                )
+              )
+      ),
+      
+      # --- Data Page ---
+      tabItem(tabName = "data",
+              fluidRow(
+                box(
+                  title = "m6A Dataset Table",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  DTOutput("m6A_table")
+                )
+              )
+      ),
+      
+      # --- Visualization Page ---
+      tabItem(tabName = "visualization",
+              fluidRow(
+                box(
+                  title = "Pie Chart",
+                  width = 6,
+                  status = "info",
+                  solidHeader = TRUE,
+                  selectInput(
+                    "category_col",
+                    "Select the column to plot:",
+                    choices = c("m6A_status", "RNA_region", "RNA_type"),
+                    selected = "m6A_status"
+                  ),
+                  plotOutput("pie", height = "300px")
+                ),
+                
+                box(
+                  title = "Histogram",
+                  width = 6,
+                  status = "info",
+                  solidHeader = TRUE,
+                  selectInput(
+                    "filter_m6A_status", 
+                    "m6A_status:",
+                    choices = c("No filter", unique(m6A_data$m6A_status))),
+                  selectInput(
+                    "filter_RNA_region", 
+                    "RNA_region:",
+                    choices = c("No filter", unique(m6A_data$RNA_region))),
+                  selectInput(
+                    "filter_RNA_type", 
+                    "RNA_type:", 
+                    choices = c("No filter", unique(m6A_data$RNA_type))),
+                  plotOutput("hist", height = "300px")
+                )
+              )
+      ),
+      
+      # --- Download Page ---
+      tabItem(tabName = "download",
+              fluidRow(
+                box(
+                  title = "Download m6A Datasets",
+                  width = 12,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  p("You can download either the full m6A dataset or a subset filtered by RNA type."),
+                  tags$ul(
+                    tags$li("Full Dataset: all 48,055 entries across all RNA types"),
+                    tags$li("mRNA / lincRNA / lncRNA / pseudogene: filtered subsets according to RNA_type column")
+                  ),
+                  br(),
+                  selectInput(
+                    "download_option", 
+                    "Choose content to download:",
+                    choices = c("Full Dataset", "mRNA", "lincRNA", "lncRNA", "pseudogene"),
+                    selected = "Full Dataset"
+                  ),
+                  downloadButton("download_action", "Download Selected Dataset")
+                )
+              )
+      )
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  # --- Data Table ---
+  output$m6A_table <- renderDT({
+    datatable(m6A_data,
+              options = list(scrollX = TRUE, pageLength = 15),
+              rownames = FALSE)
+  })
+  
+  # --- Pie Chart ---
+  output$pie <- renderPlot({
+    pie_col <- input$category_col
+    ggplot(m6A_data) +
+      aes_string(1, fill = pie_col) +
+      geom_bar(stat = "count") +
+      coord_polar(theta = "y") +
+      theme_void() +
+      theme(legend.position = "right")
+  })
+  
+  # --- Histogram ---
+  output$hist <- renderPlot({
+    filtered_data <- m6A_data
+    if (input$filter_m6A_status != "No filter") {
+      filtered_data <- filtered_data[filtered_data$m6A_status == input$filter_m6A_status, ]
+    }
+    if (input$filter_RNA_region != "No filter") {
+      filtered_data <- filtered_data[filtered_data$RNA_region == input$filter_RNA_region, ]
+    }
+    if (input$filter_RNA_type != "No filter") {
+      filtered_data <- filtered_data[filtered_data$RNA_type == input$filter_RNA_type, ]
+    }
+    
+    ggplot(filtered_data) +
+      aes(m6A_level) +
+      geom_histogram(fill = "lightblue") +
+      theme_minimal() +
+      theme(panel.grid = element_blank(), axis.title = element_blank())
+  })
+  
+  # --- Download Handler ---
+  output$download_action <- downloadHandler(
+    filename = function() {
+      paste("m6A_", ifelse(input$download_option == "Full Dataset", "all", input$download_option), ".csv", sep = "")
+    },
+    content = function(file) {
+      if (input$download_option == "Full Dataset") {
+        write.csv(m6A_data, file, row.names = FALSE)
+      } else {
+        write.csv(m6A_data[m6A_data$RNA_type == input$download_option, ], file, row.names = FALSE)
+      }
+    }
+  )
+}
+
+shinyApp(ui, server)
+```
+
+In the end, you may ask the AI to provide feedback on the screenshots of the current UI and then try to further improve the interface based on its suggested ideas.
+
+```{r}
+sessionInfo()
+```

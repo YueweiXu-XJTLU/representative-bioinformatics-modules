@@ -1,0 +1,604 @@
+---
+title: "BIO214 Lab Practical 6: Mendelian Randomization and Deep Learning"
+author: "Yuewei Xu"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    self-contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center")
+```
+
+# Part 1: Mendelian Randomization
+
+## Part 1: Data Extraction & Harmonization
+
+In the lecture, we discussed how Mendelian Randomization (MR) acts as a natural randomized controlled trial (RCT) by utilizing genetic variants assigned at conception. Today, we will use the `TwoSampleMR` package to query the *OpenGWAS* database and investigate the causal effect of **LDL Cholesterol** (Exposure) on **Coronary Heart Disease (CHD)** (Outcome).
+
+### Important: API Authentication
+
+Starting May 2024, the OpenGWAS API requires a **JSON Web Token (JWT)** for authentication. To get your token, follow these steps:
+
+1.  Log in to <https://api.opengwas.io/> using your GitHub or Email account.
+
+2.  Go to your **Profile** and click **"Generate Token"**.
+
+3.  Set the token in your local OPENGWAS_JWT environment variable before running this notebook.
+
+**Task 1.1.1 (8 marks)**: Extracting Instrumental Variables. Your first task is to extract significant SNPs associated with LDL cholesterol. We will use the GWAS ID `ieu-a-300` for `LDL and ieu-a-7` for CHD.
+
+```{r, include=FALSE}
+MY_TOKEN_HIDDEN <- Sys.getenv("OPENGWAS_JWT")
+```
+
+```{r}
+# Load necessary libraries
+library(TwoSampleMR)
+library(ggplot2)
+
+# --- API Authentication ---
+# Read the token from the local environment
+Sys.setenv(OPENGWAS_JWT = MY_TOKEN_HIDDEN)
+
+# Please fill in the missing code in the ____ areas.
+# Step 1: Extract instruments for LDL (Exposure)
+# This function automatically filters for significant SNPs and performs clumping (LD removal).
+exposure_dat <- extract_instruments(outcomes = 'ieu-a-300')
+
+# Step 2: Extract the corresponding SNPs from the CHD dataset (Outcome)
+outcome_dat <- extract_outcome_data(
+  snps = exposure_dat$SNP, 
+  outcomes = 'ieu-a-7'
+)
+
+# Step 3: Harmonize the data
+# We must ensure that the effect of a SNP on the exposure and outcome corresponds to the same allele. (make sure the effect alleles are the same for one SNP in both exposure and outcome)
+dat <- harmonise_data(
+  exposure_dat = exposure_dat, 
+  outcome_dat = outcome_dat
+)
+
+# View the harmonized data
+head(dat)
+```
+
+**Question 1.1.2 (5 marks)**: The `extract_instruments()` function automatically performs "Clumping" (removing variants that are in Linkage Disequilibrium, $r^2 > 0.001$). Referring to the 3 core assumptions of MR discussed in the lecture, why is it absolutely critical that our instrumental variables are independent of each other?
+
+> Your answer:
+>
+> -   Because MR treats each SNP as a separate natural randomization according to Mendel's law. However, LD can lead to spurious overlap and weaken assumptions for MR.
+>
+> -   First, for **relevance**, LD can make many nearby SNPs appear associated with exposure, even though only one is truly driving the exposure signal. The analysis would count the same genetic signal multiple times and **overestimate the relevance** of IV to exposure.
+>
+> -   Second, for **exclusion restriction**, an LD-tagged SNP may be correlated with another causal variant that affects ouput through **a different pathway**, creating horizontal pleiotropy.
+>
+> -   Third, for **independence**, correlated SNPs **increase the chance or magnitude to other confounders**.
+>
+> -   Therefore, clumping removes SNPs with high LD and keeps approximately independent instruments prevents overweighting one genomic region, reduces false precision, and makes the MR estimate more reliable.
+
+## Part 2: Running the Assembly Line (MR Analysis & Sensitivity Checks)
+
+Now that our data is harmonized, we can run the MR analysis. However, as discussed in the lecture, statistical correlation does not immediately guarantee true biological causality. We must check for **Horizontal Pleiotropy** (where a SNP affects the outcome through pathways independent of the exposure).
+
+**Task 1.2.1: Running MR and Plotting (8 marks)**. Complete the code to run the MR tests and generate a scatter plot to visualize the causal effect.
+
+```{r}
+# Please fill in the missing code in the ____ areas.
+# Step 1: Run standard MR analysis (default includes IVW, MR-Egger, Weighted Median)
+res <- mr(dat)
+print(res)
+# b: effect of this MR, sign shows direction
+# pval: p-value for the effect
+
+# Step 2: Generate a scatter plot of the SNP effects
+# X-axis: SNP effect on LDL; Y-axis: SNP effect on CHD
+p1 <- mr_scatter_plot(res, dat)
+p1[[1]]
+# a point is an SNP
+# a line is a method
+# slope of line is b (effect) for method
+
+# Step 3: Sensitivity Analysis (Checking the "Exclusion Restriction" assumption)
+# Run the MR-Egger pleiotropy test
+pleio_test <- mr_pleiotropy_test(dat)
+print(pleio_test)
+# egg_intercept: intercept of linear relationship of outcome ~ exposure, supposed to be 0 for non horizontal pleiotropy
+# pval: whether egg_intercept is significantly deviated from 0
+```
+
+**Question 2.2 (5 marks)**: Looking at your MR result table and the follow-up `pleio_test` result:
+
+A)  In the main MR result table, the `IVW` method shows a very small p-value ($P = 1.99 \times 10^{-20}$). What does this specific p-value tell you about the relationship between LDL and CHD?
+
+B)  Suppose your `mr_pleiotropy_test()` returns an `intercept p-value` of 0.002. Even if the IVW result is highly significant, why would this small p-value in the pleiotropy test make you skeptical of your causal claim? Which of the 3 MR core assumptions is likely violated?
+
+> Your answer:
+>
+> -   The IVW result shows a very strong statistical association between LDL and CHD. The SNPs that increase LDL also tend to increase CHD risk, supporting the hypothesis that **higher LDL cholesterol is causally related to higher CHD risk**.
+>
+> -   However, if the MR-Egger pleiotropy test gives a significant intercept, this suggests significant directional horizontal pleiotropy. That means **some instrument SNPs may affect CHD directly or through pathways other than LDL, rather than acting exclusively through LDL**.
+>
+> -   Therefore, even though IVW is highly significant, the causal claim becomes less reliable because the **exclusion restriction** **assumption** of MR is violated.
+
+## Part 3: Colocalization
+
+A significant MR result might be an artifact driven by Linkage Disequilibrium (LD) — a phenomenon where two distinct causal variants (one for LDL, one for CHD) happen to be physically close on the chromosome, creating a "spurious overlap".
+
+To rigorously test this, we use Colocalization Analysis, which calculates the posterior probability ($PP$) of different hypotheses.
+
+**Interpreting Colocalization.**
+
+Because querying full summary statistics for an entire genomic region via API is computationally heavy, we will analyze a mock result from the `coloc` package for a specific overlapping locus on Chromosome 9.
+
+```{r}
+# Simulated Colocalization Output for a specific locus
+# PP means posterior proabability of a hypotheses in a Bayesian statistical framework
+coloc_results <- list(
+  summary = c(
+    nsnps = 450,
+    PP.H0.abf = 0.001, # Neither trait has a genetic association
+    PP.H1.abf = 0.010, # Only trait 1 (LDL) has a genetic association
+    PP.H2.abf = 0.020, # Only trait 2 (CHD) has a genetic association
+    PP.H3.abf = 0.069, # Both traits are associated, but with DIFFERENT causal variants
+    PP.H4.abf = 0.900  # Both traits are associated and share the SAME causal variant
+  )
+)
+
+print(coloc_results$summary)
+```
+
+**Question 1.3.2 (8 marks)**: Based on the lecture slide "Linkage Disequilibrium Can Lead to Spurious Overlap", we need to distinguish between shared causal variants and LD-driven artifacts. If our analysis had yielded a high $PP_{H3}$ (e.g., $0.95$) instead of a high $PP_{H4}$, would this support or reject the MR causal claim that LDL directly causes CHD at this locus? Explain your statistical reasoning.
+
+> Your answer:
+>
+> -   If the colocalization analysis result showed a high $PP_{H3}$, it would **weaken or even reject the MR causal claim at this locus**.
+>
+> -   H3 means that both traits are associated, but with different causal variants. That is, one instrument SNP may affect LDL, while another nearby distinct SNP may affect CHD. Because the two variants are physically close and may be in LD, their association signals can appear to overlap even though they do not represent the same causal signal.
+>
+> -   High $PP_{H3}$ means that after observing the data, the probability of H3 is high. This supports that **LDL-associated variant ≠ CHD-associated variant**, which would not provide strong evidence that LDL directly causes CHD at that locus.
+
+# Part 2: Deep Learning
+
+## Introduction
+
+In this week's lecture, we discussed the power of Representation Learning (Deep Learning) and its unique strengths in genomics. We explored three major architectures: **Multilayer Perceptron (MLP)**, **Convolutional Neural Networks (CNN)**, and **Transformer**.
+
+In this practical, we will build a simplified pipeline to predict RNA m6A modification sites. We will extract flanking sequences of m6A sites from a reference genome, encode them into tensors, and build the skeletons of MLP, CNN, and Transformer models using the R `torch` package.
+
+## Part 1: Data Preparation & Sequence Extraction
+
+Machine learning models require fixed-size numeric matrices (or tensors) as input. Our dataset `../data/m6A_combined.csv` only contains the exact 1bp coordinates of the N6-Methyladenosine (m6A) modifications (the same dataset we used in BIO215 practicals). We need to extract the sequence context (e.g., 101 bp window) around these sites.
+
+**Task 2.1.1: Extracting flanking sequences (3 marks)**. Fill in the blanks to create a 101bp window (50bp upstream and 50bp downstream) and extract the sequences from the human genome.
+
+```{r}
+# Load necessary libraries
+library(readr)
+library(dplyr)
+library(GenomicRanges)
+library(Biostrings)
+library(BSgenome.Hsapiens.UCSC.hg38)
+library(torch)
+library(luz) #luz is an API package for quick model training & evaluation with torch
+
+# 1. Load the dataset (Make sure m6A_combined.csv is in your working directory)
+m6A_data <- read.csv("../data/m6A_combined.csv")[,-1]
+head(m6A_data)
+
+# Please fill in the missing code in the ____ areas.
+# 2. Define a window size to extract flanking sequences (e.g., 50bp each side = 101bp total)
+flank_size <- 50
+
+# Create GRanges object
+m6A_granges <- GRanges(
+  seqnames = m6A_data$chromosome,
+  ranges = IRanges(start = m6A_data$start, 
+                   end = m6A_data$end),
+  strand = m6A_data$strand
+) + flank_size # automatically flanking for both upstream and downstream
+
+# 3. Extract sequences from the human reference genome
+# BSgenome automatically handles the reverse complement for "-" strand!
+sequences <- getSeq(Hsapiens, m6A_granges)
+print(sequences)
+```
+
+**Task 2.1.2: One-Hot Encoding and 3D Tensors (7 marks).** Deep learning models cannot read raw strings like "A, C, G, T". We must map them into mathematical vectors. We use **One-Hot Encoding**, where each nucleotide becomes an orthogonal vector of length 4:
+
+-   A = [1, 0, 0, 0]
+-   C = [0, 1, 0, 0]
+-   G = [0, 0, 1, 0]
+-   T = [0, 0, 0, 1]
+
+**Understanding the 3D Tensor Shape:**
+
+In standard R, you are used to 2D matrices (Rows = Samples, Columns = Features). However, because each single nucleotide is now a vector of 4 numbers, our entire dataset expands into a **3D Tensor** (think of it like a Rubik's cube or a stack of matrices). The shape of our input tensor will be `(Batch, Sequence_Length, Channels)`:
+
+1.  **Dimension 1 (Batch):** Which sequence are we looking at? (e.g., Sequence 1 to 20,000)
+2.  **Dimension 2 (Sequence_Length):** Which position in the sequence? (e.g., Position 1 to 101)
+3.  **Dimension 3 (Channels):** Which nucleotide is active here? (Index 1=A, 2=C, 3=G, 4=T)
+
+Please fill in the `____` in the highly-optimized vectorized function below to build this 3D tensor.
+
+```{r}
+# A fully vectorized pedagogical function for one-hot encoding DNA strings to torch tensors
+one_hot_encode <- function(dna_seqs) {
+  # 1. Meta-data extraction
+  seq_len <- width(dna_seqs)[1]
+  num_seqs <- length(dna_seqs)
+  
+  # 2. Extract a native R character matrix
+  # Converts the DNAStringSet into a 2D grid of shape (Num_Sequences, Sequence_Length).
+  char_mat <- as.matrix(dna_seqs)
+  
+  # Please fill in the missing code in the ____ areas.
+  # 3. Memory Allocation (Empty Target Tensor)
+  # Pre-allocates a 3D float tensor of shape: (Batch, Sequence_Length, Channels).
+  # Since we have 4 possible nucleotides, how many channels do we need?
+  tensor <- torch_zeros(num_seqs, seq_len, 4)
+  
+  # 4. High-Performance Vectorized Slice Assignment
+  # Instead of a slow for-loop, we instantly evaluate the entire 2D grid using R's matrix broadcasting.
+  # We write this whole 2D layer directly into the specific channel (Dimension 3) of our 3D tensor.
+  tensor[, , 1] <- torch_tensor(char_mat == "A", dtype = torch_float()) # Channel 1: A
+  tensor[, , 2] <- torch_tensor(char_mat == "C", dtype = torch_float()) # Channel 2: C
+  tensor[, , 3] <- torch_tensor(char_mat == "G", dtype = torch_float()) # Channel 3: G
+  tensor[, , 4] <- torch_tensor(char_mat == "T", dtype = torch_float()) # Channel 4: T
+  
+  return(tensor)
+}
+
+# Encode our extracted sequences
+X_tensor <- one_hot_encode(sequences)
+cat("Vectorized Tensor shape:", paste(dim(X_tensor), collapse=" x "), "\n")
+```
+
+**Question 2.1.3 (8 marks)**: In m6A prediction, why do we need to extract a flanking window (e.g., 101bp) around the modified site rather than just feeding the 1bp site itself to the model?
+
+> Your answer:
+>
+> -   In m6A prediction, the 1 bp site itself only identifies the candidate nucleotide position, while the **m6A status serves as the ground-truth label**. However, this single nucleotide **does not provide enough predictive information** to determine whether methylation occurs. In contrast, the flanking window provides the **biological sequence context used as the data for model input**.
+>
+> -   **Biologically**, m6A modification strongly depends on the surrounding sequence context. For example, many m6A sites are enriched in the RRACH motif (R= G or A; H= A, C or U; A could be converted to m^6^A) [[1]](https://doi.org/10.1016/j.tig.2019.10.011). Such motifs can only be detected by examining several neighboring bases around the candidate site. The flanking window also captures local sequence patterns, positional context, and potential regulatory signals that may influence whether methyl-transferase complexes recognize the site.
+>
+> -   Therefore, extracting a fixed-size window converts each candidate site into a comparable sequence context and allows models to learn motif-level and context-dependent patterns.
+
+## Part 2: Multilayer Perceptron (MLP) and `torch` Syntax
+
+Before we build our first model, we need to understand how the `torch` package structures neural networks. If you are used to standard R functions where data goes in and results come out immediately, `torch` requires a different mindset: you are building a "machine" first, and running data through it later.
+
+Every neural network in `torch` is constructed using an `nn_module()`. Think of it as the blueprint for a factory, which requires two essential components:
+
+1.  **`initialize()` (The Parts List):** This is where you buy the machinery. You define the specific layers (like linear layers, convolutional filters) and their sizes. **No data flows here.** You are simply setting up the architecture and allocating memory for the model's weights.
+2.  **`forward(x)` (The Assembly Line):** This defines exactly *how* your input data (`x`) moves through the parts you bought in `initialize()`. This is where the actual computation and data transformation happen step-by-step.
+
+**Designing our MLP:** As discussed in the lecture, MLPs use multiple layers of fully connected units. However, MLPs only accept flat, 1D vectors. They cannot read our 3D tensor `(Batch, 101, 4)` directly. Therefore, inside our `forward` function, the first step is to flatten the sequence matrix into a single vector of length `101 * 4 = 404`.
+
+**Task 2.2.1 (5 marks)**: Complete the `nn_module` below. Specify the correct `in_features` for the first linear layer in the `initialize` block, and apply the correct variable inside the activation function in the `forward` block. The desired MLP has one input layer, one hidden layer, and one output layer. Please set the number of neurons in the hidden layer to be 128.
+
+```{r}
+# Please fill in the missing code in the ____ areas.
+set.seed(123)
+mlp_model <- nn_module(
+  "m6A_MLP",
+  
+  #Set up "shapes" of parameters
+  initialize = function(seq_length = 101) {
+    # The flattened input size is Sequence_Length * 4 (A,C,G,T)
+    input_dim <- seq_length * 4 #Specify the number of neurons in the input layer
+    hidden_dim <- 128 #Specify number of neurons in the hidden layer
+    
+    # Define fully connected layers (Buying the parts)
+    self$fc1 <- nn_linear(in_features = input_dim, out_features = hidden_dim)
+    self$fc2 <- nn_linear(in_features = hidden_dim, out_features = 1) # Binary classification output (one logit value)
+  },
+  
+  #Connect layers together into a complete "forward" pathway
+  forward = function(x) {
+    # The Assembly Line: How 'x' moves through the network
+    
+    # 1. Flatten the tensor: (Batch, 101, 4) -> (Batch, 404)
+    x <- torch_flatten(x, start_dim = 2) #start_dim specificy which dimmensionality to be removed/dissolved
+    
+    # 2. Pass through first linear layer
+    x <- self$fc1(x)
+    
+    # 3. Apply non-linear activation function (ReLU)
+    x <- nnf_relu(x)
+    
+    # 4. Pass through output layer
+    x <- self$fc2(x)
+    
+    # Apply sigmoid for binary classification probability
+    return(nnf_sigmoid(x))
+  }
+)
+
+# Test the model structure
+model_mlp <- mlp_model()
+output_mlp <- model_mlp(X_tensor)
+head(output_mlp) # See the model output on input data with randomly initialized weights. Without training, just test model availablility.
+```
+
+Now that we have configured our MLP blueprint, we need to train the machine using data. For a binary classification task, we usually use the loss function called **Binary Cross Entropy** (BCE).
+
+Suppose we have a batch of $N$ sequences. For the $i$-th sequence, let $y_i \in \{0, 1\}$ be the true biological label (`1` for m6A positive, `0` for negative), and $\hat{y}_i \in [0, 1]$ be the probability predicted by our model's `sigmoid` layer.
+
+The **Binary Cross Entropy (BCE) Loss** over the whole batch is defined as:
+
+$$L = - \frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \right]$$
+
+**How to interpret this formula to understand "Error Minimization":**
+
+-   **When the true label is** $y_i = 1$: The second term $(1 - y_i)$ becomes $0$. The loss for this sample simplifies to $-\log(\hat{y}_i)$. If the model correctly predicts $\hat{y}_i \to 1$, then $\log(1) = 0$, meaning the loss is $0$. If the model confidently messes up and predicts $\hat{y}_i \to 0$, then $-\log(0) \to \infty$, severely punishing the model.
+
+-   **When the true label is** $y_i = 0$: The first term becomes $0$. The loss simplifies to $-\log(1 - \hat{y}_i)$. If the model correctly predicts $\hat{y}_i \to 0$, the loss is $0$. If it falsely predicts $\hat{y}_i \to 1$, the loss blows up to $\infty$.
+
+By minimizing this total loss $L$ using gradient descent, we force the model's predictions $\hat{y}$ to approximate the true regulatory status $y$.
+
+**Task 2.2.2: Loss Function, Training Loop, and Performance Evaluation (AUROC) (5 marks)**
+
+Please fill in the missing code (`____`) below to set up the model training with API package `luz`. Set loss function to be binary cross entropy with function `nn_bce_loss()`, and use optimization algorithm of adam using `opim_adam`. Specify a learning rate of 0.01, and use a batch size of 64 (The model update weights every time from only 64 data points to improve training speed and convergence). Set max epochs (the number of full passes over the dataset) to 20. Calculate the evaluation metric of AUROC using `luz_metric_binary_auroc()`, the validation data used to calculate evaluation metric is 20% of data randomly sampled.
+
+```{r}
+set.seed(123)
+# 1. Ensure the input/output datatypes are base matrix/array in R 
+numeric_labels <- ifelse(m6A_data$m6A_status == "Positive", 1, 0)
+X_raw <- as.array(X_tensor) 
+y_raw <- matrix(numeric_labels, ncol = 1)
+
+# 2. Use luz to fit the deep learning model we just specified
+fitted_model <- mlp_model %>% # Pass the MLP model class/structure
+  setup(
+    loss = nn_bce_loss(), #Set BCE loss
+    optimizer = optim_adam, #Set the optimizer of Adam
+    metrics = list(luz_metric_binary_auroc()) # Set evaluation metric calculated to be AUROC
+  ) %>% 
+  set_opt_hparams(lr = 0.01) %>% #Set model optimization parameters
+  fit(
+    data = list(X_raw, y_raw),
+    epochs = 20,
+    valid_data = 0.2,
+    verbose = TRUE,
+    dataloader_options = list(batch_size = 64) 
+  )
+
+plot(fitted_model)
+metrics_df <- get_metrics(fitted_model)
+print(metrics_df[metrics_df$epoch == 20,]) # See performance on validation data
+```
+
+**Question 2.2.3 (8 marks)**: Recall the lecture slides. We mentioned that MLPs are "Permutation invariant". What does this mean in the context of DNA sequences? Why is this a major disadvantage for genomic tasks compared to sequence-based models like CNNs?
+
+> Your answer:
+>
+> -   Permutation invariant in the context of DNA sequences means that **an MLP** **does not understand the order or neighborhood structure of the neucleotides in the input sequences. Instead, the model treats the input as a set of independent numerical features.**
+>
+> -   From the input layer onward, the model treats the sequence as 404 independent features. It does not inherently know the one-hot encoding representation and orders or patterns of the sequences and motifs. Therefore, sequences with the same ATCG proportion can function similarly as inputs.
+>
+> -   This is a major disadvantage for genomic tasks because **DNA function is highly sequence-order dependent**. For m6A prediction, motifs, k-mers, spacing, strand-specific context, and local dependencies are all important in terms of where they occur within the window and the order of adjacent bases.
+
+## Part 3: Convolutional Neural Network (CNN)
+
+CNNs utilize "Local Receptive Fields" (filters/kernels) to scan across the input sequence, capturing local patterns like sequence motifs (e.g., the DRACH motif for m6A).
+
+**Task 2.3.1 (5 marks)**: Complete the CNN architecture as indicated by the figure and explainary text below.
+
+![CNN architecture](../weekly/W12/cnn.png)
+
+``` text
+==============================================================================
+               CNN ARCHITECTURE FOR m6A MOTIF SCANNING
+==============================================================================
+
+1. INPUT SEQUENCE: 101 bp RNA fragment
+   Shape: (Batch, 4, 101)  <-- 4 channels for One-Hot [A, C, G, T]
+   [================================================================>] 101 bp
+          |
+          |  <-- Conv1D (16 filters, size=5) scans like a magnifying glass
+          v
+2. MOTIF SCANNERS: 16 Feature Maps
+   Shape: (Batch, 16, 97)  <-- 101 - 5 + 1 = 97 bp
+   [=============================================================>] 97 bp
+   [=============================================================>] 97 bp
+   (... 16 parallel tracks for 16 different motifs ...)
+          |
+          |  <-- MaxPool1D (size=2) keeps only the strongest signals
+          v
+3. SUMMARIZED SIGNALS: Down-sampled Maps
+   Shape: (Batch, 16, 48)  <-- 97 / 2 = 48 bp
+   [==============================>] 48 bp
+   [==============================>] 48 bp
+   (... 16 parallel tracks ...)
+          |
+          |  <-- Flatten (Unrolls everything into a single long line)
+          v
+4. FULLY CONNECTED: Final Feature Vector
+   Shape: (Batch, 768)     <-- 16 channels * 48 bp = 768 features
+   [|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||] 768 features
+          |
+          |  <-- Linear Layer (fc1) + Sigmoid Activation
+          v
+5. OUTPUT: Modification Probability
+   Shape: (Batch, 1)
+   [ 0.85 ]  <-- Final Yes/No decision for m6A modification
+==============================================================================
+```
+
+**Clarifying the "Batch" Dimension vs. Dataset Size**
+
+Note that `torch`'s 1D convolution expects inputs in the shape (`Batch`, `Channels`, `Sequence_Length`). We will permute our tensor before feeding it in.
+
+You might wonder: "If our dataset has 20,000 sequences, why does the model structure say (Batch, 101, 4) instead of (20000, 101, 4)?"
+
+-   Total Dataset Size ($N = 20,000$): This is the total number of m6A sequences we extracted from the genome.
+
+-   Batch Size (specified in `luz` as 64): Training a model on all 20,000 sequences at once would overwhelm the computer's memory. Therefore, the data loader in `luz` acts as a "slicer", chopping our giant 20,000-row tensor into many small batches, each containing exactly 64 sequences.
+
+-   The Batch Dimension in Code: Inside the `nn_module`, the first dimension is dynamically adaptive. During training, luz feeds these 64-sequence slices into the model one by one. Thus, the actual shape of `x` entering your `forward()` function is `(64, 101, 4)`. The model only cares about processing "the current batch" of 64 sequences simultaneously.
+
+```{r}
+# Please fill in the missing code in the ____ areas.
+set.seed(123)
+cnn_model <- nn_module(
+  "m6A_CNN",
+  
+  initialize = function() {
+    # 1D Convolution: input channels = 4 (A,C,G,T)
+    # Let's use 16 filters (kernels) of size 5 to scan for 5-mer motifs
+    self$conv1 <- nn_conv1d(in_channels = 4, out_channels = 16, kernel_size = 5)
+    
+    # Fully connected layer for final classification
+    # After conv1 (kernel 5, no padding) and pooling, the sequence length reduces.
+    # For a 101bp sequence -> conv(5) -> 97bp -> maxpool(2) -> 48bp.
+    # Flattened size = 16 channels * 48 = 768.
+    self$fc1 <- nn_linear(in_features = 16 * 48, out_features = 1)
+  },
+  
+  forward = function(x) {
+    # Input shape is (Batch, 101, 4). CNN expects (Batch, 4, 101).
+    x <- x$permute(c(1, 3, 2))
+    
+    # Apply Convolution and ReLU
+    x <- self$conv1(x)
+    x <- nnf_relu(x)
+    
+    # Apply Max Pooling to down-sample and keep the strongest motif signals
+    x <- nnf_max_pool1d(x, kernel_size = 2)
+    
+    # Flatten and classify
+    x <- torch_flatten(x, start_dim = 2)
+    x <- self$fc1(x)
+    return(nnf_sigmoid(x))
+  }
+)
+
+# Test the CNN
+model_cnn <- cnn_model()
+output_cnn <- model_cnn(X_tensor)
+head(output_cnn)
+```
+
+**Task 2.3.2 (3 marks)** Adapt the training code at 2.2 to the CNN model and inspect on its performance on our m6A dataset.
+
+```{r}
+# Please enter the code to train the CNN model we have just setup
+set.seed(123)
+# 1. Ensure the input/output datatypes are base matrix/array in R 
+numeric_labels <- ifelse(m6A_data$m6A_status == "Positive", 1, 0)
+X_raw <- as.array(X_tensor) 
+y_raw <- matrix(numeric_labels, ncol = 1)
+
+# 2. Use luz to fit the deep learning model we just specified
+fitted_model <- cnn_model %>% # Pass the CNN model class/structure
+  setup(
+    loss = nn_bce_loss(), #Set BCE loss
+    optimizer = optim_adam, #Set the optimizer of Adam
+    metrics = list(luz_metric_binary_auroc()) # Set evaluation metric calculated to be AUROC
+  ) %>% 
+  set_opt_hparams(lr = 0.01) %>% #Set model optimization parameters
+  fit(
+    data = list(X_raw, y_raw),
+    epochs = 20,
+    valid_data = 0.2,
+    verbose = TRUE,
+    dataloader_options = list(batch_size = 64) 
+  )
+
+plot(fitted_model)
+metrics_df <- get_metrics(fitted_model)
+print(metrics_df[metrics_df$epoch == 20,]) # See performance on validation data
+```
+
+**Question 2.3.3 (8 marks)**: The AUC of CNN is higher than MLP on the validation data but not on the training data, can you explain the reason behind it? Which performance really count?
+
+> Your answer:
+>
+> -   Because MLP and CNN learn sequence information differently.
+>
+> -   The MLP flattens each sequence into 404 independent features, so **it fits training-specific patterns but does not naturally preserve local nucleotide order**. This may lead to **overfitting**, which largerly improve training performance but can lead to weaker generalization (valid data AUC).
+>
+> -   In contrast, the CNN uses convolutional filters that scan along the sequence and learn local motif-like patterns. These filters are shared across positions, so the **CNN has fewer effective assumptions tied to exact positions and can capture biologically meaningful local patterns more robustly.** Therefore, its training AUC may not be the highest, but its validation AUC can be better because it **generalizes better to unseen sequences**.
+>
+> -   **The validation performance is the one that really counts**, because it estimates how well the model performs on unseen data, which is the ultimate purpose of model development. Training AUC only shows how well the model fits the training set, while validation AUC better reflects generalization ability.
+
+## Part 4: Transformer (Self-Attention Mechanism)
+
+The Transformer is the core architecture behind Foundation Models (like scGPT discussed in class). Instead of a small scanning window like CNNs, it uses **Self-Attention** to calculate the interaction score between *every* token (nucleotide) and *every other* token simultaneously.
+
+**Task 2.4.1 (6 marks)**: Fill in the fundamental components of the Self-Attention mechanism based on your lecture notes.
+
+Self-Study Tip: It's a great habit to read official documentation. In your R console, type `?nn_transformer_encoder_layer` and hit Enter. Look at the help page to see how `d_model` and `nhead` are formally defined by the torch package.
+
+```{r}
+# Please fill in the missing code in the ____ areas.
+set.seed(123)
+transformer_model <- nn_module(
+  "m6A_Transformer",
+  
+  initialize = function(d_model = 4, nhead = 2) {
+    # A standard Transformer Encoder Layer
+    # d_model: the number of expected features in the input (4 for one-hot A,C,G,T)
+    # nhead: the number of heads in the multiheadattention models (i.e. how many sets of attention mechanisms will be trained in PARALLEL)
+    self$encoder_layer <- nn_transformer_encoder_layer(
+      d_model = d_model, 
+      nhead = nhead, 
+      batch_first = TRUE
+      )
+    
+    self$fc <- nn_linear(in_features = 101 * 4, out_features = 1)
+  },
+  
+  forward = function(x) {
+    # Transformer expects input (Batch, Seq_Len, d_model) -> (Batch, 101, 4)
+    # Pass through attention mechanism
+    x <- self$encoder_layer(x)
+    
+    # Flatten and classify
+    x <- torch_flatten(x, start_dim = 2)
+    x <- self$fc(x)
+    return(nnf_sigmoid(x))
+  }
+)
+
+# Test the Transformer
+model_transformer <- transformer_model()
+output_transformer <- model_transformer(X_tensor)
+head(output_transformer)
+```
+
+Please note the training of transformer model for this data can take hours on CPU, therefore I recommend students to test the training process on your own computer (or wait when our server is not heavily used), and it will not be assessed in this practical. In practice, the transformer model is better suited for training on multiple **GPUs**, that is why modern deep learning research can be a battle for computational resources.
+
+**Question 2.4.2 (8 marks)**: In the lecture, we introduced the Attention Mechanism using three learned feature matrices: $Q$, $K$, and $V$.
+
+Briefly describe what $Q$ (Query), $K$ (Key), and $V$ (Value) represent intuitively when a Transformer model looks at a genomic sequence. How is the "Attention score" calculated mathematically between tokens?
+
+> Your answer:
+>
+> -   In the self-attention mechanism, **each nucleotide in the genomic sequence is treated as a token**. For each token, the Transformer learns three feature representations: Q, K, and V.
+>
+>     -   **Q (Query) represents what a nucleotide position wants to search for in the sequence.** For example, the candidate m6A site may query whether nearby or distant positions contain relevant motif or sequence-context information.
+>
+>     -   **K (Key) represents what each nucleotide position can match or respond to.** If another base has a key that is highly compatible with the query, that position will receive a higher attention score.
+>
+>     -   **V (Value) represents the actual information that a nucleotide position delivers when it is attended to.** After matching is calculated using Q and K, the model uses V to pass the relevant sequence information forward.
+>
+> -   **Mathematically, the attention score is calculated for each token using the equation to measure its attention to all other tokens:**
+>
+>     $$A = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)$$
+>
+>     where $QK^T$ measures the matching score between every pair of tokens, $\sqrt{d_k}$ is used to scale the dot product, and softmax converts the scores into attention weights.
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

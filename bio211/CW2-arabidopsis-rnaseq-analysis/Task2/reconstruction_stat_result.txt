@@ -1,0 +1,16 @@
+== GTF-level (re-assembled transcripts) ==
+transcripts	15108
+exons	49779
+median_exons_per_transcript	3
+median_transcript_span_bp	1204
+
+== Locus-level abundance from C1.txt ==3
+known_genes_rows	32832
+strg_loci_rows	14177
+TPM_sum	1846008.356
+Top5_known_by_TPM	TPM	GeneID	GeneName
+	20298.289	gene:AT1G67090	RBCS1A
+	12308.817	gene:AT5G38410	RBCS3B
+	10316.266	gene:AT5G38420	RBCS2B
+	9282.782	gene:ATCG00470	atpE
+	7793.940	gene:ATCG00480	atpB

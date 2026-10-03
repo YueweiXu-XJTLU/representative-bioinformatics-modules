@@ -1,0 +1,9 @@
+Date: Sat 29 Nov 2025 16:34:18 
+Ligand: CC(C)C[C@@H](C(=O)O)N[C@@H](CC1=CN=CN1CC2=CC(=CC(=C2)Cl)Cl)C(=O)O
+Method: AC
+Target: 1R4L_protein_zn_water_cl.pdb
+Sampling exhaustivity: 90
+Cavity prioritization: 70
+Random Initial Conditions: 1
+Box size: 15 15 15
+Box center: 39.0 8.0 22.0

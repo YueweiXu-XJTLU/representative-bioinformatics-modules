@@ -1,0 +1,57 @@
+---
+title: "Debugging R functions"
+output: html_document
+author: Zhen Wei
+date: October 10, 2021
+self-contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## How to debug functions in R
+
+Following example is borrowed from Hadley Wickham advanced R: <https://adv-r.hadley.nz/debugging.html>
+
+### Locating errors
+
+Here’s a example: you can see that f() calls g() calls h() calls i(), which checks if its argument is numeric:
+
+```{r}
+f <- function(a) g(a)
+g <- function(b) h(b)
+h <- function(c) i(c)
+i <- function(d) {
+  if (!is.numeric(d)) {
+    stop("`d` must be numeric", call. = FALSE)
+  }
+  d + 10
+}
+
+# debug(f)
+
+f("Hello")
+
+# undebug(f)
+```
+
+To do: demonstrate the use of `debug() / debugonce()`
+
+Here’s another example:
+
+```{r}
+toDebug <- function() {
+    a = 1
+    b = 2
+    browser()
+    for(i in 1:100) {
+        a = a * b
+    }
+    return(a)
+}
+
+toDebug()
+```
+
+Todo: demonstrate the use of `browser()`

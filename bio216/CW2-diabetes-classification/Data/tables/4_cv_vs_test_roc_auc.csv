@@ -1,0 +1,6 @@
+,Model,CV ROC-AUC,ROC-AUC
+0,Random Forest,0.9549,0.9589
+1,SVM,0.8978,0.9245
+2,Logistic Regression,0.9029,0.9116
+3,Gradient Boosting,0.9601,0.9636
+4,KNN,0.8615,0.8988

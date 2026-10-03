@@ -1,0 +1,829 @@
+---
+title: "BIO214 Lab Practical 4: Batch Effect Correction and Hidden Markov Model"
+author: "Yuewei Xu "
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+self-contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center")
+```
+
+## Practical setup
+
+This exercise demonstrates the application of several core methods for batch effect correction using a simulated RNA-Seq dataset. The performance of these methods will be evaluated based on their impact on gene expression quantification and differential gene expression analysis (DGEA).
+
+### Simulation
+
+The count matrix is sampled from negative binomial distributions, with batch effects incorporated using the GC-content bias model from the `polyester` package. We simulate 30 samples across three batches and two biological conditions, applying a unique GC bias trend to each batch.
+
+Ten percent of the genes are designated as differentially expressed between the two conditions (WT and Treatment); the effect sizes for differential expression are set to either 0.5 or 2 with equal probability.
+
+```{r, cache=TRUE}
+# Extract the genes on chr1 of the human genome
+library(BSgenome.Hsapiens.UCSC.hg19) # reference genome hg19
+library(TxDb.Hsapiens.UCSC.hg19.knownGene) # annotation for hg19
+genome       <- BSgenome.Hsapiens.UCSC.hg19
+txdb         <- TxDb.Hsapiens.UCSC.hg19.knownGene
+exbg_chr1    <- GenomeInfoDb::keepSeqlevels(exonsBy(txdb, by = "gene"), "chr1", pruning.mode="coarse") # collect all exons, remain only exons in chromosome 1
+geneSeq_chr1 <- extractTranscriptSeqs(Hsapiens, exbg_chr1) # extract gene sequences (exons only)
+gnum         <- length(geneSeq_chr1) #Total number of genes
+
+# Simulate a count matrix containing 30 samples
+sample_num  <- 30
+bio_label   <- rep(c("WT", "Treatment"), each = 15)               # Setup biological conditions
+batch_label <- rep(c("Batch1", "Batch2", "Batch3"), c(10, 8, 12)) # Setup batches
+
+set.seed(158)
+gexpr_wt  <- rgamma(gnum,shape = 4,scale = 10) # for each gene (total number: gnum), generate a expression level
+# this expression level is processed as ground truth, namely \mu for binomial negative distribution simulation, and gamma distribution is better for mu simulation
+gexpr_trt <- gexpr_wt
+num_diff  <- round(gnum*0.1) # 10% of genes are deferentially expressed
+diff_indx <- sample.int(gnum, num_diff)
+diff_size <- sample(c(0.5,2), size = num_diff, replace = TRUE) # The fold changes are either 1/2 or 2
+gexpr_trt[diff_indx] <- gexpr_trt[diff_indx] * diff_size
+mu_gexpr  <- c(rep(gexpr_wt,15), rep(gexpr_trt,15))            # Ground truth gene expression level
+#Generate gene count using NB distribution
+readmat   <- matrix(rnbinom(sample_num*gnum, mu = mu_gexpr, size = 5), ncol=sample_num) # gene * sample (2338 * 30)
+
+
+# Add GC content bias using built-in bias models in package polyester
+# install.packages("polyester-master", repos = NULL, type = "source")
+library(polyester)
+gc_trends <- rep(1, sample_num)
+gc_trends[batch_label=="Batch2"] <- 4 
+gc_trends[batch_label=="Batch3"] <- 7 #Specify different GC biases for different batches
+
+set.seed(137)
+readmat_biased <- add_gc_bias(readmat, gc_trends, geneSeq_chr1)
+readmat_biased[is.na(readmat_biased)] <- 0
+readmat_biased <- pmax(readmat_biased, 0) # negative --> 0
+
+# Make a summarized experiment object to store the gene expression data
+library(SummarizedExperiment)
+se <- SummarizedExperiment(
+  assay   = list(count = readmat_biased), 
+  colData = DataFrame(
+    bio_label = bio_label,
+    batch_label = batch_label
+    )
+  )
+rowRanges(se) <- exbg_chr1
+diff_genes    <- rep(FALSE, gnum)
+diff_genes[diff_indx] <- TRUE
+rowData(se)   <- data.frame(
+  GC = letterFrequency(geneSeq_chr1, "GC", as.prob = TRUE)[,1],
+  true_gexpr_wt = gexpr_wt,
+  true_gexpr_trt = gexpr_trt,
+  diff_genes = diff_genes
+  ) # Store the GC contents and the "ground truth" under rowData()
+colnames(se)  <- paste0("sample_", 1:sample_num)
+```
+
+### Data structure
+
+The experimental designs (metaData) and count matrix can be accessed by `colData()` and `assay()`, respectively.
+
+```{r}
+se
+colData(se) # Biological and batch labels
+rowData(se) # Gene's gc content and the "ground truth" labels
+```
+
+## Exploratory Data Analysis
+
+As the primary objective of Exploratory Data Analysis (EDA) is to identify unexpected patterns or issues, it represents a critical stage in the batch effect mitigation workflow. EDA serves as a systematic "sanity check" during complex data science projects and is essential for ensuring analytical validity, even if it does not always lead to more "significant" or "positive" findings.
+
+### Clustering
+
+**Task 1.1 (5 marks)**: Perform hierarchical clustering on the samples using the log(count + 1) transformed assay. Use Euclidean distance as the similarity metric and set the clustering method to "ward.D2".
+
+```{r}
+d <- dist(t(log(assay(se) + 1)), method = "euclidean")
+hc <- hclust(d, method = "ward.D2")
+```
+
+Next, the hierarchical clustering (hclust) dendrograms are plotted using two sets of labels for comparison.
+
+```{r, fig.width=7, fig.height = 4}
+library(rafalib)
+myplclust(hc, labels = se$batch_label, lab.col = as.fumeric(as.character(se$batch_label)), cex = 0.5)
+myplclust(hc, labels = se$bio_label,   lab.col = as.fumeric(as.character(se$bio_label)),   cex = 0.5)
+```
+
+Judging from the tree structure, both biological and batch factors contribute significantly to the column-wise distances. However, the experimental conditions appear to have a larger effect, as the partitions at $k = 2$ perfectly classify the WT and Treatment groups.
+
+### Principal component analysis
+
+**Task 1.2 (5 marks)**: Compute the empirical covariance matrix from the transformed matrix (log(count + 1)), then calculate the first and second principal components. Store these components in the variables PC1 and PC2.
+
+```{r}
+cov_mat <- cov(log(assay(se) + 1)) # Empirical covariance
+decomp <- eigen(cov_mat) # Eigen decomposition
+PC1 <- decomp$vectors[,1]
+PC2 <- decomp$vectors[,2]
+```
+
+```{r,fig.width = 5, fig.height = 5}
+image(cov_mat)
+```
+
+The covariance matrix clearly shows distinct clusters corresponding to the three batches.
+
+```{r, fig.width = 5, fig.height = 3.5}
+library(ggplot2)
+ggplot(
+  data.frame(
+    PC1 = PC1, 
+    PC2 = PC2, 
+    batch_label = batch_label,
+    bio_label = bio_label
+    ),
+  aes(x=PC1,y=PC2,colour=batch_label,shape=bio_label))+
+  geom_point()+
+  theme_classic()+
+  scale_color_brewer(palette = "Dark2")
+```
+
+```{r, fig.width = 8, fig.height = 4}
+par(mfrow = c(1,2))
+boxplot(PC1~batch_label)
+boxplot(PC2~batch_label) 
+dev.off()
+```
+
+From the scatter plots and boxplots above, it is evident that both PC1 and PC2 capture the batch labels effectively. This indicates that PCA can successfully identify batch effects induced by GC-content bias. Consequently, we can address these effects using factor analysis-based approaches, such as Surrogate Variable Analysis (SVA) (to be implemented in Section 3.2).
+
+### Differential gene expression analysis
+
+Before implementing any correction measures, we will perform DGEA using row-wise t-tests. The accuracy of this initial analysis will serve as a baseline for evaluating subsequent correction methods.
+
+**Task 1.3 (5 marks)**: For all genes, compute the t-test $p$-values (testing for differences in means) between the WT and Treatment groups. Subsequently, adjust the $p$-values using the Benjamini-Hochberg (BH) approach.
+
+Note: Use `rowttests()`, a vectorized t-test function from the `genefilter` package. The tests should be performed on the log(count + 1) transformed data.
+
+```{r}
+library(genefilter)
+t_test <- rowttests(
+  log(assay(se) + 1), 
+  fac = factor(colData(se)$bio_label)
+  )
+t_test_pvalues <- t_test$p.value
+padj  <- p.adjust(t_test_pvalues, method = "BH") 
+alpha <- 0.05
+sig_diff_genes  <- padj <= alpha
+true_diff_genes <- rowData(se)$diff_genes
+table(sig_diff_genes, true_diff_genes)
+```
+
+**Question 1.4 (6 marks)**: Based on the resulting confusion matrix, does the $\alpha$ value (0.05) effectively control the False Discovery Rate (FDR)? If not, what might be the underlying cause?
+
+> Your answer:
+>
+> -   **No**, as $FDR = \frac{FP}{TP + FP} = \frac{132}{162 + 132} \approx 44.90\%$, much higher than expected $\alpha = 0.05$.
+>
+> -   A likely cause is **the** **batch effects**. The t-test only compares WT and Treatment groups and does not adjust for batch labels or GC-content bias. Therefore, some genes are called significant because of systematic technical variation rather than true biological differential expression.
+
+## Knowledge-based correction
+
+In the section below, we will correct the data using a knowledge-based approach, which involves modeling the generative process of technical artifacts. In Next-Generation Sequencing (NGS), the predominant source of such artifacts is often the amplification bias induced by the GC content of cDNA fragments.
+
+Such bias can typically be characterized by fitting smoothed regression models to the relationship between the GC content of gene features and their corresponding read counts.
+
+```{r, fig.width=7, fig.height=4}
+poisson_smooth <- function(...) {
+  geom_smooth(method = "glm", method.args = list(family = "poisson"), ...)
+}
+
+plot_df           <- reshape2::melt(assay(se))[,-1]
+colnames(plot_df) <- c("sample","gene_count")
+plot_df$GC        <- rowData(se)$GC
+plot_df$batch     <- rep(se$batch_label, each = gnum)
+
+ggplot(
+  plot_df, 
+  aes(x = GC, y = gene_count, group = sample, color = batch)
+  ) +  
+  poisson_smooth(
+    formula = y ~ splines::ns(x, 5), 
+    size = 0.5, 
+    se = FALSE
+    ) +
+  theme_classic() + 
+  scale_color_brewer(palette = "Dark2") +
+  labs(
+    x = "GC content",
+    y = "Rate of read count",
+    main = "Poisson Regression"
+    ) 
+```
+
+The figure above illustrates the Poisson GLM fits, where the y-axis represents the expected read count ($\lambda$ of the Poisson distribution). It is evident that after smoothing the covariate with splines, three distinct trends emerge, corresponding to each batch. For all samples, the probability of observing reads from genes with extreme (very high or very low) GC content is notably low.
+
+As discussed in the lecture, GC bias in NGS is typically characterized by the following statistical model.
+
+For gene $i$, the count $Y_i$ follows a Poisson distribution:
+
+$$Y_i \sim \mathrm{Poisson}(\lambda_i)$$ The mean parameter $\lambda_i$ is decomposed into the product $\lambda_i = \theta_i \times f(X_i) \times s$, where:$\theta_i$ represents the true expression level.$f(X_i)$ denotes the GC-content bias function.$s$ represents the sequencing depth.The bias term $f(X_i)$ is estimated from the fitted values of the log-link Poisson linear models (consistent with the fits shown above). Consequently, the corrected read count can be derived as $Y_i^{\mathrm{correct}} = Y_i / \hat{f}(X_i)$. Note that since our simulation assumes uniform sequencing depth ($s$), the corrected count $Y_i^{\mathrm{correct}}$ directly estimates the true expression level $\hat{\theta}_i$.
+
+For model identifiability, we impose the constraint $\frac{1}{n}\sum_{\forall i} \hat{f}(X_i) = 1$ on the GC bias term. To satisfy this constraint, we center the linear model fits on the log scale (the scale of the linear predictor) before exponentiating.
+
+Note: Identifiability constraints for multiplicative terms typically require a mean of 1, whereas additive terms require a mean of 0. Multiplicative components become additive when transformed to the log scale.
+
+**Task 2.1 (8 marks)**: Complete the code chunk below to derive a matrix of correction offsets. You are required to **center** (i.e. x-mean(x) ) the GLM fits to ensure the identifiability constraint is met.
+
+```{r}
+correction_offsets <- matrix(NA, nrow = gnum, ncol = sample_num) # f(X)
+
+for(i in 1:ncol(se)){
+  
+ glm_fit_i <- glm(
+   y ~ splines::ns(x, 5), 
+   data = data.frame(
+     x=rowData(se)$GC, 
+     y=assay(se)[,i]
+     ), 
+   family = "poisson") # paramter/model
+ fitted_values_i <- predict(glm_fit_i) # Calculate the glm fits on the linear combination scale
+ 
+ correction_offsets[,i] <- exp(fitted_values_i - mean(fitted_values_i, na.rm = TRUE)) # Center the glm fits and exponentiate it to get the offsets on the Poisson rate scale
+
+}
+
+correction_offsets[1:2,1:3]
+```
+
+**Task 2.2 (8 marks)**: Using the correction offsets calculated above, derive the GC-corrected count matrix and store it in `assay_correct_knowledge`.
+
+```{r}
+assay_correct_knowledge <- assay(se) / correction_offsets
+```
+
+```{r, fig.width = 5, fig.height = 3.5}
+# Create functions to compute confusion matrix and PCA plots from count matrix X
+DGEAcfm <- function(X,biolab,diff_genes){
+Ttest <- rowttests(log(X+1), factor(biolab))
+t_test_result <- p.adjust(Ttest$p.value, method = "fdr") < 0.05
+table(t_test_result, diff_genes)  
+}
+
+DGEAcfm(assay_correct_knowledge, se$bio_label, rowData(se)$diff_genes)
+
+PCAplot <- function(X, biolab, batchlab){
+require(ggplot2)
+cov_mat <- cov(log(X+1))
+decomp <- eigen(cov_mat)
+PC1 <- decomp$vectors[,1]
+PC2 <- decomp$vectors[,2]
+ggplot(
+  data.frame(
+    PC1 = PC1, 
+    PC2 = PC2, 
+    batch_label = batchlab,
+    bio_label = biolab
+    ),
+  aes(x = PC1, y = PC2, colour = batch_label, shape = bio_label)
+  ) +
+  geom_point() +
+  theme_classic() +
+  scale_color_brewer(palette = "Dark2")  
+}
+
+PCAplot(assay_correct_knowledge, se$bio_label, se$batch_label)
+```
+
+**Question 2.3 (6 marks)**: Based on the resulting confusion matrix, does the t-test now exhibit better control over the FDR following GC correction?
+
+> Your answer:
+>
+> -   **Yes**, the $FDR = \frac{FP}{TP + FP} = \frac{11}{164 + 11} \approx 6.29\%$, much lower than previous 44.90%, and closer to expected $\alpha = 0.05$.
+>
+> -   Also, points in PCA-plot are now mainly separated according to bio_label instead of GC-specific batch_label, indicating that batch effects induced by GC-content bias tend to be removed successfully.
+
+## Knowledge-Free Correction
+
+### ComBat / Multiple Linear Regression
+
+As discussed in class, when batch factors are known, we can directly fit multiple linear regression (MLR) models for each gene by treating the batch labels as covariates for adjustment. By doing so, the regression coefficients and their corresponding $p$-values are adjusted to account for batch confounding.
+
+**Task 3.1 (8 marks)**: Complete the regression design in the code chunk below to implement the ComBat-style adjustment.
+
+```{r, cache=TRUE}
+lm_coefficients_combat <- matrix(NA, nrow = gnum, ncol = 4) # ncol = 4 (WT/Batch1 as reference): Intercept + Treatment + Batch2 + Batch3
+lm_pvalues_combat      <- rep(NA, gnum)
+se$bio_label           <- factor(se$bio_label, levels = c("WT","Treatment")) # Set WT as the reference level in linear model fits
+
+for (i in 1:gnum) {
+  model_matrix_i <- data.frame(
+    y = log(assay(se)[i,] + 1), 
+    b = se$bio_label, 
+    w = se$batch_label
+    )
+  model_fit_i  <- lm(y ~ b + w, data = model_matrix_i) #Fill the regression design at here
+  lm_coefficients_combat[i,] <- summary(model_fit_i)$coefficients[,1]
+  lm_pvalues_combat[i]       <- summary(model_fit_i)$coefficients["bTreatment","Pr(>|t|)"]
+}
+
+colnames(lm_coefficients_combat) <- names(coefficients(model_fit_i))
+lm_pvalues_combat[is.na(lm_pvalues_combat)] <- 1
+
+alpha <- 0.05
+mlr_test_result_combat <- p.adjust(lm_pvalues_combat,method = "fdr") < alpha
+table(mlr_test_result_combat, diff_genes)
+```
+
+From the confusion matrix based on the $p$-values of the `bTreatment` coefficient, we observe that almost no genes remain significant after adjusting for confounding batch factors. This ComBat-style approach results in an "over-correction" (or "over-kill") because the biological labels are heavily confounded with the batch labels in our simulation.
+
+### Unsupervised Batch Effect Correction via Surrogate Variable Analysis (SVA)
+
+SVA is a factor analysis-based approach that estimates latent factors without requiring prior knowledge of specific batch or technical variables. This method is particularly advantageous in new technical domains where the artifact generation process is poorly understood.
+
+For gene expression data, SVA typically requires a transformed assay as input to ensure that the noise structure is approximately Gaussian.
+
+**Task 3.2 (8 marks)**: Perform SVA on the expression data using the `sva()` function from the sva package. Store the estimated surrogate variables in the variable `SV`.
+
+```{r}
+library(sva)
+transformed_assay <- log(assay(se)+1)
+transformed_assay <- transformed_assay[rowVars(transformed_assay) != 0,] # if a gene's variance == 0, expr in all samples are the same, this may lead to issues during calculation
+
+mod <- model.matrix(~ bio_label, data = colData(se)) # full model `Y = b0 + b1*bio_label + SV effects + e`: specifing the varible to protect
+
+sva_fit <- sva(dat = transformed_assay, mod = mod)
+SV <- sva_fit$sv # vector of each sv values for each sample
+```
+
+```{r, cache=TRUE, fig.width=5, fig.height=3.5}
+boxplot(SV~batch_label)
+
+lm_coefficients_sva <- matrix(NA, nrow = gnum, ncol = 3)
+linear_model_pvalues_sva <- rep(NA, gnum)
+for (i in 1:gnum) {
+  
+  model_matrix_i <- data.frame(
+    y = log(assay(se)[i,] + 1),
+    b = se$bio_label,
+    w = SV
+    )
+  model_fit_i <- lm(y ~ b + w,  data = model_matrix_i) #Fit multiple linear regression by treating the SV as the adjustment variable
+  lm_coefficients_sva[i,]     <- summary(model_fit_i)$coefficients[,1]
+  linear_model_pvalues_sva[i] <- summary(model_fit_i)$coefficients["bTreatment","Pr(>|t|)"]
+}
+colnames(lm_coefficients_sva) <- names(coefficients(model_fit_i))
+linear_model_pvalues_sva[is.na(linear_model_pvalues_sva)] <- 1
+
+mlr_test_result_sva <- p.adjust(linear_model_pvalues_sva,method = "fdr") < 0.05
+table(mlr_test_result_sva, diff_genes)
+```
+
+Results Analysis:
+
+As shown in the boxplots, the surrogate variables (SVs) are highly correlated with the known batch labels. By including the SVs as adjustment variables in the regression model, the $p$-values for the treatment effects become significantly more sensitive, while effectively maintaining FDR control.
+
+## Performance Evaluation
+
+This section presents the code used to compare the correction performance of several methods for batch effect adjustment.
+
+Before comparing the results with the ground truth, we must first compute the corrected expression matrices for the knowledge-free methods. Recall from the lecture that the correction for ComBat and SVA is formulated as:
+
+$$X^{\mathrm{correct}} = X - \hat{\beta} W^T$$ where the columns of $W$ represent the known batch factors (for ComBat) or the estimated surrogate variables (for SVA), and the rows of $\hat{\beta}$ represent the fitted linear model coefficients corresponding to $W$ for each gene.
+
+**Task 4.1 (6 marks)**: Calculate the corrected expression matrices for ComBat and SVA using the coefficients $\hat{\beta}$ and the batch factors $W$, based on the values fitted in the previous sections.
+
+```{r}
+X <- log(assay(se)+1)
+# Check the regression fits over genes
+head(lm_coefficients_combat, 3)
+head(lm_coefficients_sva, 3)
+
+# Calculate the corrected (transformed) expression matrix for combat and sva
+corrected_X_sva    <- X - lm_coefficients_sva[, "w"] %*% t(SV)
+corrected_X_combat <- X - lm_coefficients_combat[, c("wBatch2", "wBatch3")] %*% t(model.matrix(~ se$batch_label)[, -1])
+
+corrected_X_sva[1:3, 1:3]
+corrected_X_combat[1:3, 1:3]
+```
+
+```{r, fig.width=8, fig.height=6}
+library(rafalib)
+PC_df <- function(x, method){
+cov_mat <- cov(x)
+decomp <- eigen(cov_mat)
+data.frame(
+  PC1 = decomp$vectors[,1], 
+  PC2 = decomp$vectors[,2], 
+  batch_label = se$batch_label,
+  bio_label = se$bio_label,
+  method = method
+  )
+}
+
+plot_df <- rbind(
+  PC_df(log(assay(se)+1),"no correction"),
+  PC_df(log(assay_correct_knowledge+1),"GC correction"),
+  PC_df(corrected_X_combat,"Combat"),
+  PC_df(corrected_X_sva,"SVA")
+  )
+
+plot_df$method <- factor(plot_df$method, levels = c("no correction", "GC correction", "Combat", "SVA"))
+
+library(ggplot2)
+ggplot(plot_df, aes(x=PC1,y=PC2,colour=batch_label,shape=bio_label)) +
+  facet_wrap(~method,nrow=2,scales = "free") +
+  geom_point() +
+  theme_classic() +
+  scale_color_brewer(palette = "Dark2")
+```
+
+```{r, fig.width=8, fig.height=4}
+# Add another newly published method for comparison, see ?ComBat_seq for details
+corrected_assay_sva <- exp(corrected_X_sva)-1
+corrected_assay_combat <- exp(corrected_X_combat)-1
+corrected_assay_combat_seq <- ComBat_seq(
+  assay(se),
+  se$batch_label,
+  se$bio_label
+) # use directly to raw count, use negative-binomial-regression
+
+GT_assay <- matrix(c(rep(gexpr_wt,15),rep(gexpr_trt,15)), ncol=sample_num) # ground truth
+
+plot_df2 <- data.frame(
+  MSE = c(
+    apply(GT_assay - assay(se), 2, function(x) mean((x)^2)),
+    apply(GT_assay - assay_correct_knowledge, 2, function(x) mean((x)^2)),
+    apply(GT_assay - corrected_assay_sva, 2, function(x) mean((x)^2)),
+    apply(GT_assay - corrected_assay_combat, 2, function(x) mean((x)^2)),
+     apply(GT_assay - corrected_assay_combat_seq, 2, function(x) mean((x)^2))
+    ), 
+# MSE: Mean Square Error = mean{sum[(y_i - \hat y_i)^2]} for i-th sample
+#apply(error_matrix, margin, function), margin = 2 means apply by col
+  Methods = rep(c("un-corrected","GC corrected","SVA corrected", "Combat corrected", "Combat seq corrected"), each = sample_num))
+
+plot_df2$Methods <- factor(plot_df2$Methods, levels = c("un-corrected", "Combat corrected", "Combat seq corrected", "SVA corrected", "GC corrected"))
+
+ggplot(plot_df2, aes(x=Methods, y=MSE, color=Methods)) +
+  geom_boxplot(outlier.alpha = 0) + 
+  geom_jitter(width = 0.1, alpha=0.8,size = 0.5) + 
+  theme_bw() + 
+  scale_color_brewer(palette = "Dark2") + 
+  theme(axis.text.x = element_text(angle = 310, vjust = -0.5))
+```
+
+The results demonstrate that while all three correction methods improve sample clustering in the PCA plots, the MSE analysis relative to the ground truth reveals that the knowledge-based approach outperforms the others in estimating true expression levels.
+
+**Question 5.1 (10 marks)**: The Trade-off Between Confounding and Correction
+
+In Section 3.1, we observed that ComBat (a linear regression-based approach) resulted in an "over-correction" where almost all biological signals were removed. However, the SVA approach in Section 3.2 managed to recover many true differentially expressed genes despite the heavy confounding between batch and condition.
+
+Explain why SVA might outperform a simple multiple linear regression in this specific confounded scenario. If the batch effect and the biological condition were perfectly confounded (e.g., all WT samples in Batch 1 and all Treatment samples in Batch 2), would any of these methods still work? Why or why not?
+
+> Your answer:
+>
+> -   SVA performed better because it **pre-protected the biological signal** by a full model ($Y = \beta_0 + \beta_1 \times \text{bio_label} + \text{SV effects} + \epsilon$).
+>
+> -   In contrast, ComBat (MLR) directly includes the batch label without considering **correlation between batch and biological signal**.
+>
+> -   If batch and condition are perfectly confounded, **none** of the methods can reliably separate them and remove the batch effects.
+>
+> -   Firstly, batch and condition will become non-identifiable by models, any difference could be explained by either condition or batch.
+>
+> -   Secondly, even if the batches are identified through known labels, remove them will remove the biological conditions at the same time, making the data meaningless.
+
+**Question 5.2 (8 marks)**: Knowledge-Based vs. Knowledge-Free Methods
+
+Our MSE evaluation showed that the knowledge-based Poisson GLM (Section 2) provided the most accurate estimation of true expression levels, outperforming both ComBat and SVA.
+
+In a real-world project where you do not know the ground truth, what are the risks of relying solely on a knowledge-based correction (like GC-content modeling)? Conversely, under what circumstances would you prioritize SVA over a knowledge-based approach, even if the latter is technically more "precise" in a simulated environment?
+
+> Your answer:
+>
+> -   The real world artifact may not be limited to sole type of artifact, such as GC-bias. **Other batches (known & unknown) often exist in parallel.** As a result, using the solely knowledge-based model may lead to incomplete or mis-specified processed data.
+>
+> -   Knowledge-free approach (e.g., SVA) would be preferred when **the artifact source is unknown, poorly recorded, or not easily described by a known covariate**. For example, if EDA shows unexplained sample clustering or hidden structure after known corrections, SVA can used.
+
+## Identify CpG Islands Through a Sequence Generating Model
+
+A primary application of Hidden Markov Models (HMMs) is to **annotate** or parse a genome into its functional biological components, such as exons, introns, and regulatory regions.
+
+In this section, we utilize GC content—the proportion of nucleotides that are Cytosine (C) or Guanine (G)—to classify genomic segments into two categories:
+
+-   **High-GC regions**: Averaging 60% G/C content.
+-   **Low-GC regions**: Averaging 60% A/T content (or 40% G/C).
+
+These regions exhibit distinct physiological properties, including varying melting temperatures ($T_m$), disparate replication timing during the cell cycle, and fluctuating gene densities. While they have been hypothesized to originate from different evolutionary lineages (refer to the isochore hypothesis), this theory remains a subject of ongoing scientific debate.
+
+```{r}
+library(Biostrings)
+# Load the reference genome sequence from a FASTA file
+genome_seq <- readDNAStringSet("../data/genome.fa") 
+# Display the DNAStringSet object
+genome_seq
+```
+
+Upon loading the exemplar genomic sequence, we quantify the rolling GC content using a sliding window approach. Specifically, we apply a window size of 100 base pairs (bp), implemented via the `slidingViews()` function.
+
+```{r,fig.width=8, cache=TRUE}
+# Calculate GC content across sliding windows
+GC_cont_windows <- letterFrequency(
+  DNAStringSet(slidingViews(genome_seq[[1]], 100)), 
+  "GC", 
+  as.prob = TRUE
+  )
+# Plot the GC content distribution
+plot(GC_cont_windows, type="l", col="blue", xlab = "Genome position", ylab = "GC content")
+```
+
+The resulting visualization reveals several prominent **spikes** corresponding to high-GC regions. Our objective is to construct a model capable of predicting these **GC clusters**—known as **CpG islands**—across the entire genomic sequence.
+
+### Model Preparation and HMM Initialization
+
+In the following task, we will implement a **Hidden Markov Model (HMM)** using the `HMM` R package. Since the `HMM` package requires input sequences to be formatted as **character vectors**, we must first decompose the DNA string into individual characters. This transformation is performed using `stringr::str_split()`.
+
+```{r}
+library(HMM)
+observation <- stringr::str_split(as.character( genome_seq[[1]] ),"")[[1]]
+str(observation)
+```
+
+<hr>
+
+**Task 6.1: Model Initialization (6 marks)**
+
+To train the HMM, we must first define the model's architecture using the `initHMM()` function. Based on the provided sample output, complete the code chunk below. Ensure that the transition and emission matrices are parameterized to align with the configurations discussed in the lecture slides. In addition, set the start probabilities of 0.9 for background and 0.1 for CpG.
+
+```{r}
+# Initialize the HMM with two hidden states: Background and CpG
+# Please fill in the code at ___
+hmm = initHMM(
+  c("Background","CpG"), 
+  c("A","T","C","G"), 
+  transProbs = matrix(
+    c(0.95, 0.10, 0.05, 0.90), 
+    ncol = 2, 
+    byrow = FALSE
+    ),
+  emissionProbs = matrix(
+    c(0.25, 0.20, 0.25, 0.20, 0.25, 0.30, 0.25, 0.30), 
+    ncol = 4, 
+    byrow = FALSE
+    ),
+  startProbs = c(0.9, 0.1)
+  )
+print(hmm)
+```
+
+<hr>
+
+**Task 6.2: Model Training and State Inference (6 marks)**
+
+1.  Utilize the `baumWelch()` function from the `HMM` package to train the model using the previously initialized parameters. Store the resulting model in an object named `learned_hmm`.
+
+(Note: The `baumWelch()` function returns a list; you must subset it using `$hmm` to retrieve the fitted HMM object.)
+
+2.  Apply the `posterior()` function to calculate the **posterior probabilities (responsibilities)** of each state via the **Forward-Backward algorithm**.
+
+3.  Use the `viterbi()` function to identify the **optimal state sequence** (the most likely path of CpG island states) across the genome.
+
+```{r}
+# Please fill in the code at ___
+# Train the HMM using the Baum-Welch algorithm
+bw_output <- baumWelch(hmm, observation)
+learned_hmm <- bw_output$hmm
+# bw_output$hmm: hmm training aims to optimize parameters (3 matrices)
+# bw_output$difference: delta of parameters in each iteration, for convergence judgment
+
+# Compute posterior probabilities (responsibilities) for each state
+post <- posterior(learned_hmm, observation)
+
+# Decode the most likely state sequence using the Viterbi algorithm
+bestPath <- viterbi(learned_hmm, observation)
+
+# Display results
+print(learned_hmm) # Estimated HMM parameters
+str(post)          # Structure of the state posterior probabilities
+str(bestPath)      # Structure of the optimal state sequence (Viterbi path)
+```
+
+<hr>
+
+### Understanding the Algorithm
+
+It is crucial to note that the **Baum-Welch algorithm** is a specific implementation of the **Expectation-Maximization (EM) algorithm**:
+
+-   **E-step (Expectation)**: Employs the **Forward-Backward algorithm** to determine the **responsibilities** (posterior probabilities) of the hidden states given the observed sequence.
+
+-   **M-step (Maximization)**: Performs **Maximum Likelihood Estimation (MLE)** to update the transition and emission matrices, along with the initial state distribution ($\pi$). In this step, the state responsibilities act as "**soft counts**" to re-estimate the model parameters empirically.
+
+```{r, fig.width=10, fig.height=4}
+# Construct a data frame for comparative visualization
+plot_df <- data.frame(
+  pos   = rep(1:10000, 2),
+  value = c(post[2, ], (bestPath == "CpG") * 1),
+  group = rep(c("Forward-Backward (Posterior)", "Viterbi (Optimal Path)"), each = 10000)
+)
+
+library(ggplot2)
+# Visualize the state estimates across the genomic sequence
+ggplot(plot_df, aes(x = pos, y = value)) +
+  geom_line(colour = "blue") +
+  facet_grid(~group) +
+  labs(x = "Genomic Position", y = "Probability / State", 
+       title = "HMM State Decoding Comparison") +
+  theme_classic()
+```
+
+**Analysis of Results**
+
+As illustrated in the figures above:
+
+-   The **left panel** displays the **posterior probabilities** (responsibilities) of the "CpG" state derived from the Forward-Backward algorithm. This represents a "soft" probabilistic estimate of the hidden state at each specific genomic position.
+
+-   The **right panel** shows the **Viterbi assignments**, which identify the single most likely sequence of hidden states (the "optimal path") across the entire observed sequence.
+
+The output of the Viterbi algorithm can be interpreted as a **Bayesian classification** (or Maximum A Posteriori sequence) that provides discrete, binary predictions of biological states. While the Forward-Backward algorithm considers all possible paths to find the marginal probability of a state at a given time point, the Viterbi algorithm provides the most probable global "parse" of the genomic sequence.
+
+**Question 6.3 (6 marks)**:
+
+When initializing the emission matrix in `initHMM()`, we set the Background state to a uniform distribution of A, T, C, and G (0.25 each), while intentionally biasing the CpG state toward C and G.
+
+If we were to ignore this "prior knowledge" and initialize the emission probabilities for both states identically (e.g., 0.25 for all nucleotides in both states), how would this impact the parameter training process using `baumWelch()`? Why?
+
+> Your answer:
+>
+> -   **The learned parameters would be un-informative, so the model would not accurately predict CpG islands from observed sequences.**
+>
+> -   If both the CpG and Background states are initialized with identical uniform emission probabilities for ATCG, the latent states become **non-identifiable** from the observations: any nucleotide is equally likely under either state.
+>
+> -   As a result, the E-step of EM-based Baum-Welch algorithm produces **biologically meaningless responsibility chains**, and the M-step has **little useful signal** to optimize the parameters, leading to **a divergent (hard to converge) and biologically un-interpretable model**.
+
+## Manual Implementation of the Viterbi Algorithm
+
+While the `HMM` package provides a convenient `viterbi()` function, understanding its underlying dynamic programming logic is essential. In this task, you will complete a manual implementation of the Viterbi algorithm.
+
+Recall that for each state $j$ at time $t$, the Viterbi score $\delta_t(j)$ is calculated as:
+
+$$\delta_t(j) = \max_{i} [ \delta_{t-1}(i) \times A_{ij} ] \times B_j(o_t)$$
+
+where $A$ is the transition matrix and $B$ is the emission probability.
+
+**Task 7.1 (12 marks)**:
+
+Complete the following R code by filling in the logic for:
+
+1.  **The Recursive Step**: Calculate the Viterbi score for each state at each time point.
+2.  **The Backpointer**: Track which previous state led to the maximum score.
+
+```{r}
+# Setup basic parameters from our learned_hmm
+states <- learned_hmm$States
+symbols <- learned_hmm$Symbols
+A <- learned_hmm$transProbs
+B <- learned_hmm$emissionProbs
+obs <- observation[1:1000] # Let's test on a shorter sequence first
+
+n_states <- length(states)
+n_obs <- length(obs)
+
+# 1. Initialize Viterbi Matrix (delta) and Backpointer Matrix (psi)
+# Rows represent states, Columns represent time steps
+viterbi_mat <- matrix(NA, nrow = n_states, ncol = n_obs)
+backpointer <- matrix(NA, nrow = n_states, ncol = n_obs)
+
+# Initial Step (t=1): delta_1(j) = pi(j) * B_j(o_1)
+# Assume uniform initial distribution pi = c(0.5, 0.5)
+init_pi <- c(0.5, 0.5)
+obs_idx_1 <- which(symbols == obs[1]) # G --> 4
+viterbi_mat[, 1] <- init_pi * B[, obs_idx_1]
+
+# 2. Recursion Step (t = 2 to T)
+for (t in 2:n_obs) {
+  obs_idx <- which(symbols == obs[t])
+  
+  for (j in 1:n_states) {
+    # --- STUDENT FILL IN START ---
+    
+    # Calculate potential scores from all previous states i
+    # Transition from state i to state j: viterbi_mat[i, t-1] * A[i, j]
+    priors <- viterbi_mat[, t - 1] * A[, j]
+    
+    # Identify the maximum score and the index of the winning state
+    best_prev_state <- which.max(priors) # Hint: use which.max()
+    max_prior <- max(priors) # Hint: use max()
+    
+    # Update the matrices
+    viterbi_mat[j, t] <- max_prior * B[j, obs_idx]
+    backpointer[j, t] <- best_prev_state
+    
+    # --- STUDENT FILL IN END ---
+  }
+  
+  # Scaling to prevent underflow (optional but recommended for long sequences, avoid extremely small values been recognized as 0)
+  viterbi_mat[, t] <- viterbi_mat[, t] / sum(viterbi_mat[, t])
+}
+
+# 3. Termination & Path Backtracking
+best_path_idx <- numeric(n_obs)
+best_path_idx[n_obs] <- which.max(viterbi_mat[, n_obs]) # terminial node
+
+for (t in (n_obs - 1):1) {
+  best_path_idx[t] <- backpointer[best_path_idx[t + 1], t + 1] # state of current node is decided by number in backpointer in next node & state stored in best_path_idx in next node
+}
+
+# Convert indices back to state names
+manual_path <- states[best_path_idx]
+
+# Validation: Compare with HMM package result
+all(manual_path == viterbi(learned_hmm, obs))
+```
+
+**Question 7.2 (8 marks)**:
+
+In our previous comparative visualization, you observed that the Forward-Backward algorithm provides smooth posterior probability curves (values between 0 and 1), whereas the Viterbi algorithm provides "hard" binary assignments (either 0 or 1).
+
+Suppose a specific genomic region has a posterior probability that stays consistently around $0.51$ for 100 consecutive base pairs. How might the results from the Viterbi algorithm differ from a simple thresholding approach (e.g., calling a state "CpG" if $P > 0.5$)? In the context of biological annotation, which approach do you think is more "robust," and why?
+
+> Your answer:
+>
+> -   Simple thresholding would classify all 100 bp as **CpG** due to higher posterior probability.
+>
+> -   Viterbi ***may*** classify this into **Background**, as optimizes the whole local state path, including considering transition probabilities and penalties between states. As a result, if the evidence for CpG is weak and switching states is penalized, Viterbi may keep the region as Background.
+>
+> -   For biological annotation, **Viterbi is usually more robust**.
+>
+> -   Because it considers whole local state paths, enforces state continuity and avoids unstable calls from marginal posterior probabilities.
+
+## What is the Average Frequency of CpG Islands?
+
+Given the parameters of an HMM, a fundamental question is to determine the expected proportion of each state across a long genomic sequence. In this context, we aim to calculate the fraction of the genome that is classified as a **CpG island**.
+
+To address this, we leverage the fact that the latent states of an HMM form a **Markov chain**. Over a sufficiently large number of transitions, a regular Markov chain converges to a **stationary distribution**, regardless of its initial state.
+
+### Mathematical Framework
+
+The evolution of the state distribution over time can be described through matrix multiplication:
+
+$$\pi^{(t)} = \pi^{(t-1)} A$$ Where:
+
+-   $\pi^{(t)}$ represents the state probability distribution at time step $t$.
+-   $A$ is the **transition probability matrix**.
+
+A stationary distribution $\pi$ is reached when the state distribution remains invariant under the transition matrix:
+
+$$\pi = \pi A$$
+
+Implementation and VerificationWe can solve for $\pi$ using two complementary approaches:
+
+1.  **Iterative Power Method**: Numerically simulate the state transitions over a large number of iterations until the distribution converges.
+
+2.  **Eigen-decomposition**: Analytically solve the equation $\pi = \pi A$. This implies that $\pi$ is the left eigenvector of $A$ corresponding to the eigenvalue $\lambda = 1$. (In R, we typically compute this as the right eigenvector of the transposed matrix $A^T$).
+
+```{r}
+# Extract the transition matrix from the trained HMM
+A <- learned_hmm$transProbs
+pi <- c(0.9,0.1) #Initial state distribution
+
+pi2 <- pi %*% A
+while( mean(abs(pi2 - pi)) > 1e-30 ){
+  pi <- pi2
+  pi2 <- pi %*% A
+}
+
+pi2 #Stationary distribution
+
+# Method 2: Eigen-decomposition
+# The stationary distribution is the normalized first eigenvector of the transposed matrix
+eigenvector <- eigen(t(A))$vectors[,1] 
+eigenvector/sum(eigenvector) # normalization
+```
+
+Both methods yield identical results for the stationary distribution of our CpG island model. Based on our fitted HMM, we can conclude that, in the long run, approximately **68.8%** of the genome is predicted to be "Background," while **31.1%** is predicted to be **GC-enriched CpG islands**.
+
+**Question 8.1 (6 marks)**:
+
+Through mathematical derivation, we found that under this HMM, approximately 31.1% of the genome is expected to be in the "CpG island" state at equilibrium. However, in actual mammalian genomes, the frequency of CpG sites is far lower than theoretical expectations due to C-to-T deamination mutations over evolutionary time.
+
+If your trained HMM predicts a proportion of CpG islands that is significantly higher than the actual distribution found in a real genome, what does this suggest about potential biases in your training dataset (`../data/genome.fa`)? How should you refine your data selection to make the model more representative of a real-world genome?
+
+> Your answer:
+>
+> -   Our training dataset is likely **biased toward GC/CpG-rich regions with low C-to-T deamination mutations rate**, such as specific promoters, exons, or other functional regions.
+>
+> -   This bias would cause the HMM to overestimate the frequency of the CpG state, either by learning overly GC-rich emission probabilities or transition probabilities that make CpG islands too frequent or too long.
+>
+> -   To improve it, the training data should be refined by using **broader stratified sampling** **across the genome**, including promoters, exons, UTRs, GC-rich regions, AT-rich regions, mutation-rich regions, and regions from different chromosomes.
+>
+> -   Alternatively, **the sequence length or total dataset size could be increased** so that the HMM can learn more realistic transition patterns, including the typical length and spacing of CpG islands in real genomes.
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

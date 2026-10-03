@@ -1,0 +1,794 @@
+---
+title: "BIO215 Session 1 – Practicals: R programming basics"
+author: "Yuewei Xu"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true # open a catalog for this file
+    toc_float: true # let the catalog float on the left side
+    number_sections: true # automatic index
+    code_folding: "show" # expose the fold button of code chunks
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to your first R practical.
+
+Format of this file:
+
+Demo blocks → teacher shows, code is provided.
+
+Quiz blocks → student practice, description is given, sometimes with partial code.
+
+You can refer to the outcomes under the quiz code chunk in the HTML file for the standard (correct) outcomes.
+
+✅ Checkpoint → quick question to ensure understanding.
+
+## 1. Vector datatype
+
+### Demo 1: Numeric vectors — create, combine, inspect
+```{r}
+# Create numeric vectors
+nv1 <- c(1, 2, 3) # class(nv1) is "numeric"
+nv2 <- 4:6 # class(nv2) is "integer"
+
+# Combine two vectors
+nv3 <- c(nv1, nv2)
+
+# Inspect attributes
+nv3
+length(nv3)
+class(nv3)
+
+# Element-wise arithmetic
+nv1 + nv2 # if length(nv1) < length(nv2), then nv1 <- c(nv1, nv1, ..., nv1), until length(nv1) < length(nv2) 
+nv3 / 2
+```
+
+### Demo 2: Subsetting (numeric vectors)
+```{r}
+# R indices start at 1 (not 0)
+nv3[1]          # first element
+nv3[1:2]        # range (positions 1 to 2)
+nv3[c(1, 3, 5)] # pick specific positions
+nv3[-2]         # drop the 2nd element
+
+# Logical indexing (keep values >= 3)
+nv3[nv3 >= 3]
+```
+
+### Demo 3: Logical vectors
+```{r}
+lv1 <- c(TRUE, FALSE, TRUE)
+lv2 <- c(FALSE, TRUE, FALSE)
+
+!lv2           # NOT
+lv1 | lv2      # OR
+lv1 & lv2      # AND
+```
+
+### Demo 4: Character vectors
+```{r}
+cv1 <- c("a", "b", "c")
+cv1
+class(cv1)
+
+# Comparison yields a logical vector
+cv1 == "a"
+```
+
+### Quiz 1: Build a numeric vector
+
+**Task:**
+
+1. Create a numeric vector with variable name `scores` containing values `10, 11, 12, 13, 14, 15`.
+
+2. Print its length and class.
+
+3. Add 1 to every element and print the result.
+
+P.S. Copy and paste the code into the console one line at a time, pressing Enter to run each line.
+Alternatively, select the desired line(s) in a code chunk and run them with the shortcut:
+
+- Ctrl + Enter (Windows/Linux)
+
+- Cmd + Enter (macOS)
+
+```{r}
+# your code
+scores <- c(10, 11, 12, 13, 14, 15)
+length(scores)
+class(scores)
+scores + 1
+```
+
+### Quiz 2: Subset by position and by condition
+
+**Task:**
+
+1. From `scores`, extract the 1st and 3rd elements.
+
+2. Drop the 2nd element from scores.
+
+3. Keep only the elements >= 13 (use a logical condition).
+
+```{r}
+# your code
+scores[c(1, 3)]
+scores[-2]
+scores[scores >= 13]
+```
+
+### Quiz 3: Logical vectors and counts
+
+**Task:**
+
+1. Make a logical vector named `passed` that is TRUE when scores >= 12.
+
+2. Count how many TRUE values are in passed.
+
+- Hint: `sum(passed)` works because TRUE is 1 and FALSE is 0.
+
+```{r}
+# your code
+passed <- scores >= 12
+passed
+sum(passed)
+```
+
+✅ Checkpoint: What does nv3[1:2] return? What does nv3[-2] do? Why is `scores >= 13 `a vector?
+
+## 2. Matrix datatype
+
+### Demo 1: Create a matrix
+```{r}
+# Fill numbers 1–9 into a 3x3 matrix (by column, default)
+m1 <- matrix(1:9, nrow = 3, ncol = 3)
+m1
+
+# Fill numbers 1–9 into a 3x3 matrix (by row)
+m2 <- matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE)
+m2
+
+# Check dimensions
+dim(m1)
+dim(m2)
+```
+
+### Demo 2: Bind rows and columns
+```{r}
+# Combine by rows
+m3 <- rbind(m1, m2)
+m3
+dim(m3)
+
+# Combine by columns
+m4 <- cbind(m1, m2)
+m4
+dim(m4)
+```
+
+### Demo 3: Subsetting (matrices)
+```{r}
+# Extract one row
+m1[1, ]       # first row
+
+# Extract multiple rows
+m1[1:2, ]     # rows 1 and 2
+
+# Extract one column
+m1[, 1]       # first column (as vector)
+
+# Keep column as matrix (avoid dropping)
+m1[, 1, drop = FALSE]
+
+# Drop the first column
+m1[, -1]
+```
+
+
+### Demo 4: Matrix multiplication
+```{r}
+# Element-wise multiplication
+m1 * m2
+
+# Matrix times vector
+m1 %*% m2[, 1]
+
+# Matrix times matrix
+m1 %*% m2
+```
+
+### Quiz 1: Create and inspect
+
+**Task:** 
+
+1. Create a 2x4 matrix with name `mx` filled with numbers 1–8 by row.
+
+2. Print the content.
+
+3. Print its dimensions.
+
+4. Extract the value in the second row and the third column.
+
+```{r}
+# your code
+mx <- matrix(1:8, nrow = 2, byrow = TRUE)
+mx
+dim(mx)
+mx[2, 3]
+```
+
+### Quiz 2: Combine and subset
+
+**Task:**
+
+1. Use `rbind()` to add one extra row of numbers `10:13` to your matrix `mx`.
+
+2. Use `cbind()` to add one extra column `c(100,200,300,400)`.
+
+3. Extract the 3rd column only as a matrix (not a vector).
+
+```{r}
+# your code
+rbind(mx, c(10:13))
+cbind(mx, c(100, 200, 300, 400)) # the new vector c(100, 200, 300, 400) will be cut off, and generate a warning
+mx[, 3, drop = FALSE]
+```
+
+### Quiz 3: Matrix arithmetic
+
+**Task:**
+
+1. Make a 2x2 matrix `A = matrix(1:4, nrow=2)`.
+
+2. Compute `A * A` (element-wise).
+
+3. Compute `A %*% A` (matrix multiplication).
+
+What is the difference?
+
+```{r}
+# your code
+A <- matrix(1:4, nrow = 2)
+A * A
+A %*% A
+```
+
+✅ Checkpoint: What does m1[, 1] return by default? How is it different from m1[, 1, drop = FALSE]?
+
+## 3. Data frame datatype
+
+### Demo 1: Create a data frame
+```{r}
+# A data frame is like a table: each column can have a different type
+df1 <- data.frame(
+  A = c(2, 3, 0),                # numeric
+  B = c(TRUE, FALSE, TRUE),      # logical
+  C = c("cat", "dog", "mouse")   # character
+)
+df1
+str(df1)
+```
+
+### Demo 2: Select columns
+```{r}
+# Use $ + column name
+df1$A
+
+# Or use [["column name"]]
+df1[["A"]]
+
+# Get all column names
+colnames(df1)
+
+# Change column names
+colnames(df1) <- c("col1", "col2", "col3")
+df1
+```
+
+### Demo 3: Subset rows and columns
+```{r}
+# Select a single row
+df1[1, ]
+
+# Select rows 1–2 and columns 1–2
+df1[1:2, 1:2]
+
+# Note: like matrices, rows and columns use [row, col]
+```
+
+### Demo 4: Convert between data frame and matrix
+```{r}
+# Data frame → matrix (all coerced to one type, here character)
+as.matrix(df1)
+
+# Matrix → data frame (column names auto-generated if missing)
+as.data.frame(m1)
+```
+
+### Quiz 1: Create your own data frame
+
+**Task:**
+
+1. Make a data frame of `genes` with:
+
+- column `gene` = `c("TP53", "BRCA1", "EGFR")`
+
+- column `expr` = `c(10.5, 8.3, 12.1)`
+
+- column `mutated` = `c(TRUE, FALSE, TRUE)`
+
+2. Print column names.
+
+3. Change column names to `g`, `e`, `m`.
+
+4. Print the content of `genes`.
+
+```{r}
+# your code
+# 反引号(`)引起列名; =连接列名与内容
+genes <- data.frame(
+  `gene` = c("TP53", "BRCA1", "EGFR"),
+  `expr` = c(10.5, 8.3, 12.1),
+  `mutated` =  c(TRUE, FALSE, TRUE)
+)
+colnames(genes)
+colnames(genes) <- c('g', 'e', 'm')
+colnames(genes)
+genes
+```
+
+### Quiz 2: Subset and select
+
+**Task:**
+
+1. From `genes`, select the second row only.
+
+2. From `genes`, select only columns `g` and `e`.
+
+3. Select the column `m` using both `$` and `[[]]`.
+
+```{r}
+# your code
+genes[2, ] # ‘,’不可省略, 无‘,’默认取列
+genes[, c('g', 'e')] # ‘$’ 不可取多列; ‘[]’内用‘’引列名
+genes[['m']]
+genes$m
+```
+
+### Quiz 3: Conversion
+
+**Task:**
+
+1. Convert `genes` into a matrix, stores it as `genes_mt`, and print it.
+
+See what happens to the data types after conversion?
+
+2. Convert the matrix back to a data frame.
+
+```{r}
+# your code
+genes_mt <- as.matrix(genes)
+genes_mt
+str(genes_mt)
+genes_df <- as.data.frame(genes_mt)
+genes_df
+str(genes_mt)
+```
+
+✅ Checkpoint: Why is a data frame more flexible than a matrix? What happens to column types when you convert a data frame into a matrix?
+
+## 4. List datatype
+
+### Demo 1: What is a list?
+```{r}
+# Recall previous objects
+m1
+nv1
+df1
+
+class(m1)   # "matrix"
+class(nv1)  # "numeric"
+class(df1)  # "data.frame"
+
+# A list can hold *different* types together
+l1 <- list(m1, nv1, df1)
+l1
+```
+
+### Demo 2: Named lists
+```{r}
+# Lists can have names for better organization
+l2 <- list(
+  matrix_2 = m2,
+  logic_vector_1 = lv1
+)
+
+l2
+```
+
+### Demo 3: Combine lists
+```{r}
+# Concatenate lists with c()
+l3 <- c(l1, l2)
+l3
+length(l3)   # number of elements in list
+```
+
+### Demo 4: Extracting from lists
+```{r}
+# [[]] extracts the *object itself*
+l1[[1]]        # the matrix m1
+class(l1[[1]]) # "matrix"
+
+l1[[3]]        # the data frame df1
+class(l1[[3]]) # "data.frame"
+
+# [] returns a *sub-list*
+l1[c(1, 3)]
+class(l1[c(1, 3)]) # still "list"
+```
+
+
+### Quiz 1: Create a simple list
+
+**Task:**
+
+1. Make a numeric vector `v` with values 10, 20, 30.
+
+2. Make a character vector `c` with values a, b, c.
+
+3. Put them together into a list `mylist`.
+
+4. Name the elements `"numbers"` and `"letters"`.
+
+5. Print `mylist`.
+
+```{r}
+# your code
+v <- c(10, 20, 30)
+c <- c('a', 'b', 'c')
+mylist <- list(
+  `numbers` = v,
+  `letters` = c
+)
+mylist
+```
+
+### Quiz 2: Extract elements
+
+**Task:**
+
+1. From `mylist`, extract the numeric vector (use `[[]]`).
+
+2. From `mylist`, extract only the `"letters"` element as a sub-list (use `[]`).
+
+3. Compare the class of results in step 1 vs step 2.
+
+```{r}
+# your code
+mylist[["numbers"]]
+class(mylist[["numbers"]])
+mylist["letters"]
+class(mylist["letters"])
+```
+
+### Quiz 3: Bioinformatics data sharing object
+
+**Task:**
+
+1. Create a list `sample1` that contains:  
+   - `meta`: a data frame with sample ID `"S1"` and condition `"control"`.  
+   - `counts`: a numeric vector of read counts `c(100, 250, 400)`.  
+   - `genes`: a character vector of gene names `c("TP53","BRCA1","EGFR")`.  
+
+2. Use `names(sample1)` to check the element names.  
+
+3. Extract the `counts` element and calculate its mean with `mean()`.  
+
+4. Add a new element `"qc_passed" = TRUE` to the list.  
+
+5. What is the length of the list now? Print the list.
+
+```{r}
+# your code
+meta <- data.frame(
+  `S1` = NA, 
+  `control` = NA
+)
+counts <- c(100, 250, 400)
+genes <- c("TP53","BRCA1","EGFR")
+
+sample1 <- list(
+  `meta` = meta,
+  `counts` = counts,
+  `genes` = genes
+)
+sample1
+names(sample1)
+
+mean(sample1[[2]])
+
+sample1 <- c(sample1, list("qc_passed" = TRUE))
+sample1
+
+length(sample1)
+```
+
+
+## 5. Read / Write data.frame
+
+### Demo 1: Write data to file
+```{r}
+# Save a data frame to a CSV file
+write.csv(df1, "df1.csv", row.names = FALSE)
+
+# Save a data frame to a tab-separated text file (TSV)
+write.table(df1, "df1.txt", sep = "\t", row.names = FALSE)
+```
+
+### Demo 2: Read data from file
+```{r}
+# Read back the CSV file
+read.csv("df1.csv")
+
+# Read back the TSV file
+read.table("df1.txt", sep = "\t", header = TRUE)
+```
+
+### Quiz 1: Write and read your own data frame
+
+**Task:**
+
+1. Create a small data frame students with columns:
+
+- `name = c("Alice","Bob","Charlie")`
+
+- `score = c(85, 92, 78)`
+
+2. Save it to "students.csv".
+
+3. Read it back into R as `df_students`.
+
+4. Print `df_students`.
+
+```{r}
+# your code
+df_students_original <- data.frame(
+  name = c("Alice","Bob","Charlie"),
+  score = c(85, 92, 78)
+)
+
+write.csv(df_students_original, "students.csv", row.names = FALSE)
+
+df_students <- read.csv("students.csv", header = TRUE)
+
+df_students
+str(df_students)
+```
+
+### Quiz 2: Practice with tab-separated format
+
+**Task:**
+
+- Save students as `"students.txt"` in tab-separated format.
+
+- Read it back using `read.table()`.
+
+```{r}
+# your code
+write.table(df_students, "students.txt", sep = "\t", row.names = FALSE)
+
+df_students_new <- read.table("students.txt", header = TRUE)
+
+df_students_new
+str(df_students_new)
+```
+
+✅ Checkpoint:
+
+- Why do we often set `row.names = FALSE` when saving?
+
+## 6. Loop, condition, and function in R
+
+### Demo 0: Flow Control Basis
+```{r}
+# Condition
+var1 <- 1
+if (var1 > 0) {
+  print("Positive")
+} else if (var < 0) {
+  print("Negative")
+} else {
+  print("Zero")
+}
+
+# Loop
+var2 <- c(100:105)
+for (var in var2) {
+  print(var)
+}
+var3 <- 5
+while (var3 > 0) {
+  print(var3)
+  var3 <- var3 - 1
+}
+
+# Function
+my_fun <- function(name) {
+  print(paste("hello", name))
+}
+my_fun("san.zhang")
+```
+
+### Demo 1: Inspecting the m6A genomics dataset
+```{r}
+m6A_df <- read.csv("m6A_positive_spl.csv") #Already provided under your current project directory
+
+# Basic checks
+str(m6A_df)
+dim(m6A_df)
+
+# Summaries
+summary(m6A_df$m6A_level)   # numeric column
+table(m6A_df$RNA_type)      # categorical column
+```
+
+### Demo 2: Summary of m6A_level by RNA_type with for loop
+```{r}
+result_ls <- list()
+
+for (i in unique(m6A_df$RNA_type)) {
+  result_ls[[i]] <- summary(
+    m6A_df$m6A_level[m6A_df$RNA_type == i]
+  )
+}
+
+result_ls
+```
+
+### Demo 3: Short cut for loop with R functional `tapply`
+```{r}
+# Quick summary of m6A_level by RNA_type
+tapply(m6A_df$m6A_level, m6A_df$RNA_type, summary) # tapply(X, INDEX, FUN): 用INDEX分组X, 进行FUN(X)
+```
+
+### Demo 4: Wrap into a reusable function
+```{r}
+summary_by <- function(df, num_colname, fac_colname) {
+  result_ls <- list()
+  for (i in unique(df[[fac_colname]])) {
+    result_ls[[i]] <- summary(
+      df[[num_colname]][df[[fac_colname]] == i] # df[[]]得到向量, 再[]用mask做slice
+    )
+  }
+  return(result_ls)
+}
+
+# Example: GC content grouped by RNA region
+summary_by(m6A_df, "gc_content", "RNA_region")
+```
+
+### Demo 5: Add conditions (input checking)
+```{r}
+summary_by <- function(df, num_colname, fac_colname) {
+  if (!is.numeric(df[[num_colname]])) {
+    stop("num_colname must be numeric")
+  }
+  if (!is.character(df[[fac_colname]])) {
+    stop("fac_colname must be character")
+  }
+  result_ls <- list()
+  for (i in unique(df[[fac_colname]])) {
+    result_ls[[i]] <- summary(
+      df[[num_colname]][df[[fac_colname]] == i]
+    )
+  }
+  return(result_ls)
+}
+
+summary_by(m6A_df, "gc_content", "RNA_region")
+
+# This will fail because both args must be correct types
+# summary_by(m6A_df, "RNA_type", "RNA_region")
+```
+
+
+### Quiz 1: Loop practice with real bioinformatics dataset
+ 
+**Task:**
+
+1. Load `m6A_positive_spl.csv` from current project directory into R as `m6A`.
+
+2. Write a for loop to calculate the mean `m6A_level` for each `RNA_type`.
+
+3. Store the results in a named vector `level_by_rtype`.
+
+Hint, you may use `unique()` to assess the distinct values in a character vector.
+
+You can initialize a zero length vector with `vector()` or just `c()`.
+
+```{r}
+# your code
+m6A <- read.csv("m6A_positive_spl.csv")
+
+level_by_rtype <- c()
+
+for (type in unique(m6A$RNA_type)) {
+  level_by_rtype[type] <- mean(m6A$m6A_level[m6A$RNA_type == type]) # 往向量中按名字追加值
+}
+
+level_by_rtype
+```
+
+### Quiz 2: Function practice
+
+**Task:**
+
+1. Write a function `mean_by(df, num_col, fac_col)` that:
+
+- takes a data frame,
+
+- returns the mean of the numeric column grouped by the factor column (called stratification in statistics).
+
+- where `num_col` and `fac_col` are single characters for column name.
+
+2. Test it on `gc_content` grouped by `RNA_region`.
+
+```{r}
+# your code
+mean_by <- function(df, num_col, fac_col) {
+  rs <- c()
+  
+  for (fac in unique(df[[fac_col]])) { # 用df[[]], 因为用$不会替换对象为字符串
+    rs[fac] <- mean(df[[num_col]][df[[fac_col]] == fac])
+  }
+  return(rs)
+}
+mean_by(m6A, "gc_content", "RNA_region") # 这里传的是字符串, 不是对象, 要加“”
+```
+
+### Quiz 3: Condition practice
+
+**Task:**
+
+1. Add an input check to `mean_by()`:
+
+- stop with an error if any one of the `num_col` or `fac_col` is not in the colnames of `df`.
+
+- the error message can just be "One of the `num_col` or `fac_col` is not in the colnames of `df`."
+
+2. Try calling it with wrong arguments (e.g. `"proteins"` as num_col).
+
+Hint, you may use `any()` or `%in%` to detect if there are any matches between a vector and a value.
+
+```{r}
+# your code
+mean_by <- function(df, num_col, fac_col) {
+  if (!all(c(num_col, fac_col) %in% colnames(df))) {
+    return("One of the `num_col` or `fac_col` is not in the colnames of `df`.")
+  }
+  
+  rs <- c()
+  
+  for (fac in unique(df[[fac_col]])) {
+    rs[fac] <- mean(df[[num_col]][df[[fac_col]] == fac])
+  }
+  return(rs)
+}
+
+mean_by(m6A, "proteins", "RNA_region")
+```
+
+✅ Checkpoint:
+
+In real software or packages, why is input checking important?
+
+## Session Information
+
+```{r}
+sessionInfo()
+```

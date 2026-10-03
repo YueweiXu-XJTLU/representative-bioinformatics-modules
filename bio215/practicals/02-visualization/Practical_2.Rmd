@@ -1,0 +1,395 @@
+---
+title: "BIO215 Session 2 – Practicals: Visualization with ggplot2"
+author: "Yuewei Xu"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: "show"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Practical 2: Introduction
+
+**Reasons to make good graphics:**
+
+1. Data exploration — understand the data visually.
+
+2. Presentation — convince others of your findings/insights.
+
+Good figures are essential for scientific communication and publication.
+
+**Why use ggplot2 to draw figures?**
+
+- ggplot2 offers a more consistent, extensible system than base R graphics (e.g., `plot()`, `hist()`).
+
+- It’s one reason many scientists choose R over Python.
+
+- ggplot2 often produces more polished figures by default than many Python libraries.
+
+- Basic ggplot2 grammar:
+<mark>`data.frame -> ggplot() -> aes() -> geom_*() -> [optional -> theme() -> labs()]`</mark>
+
+## Histogram
+
+### Demo: Draw histogram with the diamonds dataset
+
+A **histogram** is very useful for exploring the distribution of a data variable by counting the frequencies of numbers falling into different sliding windows along the scale (called bins).
+
+Note that it is the default example used in geom_histogram documentation, you can see it with `?geom_histogram`.
+
+When you are not sure about the usage of a function in R, always check help documentation with `?function_name`.
+
+```{r}
+#Load ggplot2 package first
+library(ggplot2)
+#Use the exported data.frame diamonds in ggplot2 pakage for Demo
+diamonds
+class(diamonds)
+
+#View the histogram of the variable/column of carat in diagmonds data.frame
+ggplot(diamonds, aes(carat)) + geom_histogram() 
+
+#We can do the similar thing use base R hist()
+hist(diamonds$carat)
+
+#Add more bins, change the border to blue color, and add white background style
+ggplot(diamonds, aes(carat)) +
+  geom_histogram(color = "blue", bins = 200) + theme_bw() 
+```
+
+### Quiz: Draw histogram using the m6A dataset
+
+**Task:**
+
+1. Load the file `../../data/m6A_combined.csv` into R using `read.csv`, and store it in a variable named `m6A_df`. The resulting data frame contains m6A sites (a type of RNA methylation) as rows and their genomic feature annotations as columns.
+
+2. Draw a histogram of the m6A modification level (defined as the ratio of m6A-modified RNA to total RNA at each m6A site). The values are stored in the `m6A_level` column of `m6A_df`. Set the color to `"blue"`, the number of bins to 200, and apply `theme_bw()` for a white background.
+
+3. Draw a histogram of the distance from each m6A site (rows in the data frame) to the nearest intron–exon splicing junction. The values are stored in the `distance_to_junction` column of `m6A_df`. Again, set the color to `"blue"`, the number of bins to 200, and use a white background.
+
+```{r}
+# Your code here
+m6A_df <- read.csv("../../data/m6A_combined.csv")
+
+ggplot(m6A_df) +  
+  aes(x = m6A_level) +
+  geom_histogram(bins = 200, fill = "blue") +
+  theme_bw()
+
+ggplot(m6A_df) +  
+  aes(x = distance_to_junction) +
+  geom_histogram(bins = 200, fill = "blue") +
+  theme_bw()
+```
+
+Question: The majority of m6A sites have high m6A level or low m6A level?
+
+## Density Plot
+
+### Demo: Draw density plot with the diamonds dataset
+
+The **density plot** is an alternative of histogram and can be used to estimate <mark>the statistical distribution of a continuous data variable</mark>. It can be viewed as <mark>the smoothed version of histogram</mark>.
+
+The density plot can be drawn in ggplot2 using `geom_density()`. We often set `alpha = 0.5` to improve transparency of the density, which is useful when <mark>compare multiple groups of overlapping densities</mark>.
+
+```{r}
+#View the density of the variable/column of carat in diagmonds data.frame
+ggplot(diamonds, aes(carat)) +
+  geom_density(fill = "blue", alpha = 0.5) 
+```
+
+### Quiz: Draw density plots using the m6A dataset
+
+1. With the `m6A_df`, Draw a density plot of `exon_length`, which represents the length of exons overlapped with the m6A sites. The densities should be separated by two different sets of colors grouped by `m6A_status` (use `fill =`). Set `alpha = 0.5`. The `m6A_status` column indicates whether the m6A site is positive (high m6A level) or negative (low m6A level). 
+
+2. Draw a density plot of `distance_to_junction`, with the densities still separated by the filled colors of `m6A_status`.
+
+3. Draw a density plot of `m6A_level`, with the densities separated by the filled colors of `RNA_type`. `RNA_type` indicates the families of RNAs, including mRNA, long non-coding RNAs, long internal non-coding RNAs, and pseudogenes. For clarity, set also `color = RNA_type` in `aes()`, and change `alpha = 0.1`.
+
+```{r}
+# Your code here
+ggplot(m6A_df) +
+  aes(x = exon_length, fill = m6A_status) + 
+  geom_density(alpha = 0.5)
+
+ggplot(m6A_df) +
+  aes(x = distance_to_junction, fill = m6A_status) + 
+  geom_density(alpha = 0.5)
+
+ggplot(m6A_df) +
+  aes(x = m6A_level, color = RNA_type, fill = RNA_type) + 
+  geom_density(alpha = 0.1)
+```
+
+Question: Which group of RNA type has the lowest RNA m6A methylation level? (We know that m6A is repressing gene expression by promoting RNA degradation)
+> Answer: mRNA
+
+## Box Plot
+
+### Demo: Draw box plot with the mpg dataset
+
+A **box plot** is useful for exploring the distribution of a continuous variable across different categories of a categorical factor. The box in the plot represents elements similar to the summary statistics returned by `summary()`. You can read more about its details [here](https://en.wikipedia.org/wiki/Box_plot).
+
+In this demo, we will use the built-in `mpg` dataset from ggplot2, which is a data frame describing the attributes of fuel economy data (1999–2008) for 38 popular car models (see `?mpg`). We will create a box plot of `hwy` (highway miles per gallon, as the y-axis) against `class` (the categorical variable representing the "type" of car, as the x-axis).
+
+```{r}
+#Check columns of mpg dataset
+str(mpg)
+
+#Draw box plot
+ggplot(mpg, aes(x=class, y=hwy)) + geom_boxplot()
+```
+
+### Quiz: Draw box plots using the m6A dataset
+
+**Task:**
+
+1. Using the `m6A_df` dataset, draw a box plot with `geom_boxplot()`, setting the x-axis to `RNA_type` and the y-axis to `m6A_level`. Apply the `theme_bw()` theme.
+
+2. Next, change the x-axis to `RNA_region`, which represents the locations of m6A sites on RNA transcripts: 5'UTR (five prime untranslated region), CDS (coding sequence), 3'UTR, and intron.
+
+```{r}
+# Your code here
+ggplot(m6A_df) +
+  aes(x = RNA_type, y = m6A_level) + 
+  geom_boxplot() +
+  theme_bw()
+
+ggplot(m6A_df) +
+  aes(x = RNA_region
+      , y = m6A_level) + 
+  geom_boxplot() +
+  theme_bw()
+```
+Question: Which RNA region has the lowest m6A level?
+> Answer: pseudogene
+
+## Scatter Plot and Regression Fit
+
+### Demo: Draw scatter plot with the mpg dataset
+
+A **scatter plot** is useful for examining the relationship between two continuous variables. In statistics, this is sometimes referred to as *joint distribution modeling*.
+
+Another statistical tool often used for a similar purpose is **linear regression**, which models the conditional dependence of a response variable (*y*) given one or more covariates (*x*).
+
+Using the `mpg` dataset, we will draw a scatter plot with `x = displ` (engine displacement, in litres) and `y = hwy` (highway miles per gallon). The scatter plot can be created with `geom_point()`. A fitted regression curve (can be a straight line with `method = lm`) can then be added with `geom_smooth()`.
+
+We have also demonstrated how to group different point clouds by a factor variable, `class`, using `colour = class` within `aes()`. Alternatively, multiple plots can be created using `facet_wrap(~class)`.
+
+> - <mark>`facet_wrap(~class, nrow=..., ncol=...)`: 以class为标准, 每个subplot一个class, 最终呈现nrow*ncol个subplot</mark>  
+> - <mark>`facet_grid(class1~class2)`: 分别以class1和class2为横纵轴, 做矩阵, 每格一个subplot, 用`.`代替`class1`, 代表无该方向变量</mark>
+
+```{r}
+#Baseline scatter plot + smooth curve
+ggplot(mpg, aes(x = displ,  y = hwy)) +
+  geom_point() +
+  geom_smooth() # 自动加一条带error bar的曲线
+
+#Make smooth curve a strait line without error bar
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = lm) # lm == linear model
+
+#Fit many lines within each group of `class` variable
+ggplot(mpg, aes(displ, hwy, colour = class)) + # 这里按color分组以后
+  geom_point() +
+  geom_smooth(se = FALSE, method = lm) # 这里的拟合也会自动分组拟合
+
+#Alternatively, group them into separate plots with facet_wrap (two rows)
+ggplot(mpg, aes(displ, hwy, colour = class)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = lm) + facet_wrap(~class, nrow = 2) 
+```
+
+
+### Quiz: Draw scatter plots using the m6A dataset
+
+**Task:**
+
+1. Using the `m6A_df` dataset, create a scatter plot and fit a smooth regression curve with `x = log(total_coverage)` (which reflects the log transformed RNA expression level at the site) and `y = m6A_level`. Set the points' `alpha` to 0.05, remove the error bars in `geom_smooth()`, and apply a `theme_bw()` background.
+
+2. In the figure from step 1, group the points and smooth curves by colour, defined by `RNA_type`.
+
+3. In the figure from step 2, further divide the plot into four graphs using `facet_wrap()`, with the factors specified by `RNA_region`. Add specific x and y labels using `labs()`, setting `x = "log gene expression"` and `y = "m6A level"`.
+
+```{r}
+# Your code here
+ggplot(m6A_df) + 
+  aes(x = log(total_coverage), y = m6A_level, color = RNA_region) + # 对点和线, 用colour调整颜色
+  facet_wrap(~RNA_region) +
+  geom_point(alpha = 0.05) + 
+  geom_smooth(se = FALSE) +
+  theme_bw() +
+  labs(x = "log gene expression", y = "m6A level")
+```
+
+Question: By looking at the smooth curves, m6A level under which RNA type and which RNA region seem to have the most negative association with gene expression level? (It is proposed recently that the CDS m6A can destabilize RNA more potently).
+> lncRNA
+
+## Bar Plot
+
+### Demo: Draw bar plot with the mpg dataset
+
+A **bar plot** is useful for examining the relationship between categorical or discrete variables. It displays counts (or proportions) of observations across different categories, and can be further grouped or stacked by another factor.
+
+In this demo, we use the `mpg` dataset. The variable `drv` (type of drive train: front-wheel, rear-wheel, or 4-wheel) is shown on the x-axis, while the variable `class` (car type) is mapped to the fill color.
+
+- On the **left**, the bars are stacked and scaled to proportions using `position = "fill"`, which shows the relative composition of car classes within each drive type.
+
+- On the **right**, the bars are placed side by side using `position = "dodge"`, which allows direct comparison of class counts across drive types.
+
+```{r}
+# Left
+ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "fill")
+
+# Right
+ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "dodge")
+```
+
+
+### Quiz: Draw bar plots using the m6A dataset
+
+**Task:**
+
+1. Draw a proportional stacked bar plot of `RNA_type` (x-axis) filled by `RNA_region`, showing the relative proportion of transcript regions within each RNA type.
+
+2. Draw a side-by-side bar plot of `RNA_type` (x-axis) filled by `RNA_region`, so that the counts of different transcript regions can be directly compared across RNA types.
+
+```{r}
+# Your code here
+ggplot(m6A_df) + 
+  aes(x = RNA_type, fill = RNA_region) +
+  geom_bar(position = "fill")
+
+ggplot(m6A_df) + 
+  aes(x = RNA_type, fill = RNA_region) +
+  geom_bar(position = "dodge")
+```
+
+Question: Which graph is more effective at presenting the RNA regions inside of different RNA families?
+> the figure with `position = "fill"`
+
+## Change Themes and Save Files
+
+### Quiz: Introducing Detailed Figure Configurations
+
+**Task:**
+
+1. With our scatter plot (plot A) provided bellow, save the plot as a PDF with the filename "scatter_plot_m6A.pdf". Specify the plot's width as 4 and height as 3. Use `ggsave()` to save your plot as a PDF. The `width` and `height` control the dimensions of the saved figure. See `?ggsave()`
+
+2. With our stacked bar plot code (plot B) provided bellow. For the `RNA_region` variable, set the order of the levels to be: "5'UTR", "CDS", "3'UTR", "intron". For the `RNA_type` variable, set the order of the levels to be: "mRNA", "lncRNA", "lincRNA", "pseudogene". 
+
+Hint: The `factor()` function is used to convert variables into a categorical format with a specific **order of levels**, see `?factor()`. This need to be done on the plot data.frame before it has been processed by ggplot2. By default, `ggplot2` may display categories in an arbitrary order. Reordering ensures consistency and logical flow (e.g., plotting RNA regions in the correct biological order).
+
+3. Customize the colors for each RNA region in the bar plot: set "5'UTR" to blue, "CDS" to green, "3'UTR" to yellow, and "intron" to red using `scale_fill_manual()` (check its help page).
+
+```{r, eval = FALSE}
+# Plot A
+ggplot(m6A_df, aes(x = log(total_coverage), y = m6A_level)) +
+  geom_point(alpha = 0.05) + geom_smooth(se = FALSE) + theme_bw() + labs(x = "log read coverage",
+                                                                         y = "m6A level")
+#Save the plot A file with ggsave() here
+ggsave(filename = "scatter_plot_m6A.pdf", width = 4, height = 3, dpi = 300)
+
+# Plot B
+# Specify the order of the axes / legends of plot B here with factor()
+m6A_df$RNA_region <- factor(m6A_df$RNA_region, levels = c("5'UTR", "CDS", "3'UTR", "intron"))
+m6A_df$RNA_type <- factor(m6A_df$RNA_type, levels = c("mRNA", "lncRNA", "lincRNA", "pseudogene"))
+
+#Changing colors with bar plot
+ggplot(m6A_df, aes(x = RNA_type, fill = RNA_region)) + 
+  geom_bar(position = "fill") + theme_bw() +  
+  scale_fill_manual(values = c(
+    "5'UTR" = "blue", 
+    "CDS" = "green", 
+    "3'UTR" = "yellow", 
+    "intron" = "red"
+  ))
+```
+
+## Challenge: Creating a Function to Draw Plots from `m6A_df`
+
+### Demo: A Function that Can Draw Box Plots for Selected Variables
+
+We can create a **function** to automate the process of exploring a data frame. This is particularly useful when you want to make the same type of plot with different variables, without having to rewrite the plotting code each time. Functions like this can also be embedded in a **Shiny app** (see Week 5), allowing users to interactively explore data on a web page.
+
+In the example below, the function `plot_box()` takes three arguments:
+
+* `df` = the data frame to be used,
+* `x_colname` = the column name for the x-axis (must be given as a string),
+* `y_colname` = the column name for the y-axis (also as a string).
+
+Inside the function, <mark>`eval(parse(text = ...))` is used to convert the column names (which are input as text strings) into actual variables that `ggplot()` can recognize</mark>.
+
+```{r}
+plot_box <- function(df, x_colname, y_colname){
+ggplot(df, aes(x = eval(parse(text = x_colname)), y = eval(parse(text = y_colname)))) +
+geom_boxplot() + theme_bw() + labs(x = x_colname,y = y_colname)
+}
+```
+
+Once the function is defined, you can call it with different variable names:
+
+```{r}
+plot_box(m6A_df, "RNA_type", "m6A_level")
+
+plot_box(m6A_df, "DNA_5mer", "m6A_level")
+```
+
+- In the second example, we explore how the DNA sequence context (5-mers) influences the `m6A_level`.
+
+👉 **Key Idea:** By wrapping code inside a function, you make your workflow **reusable, scalable, and ready for interactive apps.**
+
+### Quiz: a Function that can draw pie chart from a selected single variable
+
+**Task:**
+
+1. Using the provided ggplot2 pie chart template, write a function called plot_piechart() that can automatically generate a pie chart from any chosen categorical variable (e.g., `RNA_type`, `RNA_region`, etc.) in the `m6A_df` dataset.
+
+```{r, eval=FALSE}
+# 提取行 --> 统计频次 --> 转为data.frame --> 画图
+x <- mpg$manufacturer 
+tbl <- table(x) # x is the categorical variable in factor / character vector
+df_tmp <- data.frame(
+  group = names(tbl),
+  value = as.vector(tbl)
+)
+ggplot(df_tmp, aes(x="", y=value, fill=group)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=0) + theme_bw() + labs(x = "", y = "")
+```
+
+```{r}
+# Your code here
+plot_piechart <- function(df, col_name) {
+  x <- df[[col_name]]
+  tbl <- table(x)
+  df_tmp <- data.frame(
+    group = names(tbl), 
+    value = as.vector(tbl)
+  )
+  
+  ggplot(df_tmp, aes(x="", y=value, fill=group)) +
+    geom_bar(stat="identity", width=1) +
+    coord_polar("y", start=0) + theme_bw() + labs(x = "", y = "")
+}
+```
+
+2. Test your function by creating a pie chart of `RNA_type` and `RNA_region` in the `m6A_df` dataset. 
+
+```{r}
+# Your code here
+plot_piechart(m6A_df, "RNA_type")
+plot_piechart(m6A_df, "RNA_region")
+```
+
+```{r}
+sessionInfo()
+```

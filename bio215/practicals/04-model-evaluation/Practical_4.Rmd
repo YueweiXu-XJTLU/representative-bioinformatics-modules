@@ -1,0 +1,465 @@
+---
+title: "BIO215 Session 4 – Practicals: Machine Learning Part 2"
+author: "Yuewei.Xu "
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: "show"
+    
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r library_packages, message=FALSE}
+# library packages
+library(randomForest)
+library(ggplot2)
+library(precrec)
+library(patchwork)
+library(fastshap)
+library(shapviz)
+```
+
+## Practical 4: Introduction
+
+In this practical, you will build a random forest machine learning classification model based on an <mark>unbalanced</mark> m6A dataset.
+
+You will train the random forest classifier using a full set of genomic features, and compute comprehensive evaluation metrics using the trained classifier on the testing data.
+
+Afterward, you will interpret the machine learning classifier using two established techniques: feature importance and SHAP values.
+
+Note that this practical is **assessed**, meaning you need to submit the completed practical as an HTML file knitted from the practical RMD file. The submission will account for **10%** of the final score in this module. To knit the practical into an HTML file, you need to click the "Knit" button in the RStudio API and select "Knit to HTML". Once the rendering process is complete (and without code errors), an HTML file will be successfully generated.
+
+To download a knitted HTML report to your computer, click "Files" in the right panel. Navigate the folders, select the generated HTML file, and then click the little gear icon > Export... > Download. This will trigger the download of the HTML file. Before uploading the downloaded HTML file to the LMO submission box, ensure that you double-check the content of the file. The file size should be between 1.6 MB and 2 MB. If your file is too small, it indicates an issue with the export / download process, and the file may be corrupted.
+
+The detailed mark weight for each section is provided at the topic of that section in today’s practical. Your assessment will be based on the correctness of your code and outputs. If a short-answer question (SAQ) is included in a section, part of the marks will also be awarded based on your written response under `Your answer:`.
+
+## Task 1: Build random forest classifier for unballanced m6A data (30%)
+
+### Data loading and pre-processing (5%)
+
+1. Load the CSV file named `"m6A_unbalanced.csv"` into R and store it in the variable `data_df`.
+
+2. Use the same procedure as in the last practical to one-hot encode the 5-mer sequence feature by creating 5 additional categorical variables named `nt_pos1`, `nt_pos2`, ..., `nt_pos5`. You may use `cbind()` to combine these as additional columns in `data_df`.
+
+3. Convert the classification target variable `m6A_status` to a factor using `factor()`, ensuring that the negative class is the reference level (the first element in the level attribute of the factor).
+
+4. Check the ratio of negative to positive using `table()`.
+
+```{r}
+# 1. load data
+data_df <- read.csv("../../data/m6A_imbalanced.csv")
+
+# 2. add one-hot features
+## extract features
+nn <- nchar(data_df$DNA_5mer[1])
+seq_m <- matrix( unlist( strsplit(data_df$DNA_5mer, "") ), ncol = nn, byrow = TRUE)
+colnames(seq_m) <- paste0("nt_pos", 1:nn)
+
+## back up data
+data_df_bak <- data_df
+
+## add features (exclude nt_pos3 to avoid multicollinearity)
+data_df <- cbind(data_df, seq_m[, -3])
+head(data_df, 3)
+
+# 3. build factors (negative class is the reference level)
+data_df$m6A_status <- factor(data_df$m6A_status, levels = c("Negative", "Positive"))
+
+# 4. check ratio
+table(data_df$m6A_status)
+```
+
+Question: What is the positive to negative ratio of this data set?
+
+<em>
+
+Your answer:  
+
+- Using `table()` to calculate the frequency table, we know <mark>Positive : Negative = 11248 : 36807</mark>, showing that the dataset is a moderately imbalanced one.
+
+</em>
+
+### Fit a random forest classification model (10%)
+
+1. Next, randomly split the data into 80% training and 20% testing, setting the seed to 123 to ensure reproducibility. Store the 80% training data as `train_df` and the 20% testing data as `test_df`.
+
+2. Using the `randomForest` package, fit a random forest classification model with `m6A_status` as the target and `gc_content`, `RNA_type`, `RNA_region`, `exon_length`, `distance_to_junction`, `evolutionary_conservation`, `nt_pos1`, `nt_pos2`, `nt_pos4`, and `nt_pos5` as input features. Store the model fit as `rf_fit`.
+
+3. Check the content of `rf_fit`.
+
+```{r}
+# 1. split data
+set.seed(123)
+row_num <- nrow(data_df)
+samples_train <- sample.int(row_num, size = round(row_num * 0.8), replace = FALSE)
+train_df <- data_df[samples_train,]
+test_df <- data_df[-samples_train, ]
+
+# 2. fit random forest model 
+rf_fit <- randomForest(data = train_df, m6A_status ~ gc_content + RNA_type + RNA_region  + exon_length + distance_to_junction + evolutionary_conservation + nt_pos1 + nt_pos2 + nt_pos4 + nt_pos5)
+
+# 3. check model
+rf_fit
+```
+
+### Compute accuracy, precision, recall, and FPR (15%)
+
+1. Using the fitted random forest model, predict the **class probabilities** on the testing data in `test_df`. Store the class probabilities in the variable `prob_test`. Hint: You should check `?predict.randomForest` to understand how to retrieve class probabilities rather than binary outcomes.
+
+2. Use `head()` to check the content of `prob_test`.
+
+```{r}
+# 1. predict class probabilities
+prob_test <- predict(rf_fit, test_df, type = "prob")
+
+# 2. check content
+head(prob_test)
+```
+
+3. Using the predicted probabilities and the ground truth class label in `test_df`, calculate a confusion matrix. The positive class prediction should be decided using a cutoff of positive class probabilities greater than 0.5. Save the confusion matrix in a variable named `cm`, and display the content of `cm`.
+
+```{r}
+# 3. build confusion matrix
+## set cutoff & classify using cutoff (use a function to improve reusability)
+classify_using_cutoff <- function(cutoff=0.5, prob_test) {
+  prob_test_binary <- ifelse(prob_test[, 2] <= cutoff, "Negative", "Positive")
+  return(prob_test_binary)
+}
+
+prob_test_binary <- classify_using_cutoff(0.5, prob_test)
+
+## build confusion matrix & display
+cm <- table(Predicted = prob_test_binary, Actual = test_df$m6A_status)
+cm
+```
+
+4. Using the same confusion matrix as `cm`, compute the accuracy, precision, recall, and FPR. Display their values together using `cbind()`, or show them one by one.
+ 
+```{r}
+# 4. Accuracy & Precision & Recall & FPR
+## calculate metrics (use a function to improve reusability)
+calculate_metrics <- function(cm) {
+  ##################################################
+  # make sure the elements are rightly corresponded to the confusion matrix above
+  ##################################################
+  TP <- cm["Positive", "Positive"]
+  TN <- cm["Negative", "Negative"]
+  FP <- cm["Positive", "Negative"]
+  FN <- cm["Negative", "Positive"]
+
+  accuracy <- (TP + TN) / (TP + TN + FP + FN)
+  precision <- TP / (TP + FP)
+  recall <- TP / (TP + FN)
+  fpr <- FP / (FP + TN)
+  
+  metrics <- list(accuracy = accuracy, precision = precision, recall = recall, fpr = fpr)
+  
+  return(metrics)
+}
+
+metrics <- calculate_metrics(cm)
+
+## show metrics
+cbind(accuracy = metrics$accuracy, precision = metrics$precision, recall = metrics$recall, fpr = metrics$fpr)
+```
+
+5. Compute the same set of performance evaluation metrics --- accuracy, precision, recall, and FPR --- now using predictions with a probability cutoff of 0.1. Display all the values of the metrics.
+
+```{r}
+# 5. calculate metrics using new cutoff (use a function to improve reusability)
+calculate_metrics_with_specified_cutoff <- function(cutoff=0.5, prob_test) {
+  ## set cutoff & classify using cutoff (evoke previous function)
+  prob_test_binary <- classify_using_cutoff(cutoff, prob_test)
+
+  ## build confusion matrix & display
+  cm <- table(Predicted = prob_test_binary, Actual = test_df$m6A_status)
+
+  ## calculate metrics (evoke previous function)
+  metrics <- calculate_metrics(cm)
+  return(metrics)
+}
+
+metrics_0.1 <-  calculate_metrics_with_specified_cutoff(0.1, prob_test)
+
+## show metrics
+cbind(accuracy = metrics_0.1$accuracy, precision = metrics_0.1$precision, recall = metrics_0.1$recall, fpr = metrics_0.1$fpr)
+```
+
+## Task 2: Plot ROC and PRC curve (40%)
+
+### Use ggplot2 line dot to draw ROC curve and PRC curve (20%)
+
+1. Set `n = 100`, generate a sequence named `thresholds` with `seq(0.05, 0.95, length.out = n)`, and initialize a data frame `plot_df` with `n` rows and NA values in columns named `precision`, `recall`, and `FPR`. Then, using the created initialization objects, write a for loop to compute precision, recall, and FPR at each individual threshold in `thresholds`, and save the metric values in the appropriate places in `plot_df`. Use `head(plot_df)` to check its values.
+
+2. Next, using `ggplot2`, draw point and line plots of the ROC and PRC curves separately with `geom_point()` and `geom_line()`. Make the ROC curve red and the PRC curve blue. Change the theme to `theme_classic()`.
+
+```{r}
+# 1. prepare raw data
+## initialize containers
+n <- 100
+
+thresholds <- seq(0.05, 0.95, length.out = n)
+
+plot_df <- data.frame(
+  precision = rep(NA, n),
+  recall = rep(NA, n),
+  FPR = rep(NA, n)
+)
+
+## compute metrics (evoke previous function)
+for (i in 1:n) {
+  threshold <- thresholds[i]
+  this_metrics <- calculate_metrics_with_specified_cutoff(cutoff = threshold, prob_test = prob_test)
+  plot_df[i, ] <- unlist(this_metrics[-1])
+}
+
+## check raw data
+head(plot_df)
+
+# 2. draw plots
+## ROC
+ggplot(plot_df) +
+  aes(x = FPR, y = recall) +
+  geom_point(color = "red", size = 1.5, alpha = 0.6) + 
+  geom_line(color = "red", linewidth = 1) + 
+  theme_classic() +
+  labs(
+    title = "ROC Curve",
+    x = "FPR",
+    y = "Recall"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+  )
+
+## PRC
+ggplot(plot_df) +
+  aes(x = recall, y = precision) +
+  geom_point(color = "blue", size = 1.5, alpha = 0.6) + 
+  geom_line(color = "blue", linewidth = 1) + 
+  theme_classic() +
+  labs(
+    title = "PRC Curve",
+    x = "Recall",
+    y = "Precision"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+  )
+```
+
+Question: In the ROC and PRC curves, do the points on the left correspond to smaller or larger decision thresholds on positive class probabilities? In other words, which side of the figure (left or right) represents a more rigorous criterion for classifying a site as a positive m6A site?
+
+<em>
+
+Your answer:
+
+- For ROC curve:
+
+  - The points on the left have smaller FPR, FPR = (FP) / (FP + TN).
+
+  - <mark>This means a smaller percentage of truly negative samples are incorrectly classified as positive.</mark>
+
+  - This corresponds to a higher threshold (a more rigorous criterion) for positive m6A site recognition. 
+
+- For PRC curve:
+
+  - The points on the left have smaller Recall, Recall = (TP) / (TP + FN).
+
+  - <mark>This means a smaller percentage of truly positive samples are correctly classified as positive.</mark>
+
+  - This corresponds to a higher threshold (a more rigorous criterion) for positive m6A site recognition.
+
+- <mark>In conclusion, in both ROC and PRC curves, points on the left correspond to higher thresholds and a more rigorous criterion for classifying a m6A site as positive.</mark>
+
+</em>
+
+### Use precrec to draw complete ROC and PRC curves and calculate AUROC and AUPRC (20%)
+
+<mark>The curves we drew earlier are incomplete because we skipped the edges of the decision cutoffs (prob < 0.05 and prob > 0.95) for programming simplicity (涉及到0, 1是会出现0/0; 0/NA等复杂计算情况)</mark>.
+
+To draw ROC and PRC curves and compute their AUC easily, you can use several specialized packages. In this practical, you will use `precrec`.
+
+1. Use the `precrec` package and the `evalmod()` function with inputs of the positive class probabilities and ground truth labels to generate a curves object and store it as the variable `curves`. Check the content of `curves`. See `?evalmod()` to learn more about it.
+
+2. Use `autoplot()` and `auc()` to draw the curve plots and extract the AUC from `curves`.
+
+```{r}
+# 1. generate curve object
+curves <- evalmod(scores = prob_test[, "Positive"], labels = test_df$m6A_status, posclass = "Positive")
+curves
+
+# 2. draw curve plots & extract AUC
+## draw curve plots
+autoplot(curves)
+## extract AUC
+auc(curves)
+```
+Comment: You can check `curves$rocs` and `curves$prcs` to extract the x and y axis data from the curves, which you can use to manually draw the plots with ggplot2 for better customization (as desired in the final capstone project).
+
+Question: Based on the AUC values and the ROC and PRC curves, how effective do you think our model is on the imbalanced data? If you were a biologist aiming to select a final decision threshold for predicting m6A sites on novel RNA sequences or in new species, which decision threshold would you choose? Please provide your rationale.
+
+<em>
+
+Your answer:  
+
+1. Model Evaluation: 
+
+  - The model achieved an AUROC of 0.8850451 (> 0.8); and an AUPRC of 0.6998651 (≈ 0.7).
+  
+  - These demonstrate that the model can effectively discriminate between positive and negative samples. However, due to the sample imbalance, the ability to recognize true positive samples is relatively low.
+
+  - <mark>Overall, the model is basically effective and usable, though further improvement and attention are necessary.</mark>
+
+2. Threshold Choice:
+
+  - <mark>As the dataset is imbalanced, the ROC curve tends to over-estimate the performance of the model. As a result, we prioritize PRC for consideration.</mark>
+
+  - we use $F_1 = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$ for quantitative evaluation:
+```{r}
+# extract raw data for PRC
+PRC_df <- data.frame(
+  x = curves$prcs[[1]]$x,
+  y = curves$prcs[[1]]$y
+)
+
+# calculate F1-Score
+PRC_df$F1 <- (2 * PRC_df$x * PRC_df$y) / (PRC_df$x + PRC_df$y)
+
+# deduce best cutoff
+target_row <- PRC_df[which.max(PRC_df$F1), ]
+closest_idx <- which.min(abs(plot_df$recall - target_row$x) + abs(plot_df$precision - target_row$y))
+best_cutoff <- thresholds[closest_idx]
+cbind(cutoff = best_cutoff, plot_df[closest_idx,])
+```
+  - We get a deduced cutoff of 0.3409091, with other metrics shown above.
+
+  - This threshold achieves a relatively high score for both precision and recall in the PRC curve. Moreover, the point in the ROC curve shows a relatively low FPR, making it a good choice to discriminate between truly false and negative samples even under an imbalanced dataset.
+
+  - Furthermore, <mark>as biologists, we might further consider other factors</mark>. For example, if the cost for verdict an false negative sample is much lower than exclude a false positive sample, then we can enhance the cutoff, to decrease the expense while maintain effectiveness.
+
+  - <mark>In summary, we prefer to choose 0.3409091 as the initial threshold, then modify the threshold during the later process according to real requirements.</mark>
+
+</em>
+
+
+
+## Task 3: Interpretable ML (30%)
+
+### Draw feature importance from random forest (15%)
+
+1. The feature importance has been automatically computed and stored in `rf_fit` while you fitted the RF model. You need to extract it using `randomForest::importance()`. Display the extracted importance values.
+
+2. With the importance values, create a bar plot using ggplot2. Hint: Construct a data frame with one column for the importance values and another column for the feature names. Use `geom_bar(stat = "identity")` to draw the plot and `coord_flip()` to present the figure vertically. Use `theme_bw()` and change the default fill color gradient with `scale_fill_brewer()`, setting its palette to "Spectral".
+
+```{r}
+# 1. extract feature importance 
+importance_data <- randomForest::importance(rf_fit)
+importance_data
+
+# 2. draw plot
+## generate dataframe
+importance_df <- data.frame(
+  Feature = rownames(importance_data),
+  MeanDecreaseGini = importance_data[, 1]
+)
+importance_df
+## draw plot
+ggplot(data = importance_df) +
+  aes(x = reorder(Feature, MeanDecreaseGini), y = MeanDecreaseGini, fill = Feature) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  scale_fill_brewer(palette = "Spectral") +
+  labs(
+    title = "Feature Importance",
+    x = "Feature",
+    y = "MeanDecreaseGini"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+  )
+```
+
+Question: Which feature contributed mostly to the prediction accuracy in our random forest model? What is the scientific significance in context of the biology of m6A RNA modification?
+
+<em>
+
+Your answer:
+
+1. Feature Contribution:
+
+- <mark>With the highest MeanDecreaseGini, distance_to_junction contributes most to the prediction accuracy.</mark>
+
+2. Biology Significance:
+
+- distance_to_junction is a continuous measurement representing the linear distance between the target adenosine-nucleotide (A) and the nearest intron–exon junction.
+
+- The feature importance result suggests that this distance may have a substantial influence on whether the A is likely to be methylated into m6A. <mark>However, this does not indicate the direction of the distance_to_junction’s eﬀect on m6A_status classification.</mark>
+
+- <mark>Although through some literature reviews, we can infer that exon junction complex (EJC) might decrease the nearby m6A depletion [(Uzonyi et al., 2023)](https://www.cell.com/molecular-cell/fulltext/S1097-2765(22)01205-9?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS1097276522012059%3Fshowall%3Dtrue), it would be better to perform a SHAP analysis to determine the specific direction interpretation using our model.</mark>
+
+</em>
+
+### Draw SHAP values plot using GLM (15%)
+
+1. We will use the `fastshap` and `shapviz` packages to perform SHAP value analysis efficiently. To begin, fit a logistic regression model on `train_df` using the same target and features with the `glm()` function, setting `family = binomial()`. Store the fitted object in `fit`.
+<mark>glm(): generalized linear model, 广义线性回归; linear regression (因变量满足正态分布), logistic regression (因变量满足二项分布) 都是glm的特例</mark>
+
+2. Set the seed to 123, then randomly sample 250 rows from `test_df` using `sample.int()`, and store it as `subset_df`. With `subset_df`, keep only the columns of the input features of the model (remove all other columns). To compute SHAP values, use `fastshap::explain()`, setting `X = subset_df`, `nsim = 100`, `pred_wrapper = predict`, and `shap_only = FALSE`. Visualize the resulting fitted SHAP object with the `shapviz` package (check its documentation below). Draw the SHAP value importance beeswarm plot with `sv_importance()`.
+
+Learn from the following tutorial on how to use `fastshap` and `shapviz` to create quick SHAP analysis:
+https://cran.r-project.org/web/packages/shapviz/vignettes/basic_use.html
+
+```{r}
+# 1. logistic regression
+fit <- glm(m6A_status ~ gc_content + RNA_type + RNA_region  + exon_length + distance_to_junction + evolutionary_conservation + nt_pos1 + nt_pos2 + nt_pos4 + nt_pos5, data = train_df, family = binomial())
+fit
+
+# 2. SHAP analysis
+## extract test data
+set.seed(123)
+test_row_num <- nrow(test_df)
+samples_test<- sample.int(test_row_num, size = 250, replace = FALSE)
+subset_df <- data_df[samples_test, c("gc_content", "RNA_type", "RNA_region", "exon_length", "distance_to_junction", "evolutionary_conservation", "nt_pos1", "nt_pos2", "nt_pos4", "nt_pos5")]
+head(subset_df)
+
+# SHAP computation & visualization
+shap <- fastshap::explain(
+  fit, X = subset_df, nsim = 100, pred_wrapper = predict, shap_only = FALSE
+)
+sv <- shapviz(shap)
+sv_importance(sv, kind = "beeswarm", show_numbers = TRUE)
+```
+
+comments: We used logistic regression (a type of GLM) as a surrogate for interpreting our RF classifier with SHAP values. However, if computational resources are sufficient, <mark>it is recommended to use the `h2o` package in R to fit RF models or XGBoost and calculate SHAP values using the actual fitted tree models. When calculating such SHAP values, it is still recommended to split multi-level factors into binary factors/dummy variables, so that the contributions of these features are clear in the SHAP analysis.</mark> For efficiency and educational purposes, this path has not been explored here.
+
+Question: Based on the SHAP value diagram and the feature importance plot, can you provide a description of the model's prediction mechanism? (For example, which features does the model primarily use to predict the labels, and how are they related—positively or negatively—to the positive class?)
+
+<em>
+Your answer:
+
+- In SHAP value diagrams, a larger mean-SHAP-value (displayed to the right of each feature) represents a larger contribution to the prediction of the model. Meanwhile, the colors which denote values of features illustrate the direction of the prediction.
+
+- From our diagram above, we conclude that DNA_5mer, especially nucleotide at first, second and fifth position, and gc_content contribute a lot in model prediction, with the top four mean-SHAP-value of 0.651, 0.506, 0.342 and 0.293. 
+  
+  - Using nt_pos5 as an example, as a classification one-hot feature, values (dot-colors) refer to the alphabetical order of ATCG, as a result, T at the fifth position of DNA_5mer is closely related to positive prediction of m6A_status, followed by G. In comparison, C is closely related to negative prediction, while A, which leads to negative prediction, makes a smaller contribution.
+  
+  - gc_content is another important continuous feature. Higher GC content increases the likelihood of a positive classification.
+
+- Also, we can learn that RNA_type with the lowest mean-SHAP-value can hardly contribute to the prediction of m6A_status in this model.
+
+</em>
+
+
+```{r}
+sessionInfo()
+```

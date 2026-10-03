@@ -1,0 +1,148 @@
+---
+title: "How to write efficient R code"
+author: "Zhen Wei"
+date: "2023-03-27"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    self_contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+```
+
+### 0. Task setup
+
+```{r task-setup}
+library(drosophila2probe)
+library(Biostrings)
+
+probes_dss <- DNAStringSet(drosophila2probe)
+N <- length(probes_dss)
+M <- width(probes_dss)[1]
+
+probes_car <- as.character(probes_dss)
+probes_M <- matrix(unlist(strsplit(probes_car, "")), nrow = N)
+probes_M[1:10, 1:10]
+
+dim(probes_M) # 265400 DNA probes, all having the length of 25
+```
+
+The goal is to compute the GC content of the probes, which are rows of the character matrix.
+
+### 1. For-loops over both rows and columns
+
+```{r for-loop-both-rows-columns}
+system.time({
+  GC_content <- vector("numeric", N)
+  for (i in 1:N) {
+    GC_count_i <- 0
+    for (j in 1:M) {
+      if (probes_M[i, j] == "G" | probes_M[i, j] == "C") {
+        GC_count_i <- GC_count_i + 1
+      }
+    }
+    GC_content[i] <- GC_count_i / M
+  }
+})
+```
+
+`system.time()` can report the run time of the program; it took more than 3 seconds to finish the first version of code.
+
+### 2. Vectorization over columns
+
+```{r vectorization-over-columns}
+system.time({
+  GC_content2 <- vector("numeric", N)
+  for (i in 1:N) {
+    GC_content2[i] <-
+      sum(probes_M[i, ] == "G" | probes_M[i, ] == "C") / M
+  }
+})
+```
+
+The iteration over `j` can be removed by using a trick. We can directly `sum` over the logical vectors to get the count of G and C, since running arithmetic calculation on logical values (`TRUE` and `FALSE`) in R can be treated as `TRUE = 1` and `FALSE = 0`.
+
+By not writing a for-loop over the columns (nucleotide positions), we can already save around 10-fold of time.
+
+### 3. Vectorization over both rows and columns (no for-loop)
+
+```{r vectorization-over-both-rows-columns}
+system.time({
+  GC_content3 <- rowMeans(probes_M == "G" | probes_M == "C")
+})
+```
+
+With vectorized code, it took around 0.15 seconds, which is around 50 times faster than the first version of code.
+
+### 4. Use Bioconductor function `letterFrequency()`
+
+```{r bioconductor-letterfrequency}
+system.time({
+  GC_content4 <- as.vector(letterFrequency(probes_dss, "GC", as.prob = TRUE))
+})
+
+# Check if all the codes yield identical results
+identical(GC_content, GC_content2, GC_content3, GC_content4)
+```
+
+The Bioconductor function is the fastest overall.
+
+## Take-home messages
+
+<mark>Use **vectorized** (multiple-input / multiple-output) functions in R, and always try to avoid using for-loops. Your R code can become extremely inefficient if it contains a for-loop having more than around 10,000 iterations. In addition, before you program something new, always try to search online to see if there are existing functions for your problem.</mark>
+
+------------------------------------------------------------------------
+
+<mark>Some commonly used vectorized functions in R: `rowSums()`, `colSums()`, `rowMeans()`, `colMeans()`, `rowVars()`, `rowttests()`, `rowpAUCs()`, `+`, `-`, `*`, `/`, `sum()`, `==`.</mark>
+
+------------------------------------------------------------------------
+
+## Quizzes
+
+Suppose we want to find differentially expressed genes among 20,000 genes between conditions A and B, each having 3 biological replicates. Your task is to realize 2-sample t-tests for each gene, first using a for-loop and then the vectorized way. (I expect you to yield p-value vector of length 20,000)
+
+```{r quiz-simulation-and-dgea}
+## Simulate the above mentioned data
+set.seed(123)
+GeneExpressionMatrix <- matrix(rnorm(20000*6, mean = 2, sd = 1), ncol = 6)
+Design <- c("A","A","A","B","B","B")
+Indx_Change <- sample.int(20000, 100)
+GeneExpressionMatrix[Indx_Change, Design == "B"] <- GeneExpressionMatrix[Indx_Change, Design == "B"] + 1 # Add effect sizes in a subset of genes
+
+## Please write your code bellow:
+# Realize DGEA with for-loop
+system.time({
+pvalues_vec1 <- rep(NA, 20000)
+for (i in 1:20000){
+ pvalues_vec1[i] <- t.test(GeneExpressionMatrix[i,]~Design)$p.value
+}
+})
+
+# Realize DGEA with apply()
+system.time({
+pvalues_vec2 <- apply(GeneExpressionMatrix, 1, function(x) t.test(x ~ Design)$p.value)
+})
+
+# Realize DGEA with vectorized function 
+system.time({
+pvalues_vec3 <- genefilter::rowttests(GeneExpressionMatrix, as.factor(Design))[,3]
+})
+
+identical(pvalues_vec1, pvalues_vec2, pvalues_vec3)
+```
+
+In the end, evaluate the running times of each coding method with `system.time()`. Is `apply()` faster than a for-loop?
+
+> NO!!!
+
+```{r session-info}
+sessionInfo()
+```

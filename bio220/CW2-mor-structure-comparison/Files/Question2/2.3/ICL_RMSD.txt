@@ -1,0 +1,17 @@
+# 注意只有chain id一致时Pymol才能计算RMSD!!!
+
+PyMOL>alter ICL1 and chain R, chain='A'  Alter: modified 271 atoms.
+PyMOL>alter ICL2 and chain R, chain='A'  Alter: modified 166 atoms.
+PyMOL>alter ICL3 and chain R, chain='A'  Alter: modified 200 atoms.
+
+PyMOL>alter ICL1_SM, chain='A'  Alter: modified 105 atoms.
+PyMOL>alter ICL2_SM, chain='A'  Alter: modified 166 atoms.
+PyMOL>alter ICL3_SM, chain='A'  Alter: modified 200 atoms.
+
+PyMOL>rms_cur ICL1_AF and (name N+CA+C+O), ICL1 and (name N+CA+C+O)  Executive: RMSD =    1.149 (52 to 52 atoms)
+PyMOL>rms_cur ICL2_AF and (name N+CA+C+O), ICL2 and (name N+CA+C+O)  Executive: RMSD =    1.134 (80 to 80 atoms)
+PyMOL>rms_cur ICL3_AF and (name N+CA+C+O), ICL3 and (name N+CA+C+O)  Executive: RMSD =    3.705 (96 to 96 atoms)
+
+PyMOL>rms_cur ICL1_SM and (name N+CA+C+O), ICL1 and (name N+CA+C+O)  Executive: RMSD =    0.462 (52 to 52 atoms)
+PyMOL>rms_cur ICL2_SM and (name N+CA+C+O), ICL2 and (name N+CA+C+O)  Executive: RMSD =    0.425 (80 to 80 atoms)
+PyMOL>rms_cur ICL3_SM and (name N+CA+C+O), ICL3 and (name N+CA+C+O)  Executive: RMSD =    0.548 (96 to 96 atoms)

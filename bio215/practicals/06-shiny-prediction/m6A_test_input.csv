@@ -1,0 +1,4 @@
+"","gc_content","RNA_type","RNA_region","exon_length","distance_to_junction","evolutionary_conservation","DNA_5mer"
+"1",0.63681592,"mRNA","CDS",10.76708093,8.882643049,0.249751244,"GAACA"
+"2",0.427860697,"mRNA","3'UTR",6.791162889,3.169925001,0.528358209,"GAACC"
+"3",0.39800995,"lncRNA","intron",0,13.85223688,0.052238806,"AAACT"

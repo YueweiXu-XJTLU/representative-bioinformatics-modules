@@ -1,0 +1,479 @@
+---
+title: "BIO214 Lab Practical 5: Co-Expression Network and De Bruijn Graph-Based Genome Assembly"
+author: "Yuewei Xu"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center")
+```
+
+# Part 1. Co-Expression Network
+
+## Data Pre-processing and Feature Selection
+
+We will extract the expression matrix from the bulk RNA-Seq `SummarizedExperiment` object stored under `../data/ERX425102_se.rds`.
+
+**Task 1 (6 marks)**. Before building our network, we must ensure the data is clean and statistically sound. In this task, you will transform raw sequencing counts into a usable format by focusing on the most informative genes. Your objectives include: 1). Normalize the data to RPM to account for differences in sequencing depth. 2). Filter out "low-signal" genes (those with zero counts in more than 10% of samples). 3). Reduce dimensionality by selecting only the top 1000 genes with the highest variance. Hint: Think about which R functions handle sums across columns and means across rows efficiently.
+
+```{r}
+# Load necessary libraries
+library(SummarizedExperiment)
+library(genefilter)
+
+# Load data
+se <- readRDS("../data/ERX425102_se.rds")
+dim(se)
+
+# Please fill in the missing code in the ____ areas.
+# Normalization: Convert raw counts to Reads Per Million (RPM)
+RPM <- t(t(assay(se)) / colSums(assay(se))) * 10^6
+
+# Data Filtering: Remove genes with more than 10% zero counts
+# We use means over rows to check the proportion of zeros
+RPM <- RPM[rowMeans(RPM == 0) <= 0.10, ]
+
+# Feature Selection: Select the top 1000 genes with the highest variance
+vars <- rowVars(RPM)
+RPM  <- RPM[order(vars, decreasing = TRUE)[1:1000], ]
+```
+
+## Adjacency Matrix Construction and Connectivity Calculation
+
+**Task 2.1 (6 marks)**. Now that our data is ready, we need to determine which genes are "connected." In a co-expression network, a connection (edge) exists between two genes if their expression patterns are highly correlated across samples. Your objectives include: 1). Compute the correlation matrix by using Spearman correlation to measure the relationship between every pair of genes. 2). Apply a hard threshold by converting these correlations into a binary Adjacency Matrix (1 if connected, 0 if not). 3). Calculate the degree (k) for each gene, count how many other genes it is significantly connected to.
+
+Hint: The `cor()` function in R calculates correlation between columns. Since our genes are in rows, you will need to transpose the matrix using `t()` first.
+
+```{r}
+# Please fill in the missing code in the ____ areas.
+# Calculate co-expression using Spearman correlation with function cor()
+# Hint: We correlate genes, so the matrix should be transposed if necessary 
+cor_matrix <- cor(t(RPM), method = "spearman")
+
+# Adjacency Mapping: Hard-thresholding
+# Convert the correlation matrix into a binary matrix (0 or 1)
+# Use a threshold of 0.5 for this initial test
+adj_matrix <- (abs(cor_matrix) >= 0.5) * 1
+# diag(adj_matrix) <- 0 # better to add this to avoid one extra meaningless degree for each node, but to achieve identical results with standard output, we omit this step
+
+# Connectivity (Degree): Sum the rows to find how many neighbors each gene has
+k <- rowSums(adj_matrix)
+
+# Visualize the distribution of k
+hist(k, main="Degree Distribution", xlab="k")
+```
+
+Is our gene network truly "Scale-Free"? In nature, biological networks follow a **Power Law** ($P(k) \sim k^{-\gamma}$), which means most genes have few connections while a few "hubs" have many.To prove this mathematically, we transform the data using **Logarithms**. If we plot $log(P(k))$ against $log(k)$ and see a **straight line** with a high $R^2$ value (usually $> 0.8$), we can confirm our network is scale-free.
+
+**Task 2.2 (6 marks)**. Please complete the function to automate the scale-free check. Within the function, use the `lm()` function to find the relationship between $log(k)$ and its frequency. Afterwards, retrieve the $R^2$ value, which tells us how well our data fits the "Scale-Free" theory.
+
+```{r}
+# Please fill in the missing code in the ____ areas to complete the function.
+evaluate_degree_distribution <- function(k) {
+  #Calculate the frequency distribution of degree
+  k_filtered <- k[k > 0]
+  freq_k <- table(k_filtered) 
+  # Fit a regression line with log(P(k)) ~ log(k) using data in freq_k
+  deg <- as.numeric(names(freq_k))
+  P_k <- as.numeric(freq_k) / sum(freq_k) # name == k; value == P(k)
+  fit_lm <- lm(log(P_k) ~ log(deg))
+  summary(fit_lm)$r.squared
+}
+evaluate_degree_distribution(k)
+```
+
+## Optimizing the Threshold (The Grid Search)
+
+In the previous tasks, we manually tested a threshold of 0.5. However, in professional bioinformatics, we don't guess—we **optimize**. Since the threshold directly determines which genes are "connected," it fundamentally changes the network's topology.
+
+In this task, you will use a `for` loop to test a range of thresholds (from 0.1 to 0.95). For each step, you will record the $R^2$ value to see which threshold produces the most "Scale-Free" results.
+
+**Task 3 (7 marks)**. 1). Iterate through the thresholds using the loop index `i` to pull the current threshold from our testing list. 2). Calculate the evaluation using the `evaluate_degree_distribution()` function you wrote in Task 3 to automatically score each threshold.
+
+Hint: Remember that `thresholds_vec` is a list of 86 different values. In each round of the loop, you need to pick the i-th value.
+
+```{r}
+# Define a vector of potential thresholds to test
+thresholds_vec <- seq(0.1, 0.95, by = 0.01)
+Rsquared_vec <- numeric(length(thresholds_vec))
+
+# Loop through each threshold to find the best fit for scale-free topology
+# Please fill in the missing code in the ____ areas.
+for (i in 1:length(thresholds_vec)) {
+    
+    # 1. Construct adjacency matrix based on current threshold
+    curr_adj <- (abs(cor_matrix) >= thresholds_vec[i]) * 1
+    # diag(curr_adj) <- 0
+
+    # 2. Calculate connectivity (degree) for each gene
+    curr_k <- rowSums(curr_adj)
+    
+    # 3. Calculate degree distribution frequency
+    Rsquared_vec[i] <- evaluate_degree_distribution(curr_k)
+}
+```
+
+```{r}
+# ---------------------------------------------------------
+# Results and Selection
+# ---------------------------------------------------------
+
+# Combine thresholds and R-squared values into a summary table
+results <- data.frame(Threshold = thresholds_vec, Rsquared = Rsquared_vec)
+head(results)
+
+# Identify the threshold that maximizes R-squared
+best_idx <- which.max(Rsquared_vec)
+best_threshold <- thresholds_vec[best_idx]
+max_r2 <- Rsquared_vec[best_idx]
+
+cat("Optimal Threshold:", best_threshold, "\n")
+cat("Maximum R-squared:", round(max_r2, 4), "\n")
+
+# ---------------------------------------------------------
+# Visualization
+# ---------------------------------------------------------
+
+# Plot the relationship between Threshold and Scale-free Fit
+plot(thresholds_vec, Rsquared_vec, type = "b", pch = 19, col = "blue",
+     xlab = "Threshold (Correlation Coefficient)", 
+     ylab = "Scale-free Topology Fit (R^2)",
+     ylim = c(0, 1),
+     main = "Scale-free Topology Analysis")
+
+# Add a reference line at R^2 = 0.8 (common threshold for network validity)
+abline(h = 0.8, col = "red", lty = 2)
+text(0.3, 0.82, "Scale-free Criterion (0.8)", col = "red")
+```
+
+## Evaluating the Optimal Scale-Free Fit
+
+In bioinformatics, we typically look for a threshold where the Scale-Free fit ($R^2$) is **greater than 0.8**. Your goal is to apply this optimal threshold to finalize the network and visualize the "Power Law" behavior on a Log-Log plot.
+
+**Task 4.1 (5 marks)** Your Objective: Identify and plug in the best_threshold variable (the one that maximized $R^2$ in Task 3) to construct the final adjacency matrix.
+
+```{r}
+# 1. Calculate degree distribution at the optimum threshold identified in previous step
+adj_matrix_opt <- (abs(cor_matrix) >= best_threshold) * 1
+# diag(adj_matrix_opt) <- 0
+k_opt <- rowSums(adj_matrix_opt)
+k_values <- k_opt[k_opt > 0] # Filter out zeros for log scale
+
+# 2. Get Probability P(k)
+freq_table <- table(k_values)
+deg <- as.numeric(names(freq_table))
+prob <- as.numeric(freq_table) / sum(freq_table)
+
+# 3. Fit Power Law to get lambda
+# A power-law exponent (lambda) between 2 and 3 is typically expected for biological networks.
+fit <- lm(log(prob) ~ log(deg)) # log(P_k) = -lambda*log(k)
+lambda <- -coef(fit)[2] # slop = -lambda
+
+# 4. Plotting (Log-Log scale)
+plot(deg, prob, log="xy", pch=19, col="brown",
+     xlab="k (Degree)", ylab="P(k)", 
+     main="Bb: Optimized Scale-Free Network")
+
+# 5. Annotations
+text(exp(mean(log(deg))), max(prob)*0.5, 
+     labels=paste0("P(k) ~ k^-", round(lambda, 2), ";  lambda < 3 =>\nscale free"), 
+     cex=1.1, font=2)
+
+# Label the Hubs
+arrows(max(deg)*0.6, min(prob)*10, max(deg), min(prob), length=0.1)
+text(max(deg)*0.4, min(prob)*12, "Hubs = high\ndegree vertices")
+```
+
+**Question 4.2 (6 marks)** In Task 4.1, we iterated through various correlation thresholds to find the optimal $R^2$. Consider the following: If we set the threshold to an extreme value—either very high (e.g., 0.99) or very low (e.g., 0.05)—how would the resulting network structure change in each case? Why are both of these extremes unsuitable for meaningful biological analysis?
+
+> Your answer:
+>
+> -   If the threshold is very high, **only extremely identical genes will be connected**. The network will become too **sparse**, many genes will become isolated, and real but moderate co-expression relationships will lost.
+>
+> -   If the threshold is very low, **almost all genes will be connected**. The network will become too **dense and noisy**, some weak random correlations will be mistakenly treated as biological interactions.
+>
+> -   Both extremes are unsuitable because they **fail to represent real meaningful network structure**. A very high threshold loses true biological modules, while a very low threshold creates many false positive edges & hubs hence hides real module patterns.
+
+**Question 4.3 (7 marks)** In your final Log-Log plot, the genes located at the bottom-right of the distribution are known as "Hub Genes." From a biological perspective, what role do you think these genes play in cellular activities compared to "peripheral" genes that have only 1 or 2 connections? Furthermore, how would a mutation in a hub gene affect the overall stability of the biological system?
+
+> Your answer:
+>
+> -   Peripheral genes are more likely to have **specific, limited, or condition-dependent** roles.
+>
+> -   In comparison, hub genes usually co-express or functionally connected with **many other genes**. They are more likely to participate in **core cellular processes, coordinate modules, or act as key regulators, such as encoding some central proteins whose knock-down are lethal**.
+>
+> -   A mutation in a hub gene would likely have **a large systemic effect** because it can disrupt many connected pathways or modules at once, and **reduce network stability or even cause severe disease/lethality**.
+
+**Question 4.4 (7 marks)** The network we built is a "Co-expression Network" based on Spearman Correlation. If Gene A and Gene B are strongly correlated and connected in our network, does this directly prove that "Gene A regulates Gene B"? Why or why not? Briefly describe how you might further validate the relationship between these two genes in a real-world study.
+
+> Your answer:
+>
+> -   **No, because Spearman Correlation only shows monotonic change patterns, but does not represent direct causality.**
+>
+> -   Further validation of the relationship can be conducted in several ways:
+>
+>     1.  **Further experiments** could be designed. Regulatory relationships can be tested through knock out or knock down Gene A and test whether Gene B expression changes, vice versa.
+>     2.  **KEGG annotation** which identifies biological processes as coordinated molecular systems rather than isolated genes are suitable to detect both genes' role in signaling pathways, hence infer their regulatory roles.
+>     3.  **Network inference algorithms** could be used. For example, GENIE3 which utilizes multiple random forest predictors and demonstrates combined interaction rankings can efficiently test network's regulatory links.
+
+# Part 2: De Bruijn Graph-Based Genome Assembly
+
+## The Ideal De Bruijn Graph (Coverage = 1x)
+
+In lecture slides, the concept of genome assembly is first introduced using a perfect 1x coverage model. We slide a window of size $k$ directly across the sequence to extract $k$-mers。
+
+**Task 5.1: Constructing the Adjacency Matrix(7 marks)**Your goal is to complete the code to slide the window, extract the left and right $(k-1)$-mers, and record their connections in the adjacency matrix. If there are multiple edges from nodes to another, record it by the count of the \# of edges in the adjacency matrix. You can use function `unique()` to extract distinct elements in an vector in R.
+
+```{r}
+# Load necessary libraries
+library(Biostrings)
+library(igraph)
+
+# A simplified toy genome
+set.seed(42)
+genome <- DNAString("GATTACATTAG")
+k <- 4
+
+
+# Please fill in the missing code in the ____ areas.
+# Extract k-mers directly from the genome
+starts <- 1:(length(genome) - k + 1)
+kmers <- DNAStringSet(lapply(starts, function(s) subseq(genome, start = s, width = 4)))
+                      
+# Please fill in the missing code in the ____ areas.
+# Define Left and Right (k-1)-mers to form edges
+L_kmers <- as.character(subseq(kmers, start = 1, end = k - 1))
+R_kmers <- as.character(subseq(kmers, start = 2 , end = k))
+distinct_nodes <- unique(c(L_kmers, R_kmers))
+
+# Create an empty Adjacency Matrix
+adj_1x <- matrix(0, nrow = length(distinct_nodes), ncol = length(distinct_nodes))
+rownames(adj_1x) <- distinct_nodes
+colnames(adj_1x) <- distinct_nodes
+
+# Please fill in the missing code in the ____ areas.
+# Loop through all extracted (k-1)-mer pairs and COUNT the edges
+for(i in 1:length(L_kmers)) {
+  u <- L_kmers[i]
+  v <- R_kmers[i]
+  # Increment the specific cell in the matrix by 1
+  adj_1x[u, v] <- adj_1x[u, v] + 1
+}
+
+print(adj_1x)
+
+# Visualize the ideal graph
+g_1x <- graph_from_adjacency_matrix(adj_1x, mode = "directed", weighted = TRUE)
+plot(g_1x, vertex.size=25, vertex.color="lightblue", vertex.label.cex=0.8,
+     edge.arrow.size=0.5, edge.label = E(g_1x)$weight, 
+     main="Ideal DBG Adjacency Matrix (Coverage = 1x)")
+```
+
+**Task 5.2: The Eulerian Walk (8 marks)** An Eulerian Walk visits every edge in a graph exactly once. Complete the Hierholzer's algorithm below, which traverses the graph using our adjacency matrix structure.
+
+**The Hierholzer's Algorithm: The "Bridge-Burner" Method**
+
+Imagine you are exploring a series of islands connected by bridges. Your goal is to cross every single bridge exactly once. The Hierholzer's Algorithm describes the following procedure:
+
+1.  Pick any island that has an available bridge.
+
+2.  Start walking across bridges. Every time you cross a bridge, you must **destroy** it behind you. Keep moving forward until you get stuck at an island with no bridges left to cross.
+
+3.  Once stuck, you write down the name of current island in a **logbook**. Then, **"teleport"** (backtrack) to the **previous island** you just came from.
+
+4.  **Repeat step 2 and 3**.
+
+5.  Once you have returned to your very first island and all bridges are gone, **reverse** your logbook. The reversed list is your perfect Eulerian path.
+
+**Why this works**:
+
+Step 2 always ends at the "final" destination of your walk (or back at the start if it's a circuit). By recording islands only when you're "stuck" or "returning," you are essentially building the path from the end to the beginning.
+
+Step 4 ensures that while backtracking, if you encounter an island that still has "undestroyed" bridges, stop backtracking and immediately start a new forward exploration (Step 2) from there. Only when you get stuck again do you resume recording and backtracking.
+
+Reversing the list at the end simply corrects the fact that you were recording your journey in reverse order as you "retreated" from the dead ends.
+
+```{r}
+# Function to find Eulerian Path
+find_eulerian_walk <- function(adj_mat, start_node) {
+  path <- character()
+  
+  # We work on a local copy to avoid destroying the original matrix
+  curr_adj <- adj_mat
+  
+  visit <- function(u) {
+    # Find all neighbors where the edge count > 0
+    while (sum(curr_adj[u, ]) > 0) {
+      # Please fill in the missing code in the ____ areas.
+      # 1. Pick the first neighbor with an available edge
+      neighbors <- which(curr_adj[u, ] > 0)
+      v <- names(neighbors)[1]
+      
+      # 2. Subtract 1 from the count (Destroy the bridge you have walked)
+      curr_adj[u, v] <<- curr_adj[u, v] - 1 # <<-: search `curr_adj` object from inner scope (visit) to outer scope (find_eulerian_walk), create a new object only if not find `curr_adj` in any outer scope
+      
+      # 3. Recursively visit the next node
+      visit(v)
+    }
+    # Prepend the node to the final path when stuck (Add the current island on logbook while you stuck)
+    path <<- c(u, path)
+  }
+  
+  visit(start_node)
+  return(path)
+}
+
+# Find Path and Assemble
+start_node <- as.character(subseq(genome, 1, k-1))
+eulerian_path_1x <- find_eulerian_walk(g_1x, start_node)
+
+# Assembly Function
+assemble_sequence <- function(path) {
+  final_seq <- path[1]
+  for (i in 2:length(path)) {
+    next_char <- substr(path[i], nchar(path[i]), nchar(path[i])) # substr(x, start, stop)
+    final_seq <- paste0(final_seq, next_char)
+  }
+  return(final_seq)
+}
+
+print(assemble_sequence(eulerian_path_1x))
+
+cat("1x Assembly Complete? ", as.character(genome) == assemble_sequence(eulerian_path_1x), "\n")
+```
+
+**Question 5.3 (8 marks)**: In genome assembly, why does finding an Eulerian Walk (visiting every edge exactly once) ensure the correct reconstruction of the sequences, as opposed to a Hamiltonian Path (visiting every node exactly once)? What makes the Eulerian approach computationally superior?
+
+> Your answer:
+>
+> -   In De Bruijn graphs, **edges represent k-mers**, while **nodes represent (k-1)-mers**. **Genome assembly aims to visit each k-mer exactly once**, because the k-mers are directly extracted from the raw genome (1x). In contrast, (k-1)-mers are created only to connect k-mers and convert the assembly task into a graph theory problem (Eulerian walk).
+>
+> -   A Hamiltonian path visits every node exactly once, but **the same (k-1)-mer can appear many times in a genome**, especially in repeated regions. Forcing each node to be used only once would lose repeated sequence information and could produce an incomplete or incorrect assembly, for example when **a node contains self-loops**.
+>
+> -   The Eulerian approach is computationally superior because finding an Eulerian walk **can be solved in polynomial time (P problem)** using algorithms such as **Hierholzer’s algorithm**. With our adjacency matrix implementation, the time complexity is $O(EV)$, where E is the number of edges and V is the number of vertices/nodes, and the space complexity is $O(V^2 + E)$ due to the adjacency matrix and output path. In contrast, finding a Hamiltonian path is generally **NP-hard and cannot be solved in polynomial time in the general cases**, although verifying a Hamiltonian path is a NP problem.
+
+## High Coverage & Normalization (Coverage = 100x)
+
+In real life, sequencers generate reads with high depth. Here, we will simulate a uniform **100x coverage sequencing run**. This means every edge in our adjacency matrix will be traversed 100 times.
+
+**Task 6.1: The 100x Matrix and Normalization (5 marks)** If we run our Eulerian Walk directly on this matrix, the algorithm will attempt to cross every duplicated bridge, resulting in a sequence 100 times longer than the actual genome!
+
+To recover the original structure, we must normalize the edge counts using the following formula:
+
+$$E_{normalized} = \frac{E_{observed}}{C}$$ Where:
+
+$E_{observed}$: The edge weight observed in the high-coverage matrix.
+
+$C$: The sequencing coverage (in this case, 100).
+
+```{r}
+# --- Part 2: High Coverage & Normalization (Coverage = 100x) ---
+
+# Please fill in the missing code in the ____ areas
+# Directly replicate the kmers from Part 1 to simulate perfect 100x coverage
+# This ensures every edge has exactly 100x weight, avoiding edge effects!
+kmers_100x <- rep(kmers, 100)
+
+L_100x <- as.character(subseq(kmers_100x, start = 1, end = k - 1))
+R_100x <- as.character(subseq(kmers_100x, start = 2 , end = k))
+nodes_100x <- unique(c(L_100x, R_100x))
+
+# Create 100x Adjacency Matrix
+adj_100x <- matrix(0, nrow = length(nodes_100x), ncol = length(nodes_100x))
+rownames(adj_100x) <- nodes_100x
+colnames(adj_100x) <- nodes_100x
+
+for(i in 1:length(L_100x)) {
+  u <- L_100x[i]
+  v <- R_100x[i]
+  adj_100x[u, v] <- adj_100x[u, v] + 1
+}
+
+print(adj_100x)
+
+# Please fill in the missing code in the ____ areas.
+# Normalization: Divide the counts by the expected coverage (100) and round it
+expected_coverage <- 100
+adj_normalized <- round(adj_100x / expected_coverage) # round to ensure all values (numbers of edges) to be integers
+
+# Rebuild the graph with the normalized matrix
+g_normalized <- graph_from_adjacency_matrix(adj_normalized, mode = "directed", weighted = TRUE)
+
+plot(g_normalized, vertex.size=25, vertex.color="lightgreen", vertex.label.cex=0.8, edge.arrow.size=0.5, edge.label = E(g_normalized)$weight, main="Normalized DBG (100x Restored to 1x)")
+
+start_node <- as.character(subseq(genome, 1, k-1))
+eulerian_path_100x <- find_eulerian_walk(g_normalized, start_node)
+print(assemble_sequence(eulerian_path_100x))
+cat("100x Assembly Complete? ", as.character(genome) == assemble_sequence(eulerian_path_100x), "\n")
+```
+
+**Question 6.2 (7 marks)**: In this simplified example, our coverage was a perfect 100x across the entire genome. In real sequencing (e.g., Illumina), coverage fluctuates. How can you estimate baseline coverage from real data?
+
+> Your answer:
+>
+> -   In real sequencing, baseline coverage can be estimated from **the genome-wide read depth distribution** rather than from a single site.
+>
+> -   After quality control, reads should be mapped to reference genome. Then **coverage could be calculated for each genomic position or fixed-size window pre-defined by prior knowledge**, with coverage adjustment for common technical biases such as GC-content bias.
+>
+> -   A robust baseline can then be taken as **the median or mode of the corrected coverage distribution**. For more complex genomes such as those with CNVs, **segmentation or mixture-model methods** can be used to identify the dominant normal coverage peak and use it as the baseline.
+
+## Part 3: Interpreting Variant Calling Format (VCF)
+
+After assembling a genome or mapping reads to a reference, the next crucial step is identifying genetic mutations. This information is stored in a standardized text format known as a VCF file.
+
+Below is a simulated snippet of a VCF file resulting from mapping a patient's sequence to a reference genome.
+
+```{r}
+# Simulated VCF Data
+vcf_data <- data.frame(
+  CHROM = c("chr1", "chr1", "chr2"),
+  POS = c(15042, 28901, 88300),
+  ID = c("rs101", ".", "rs204"),
+  REF = c("A", "T", "GTC"),
+  ALT = c("G", "TA", "G"),
+  QUAL = c(99, 85, 90),
+  FILTER = c("PASS", "PASS", "PASS"),
+  INFO = c("DP=45;AF=0.5", "DP=30;AF=1.0", "DP=50;AF=0.5"),
+  FORMAT = c("GT:AD:DP", "GT:AD:DP", "GT:AD:DP"),
+  SAMPLE_01 = c("0/1:20,25:45", "1/1:0,30:30", "0/1:25,25:50")
+)
+
+# Display the VCF table
+knitr::kable(vcf_data, caption = "Simulated VCF Snippet")
+```
+
+**Question 7.1 (8 marks)**: Look at the mutation on chr1 at position 28901.
+
+-   What type of genetic variant is this (e.g., SNP, Insertion, Deletion)?
+
+-   What is the total sequencing depth (coverage) at this position?
+
+-   Is the patient Homozygous or Heterozygous for this mutation? How can you tell from the SAMPLE_01 column?
+
+> Your answer:
+>
+> -   It is an **insertion**. An extra A is inserted after the reference base T (on chr1 at position 28901) to form an alternate allele TA.
+>
+> -   The total sequencing depth (coverage) is **30**. As column `FORMAT` denotes, third section in `SAMPLE_01` means `DP` (Read Depth), which is `30`.
+>
+> -   The patient is a **homozygous** **for this mutation**. As column `FORMAT` denotes, first section in `SAMPLE_01` means `GT` (Genotype), which is `1/1`, meaning that both alleles for this patient at this position are alternate allele with index 1, hence the genotype is **TA/TA**. Although `/` means un-phased data, we are sure that the patient is a homozygous for this mutation.
+
+**Question 7.2 (7 marks)**: Look at the variant on chr2 at position 88300. Based on the REF and ALT columns, describe exactly what has happened to the DNA sequence at this location.
+
+> Your answer:
+>
+> -   The reference genome (`REF`) GTC experienced a **deletion**. Sequence TC is deleted to form the alternate allele (`ALT`) G
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
